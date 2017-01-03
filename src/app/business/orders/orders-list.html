@@ -1,0 +1,105 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <search-filter on-click="fetchOrders()" ng-model="params.key" search-type="params.key_type" label="按账号、订单号搜索" options="{extraKeyType: ['order_number']}"></search-filter>
+  <hr>
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="follow">负责人</label>
+        <select class="form-control" ng-model="params.user_id" ng-change="fetchOrders()" ng-options="seller.user_id as seller.name for seller in sellers">
+          <option value="">全部</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group ">
+          <div class="input-group-btn" dropdown>
+            <select class="form-control" ng-model="time_type" ng-options="time_type.type as time_type.name for time_type in time_types">
+            </select>
+          </div>
+        </div>
+        <div class="input-group input-daterange">
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="daterange" />
+          <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="fetchOrders()">筛选</button>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+  <hr>
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="">订单类型：</label>
+        <label><input type="radio" name="order_type" ng-model="params.order_type" ng-change="fetchOrders()" value="ORDER_TYPE_NORMAL"><i class="fa fa-square text-info"></i> 正常购买</label>
+        <label><input type="radio" name="order_type" ng-model="params.order_type" ng-change="fetchOrders()" value="MONTH_PAY"><i class="fa fa-square text-success"></i> 按月结算</label>
+        <label><input type="radio" name="order_type" ng-model="params.order_type" ng-change="fetchOrders()" value="SYS_GIFT"><i class="fa fa-square text-warning"></i> 系统赠送</label>
+        <label><input type="radio" name="order_type" ng-model="params.order_type" ng-change="fetchOrders()" value="REPARATION"><i class="fa fa-square text-danger"></i> 服务补偿</label>
+      </div>
+      <div class="form-group">
+        <label for="">订单状态：</label>
+        <label><input type="radio" name="status" ng-model="params.status" ng-change="fetchOrders()" value="INIT"><i class="text-danger fa fa-question-circle"></i> 待付款</label>
+        <label><input type="radio" name="status" ng-model="params.status" ng-change="fetchOrders()" value="CANCEL"><i class="text-muted fa fa-times-circle"></i> 已取消</label>
+        <label><input type="radio" name="status" ng-model="params.status" ng-change="fetchOrders()" value="DONE"><i class="text-success fa fa-check-circle"></i> 已付款</label>
+        <label><input type="radio" name="status" ng-model="params.status" ng-change="fetchOrders()" value="REFUND"><i class="text-info fa fa-minus-circle"></i> 已退款</label>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<table class="table table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th class="order-type order-type-title">订单号</th>
+      <!-- <th>订单类型</th> -->
+      <th>云存储帐号</th>
+      <th>订单内容</th>
+      <th>订单金额</th>
+      <th>实付金额</th>
+      <th>下单时间</th>
+      <th>状态</th>
+      <th>负责人</th>
+      <th width="210">操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="order in ordersData.orders">
+      <td class="order-type {{'order-type-' + order.order_type}}">{{order.order_number}}</td>
+      <td><a ui-sref="clients.personal.detail.info({account_name: order.account_name})" target="_blank">{{order.account_name}}</a></td>
+      <td>
+        <ul class="list-unstyled">
+          <li ng-show="order.order_content.storage">存储：{{order.order_content.storage}} GB</li>
+          <li ng-show="order.order_content.storage_period">存储有限期：{{order.order_content.storage_period}} 天</li>
+          <li ng-show="order.order_content.transfer">流量：{{order.order_content.transfer}} GB</li>
+          <li ng-show="order.order_content.https_period">HTTPS：{{order.order_content.https_period}} 年</li>
+        </ul>
+      </td>
+      <td>{{order.order_paid}} 元</td>
+      <td>{{order.actual_paid}} 元</td>
+      <td>{{order.order_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+      <td>
+        <span class="text-danger text-lg" ng-show="order.order_status === 'INIT'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}"><i class="fa fa-question-circle"></i></span>
+        <span class="text-success text-lg" ng-show="order.order_status === 'DONE'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}"><i class="fa fa-check-circle"></i></span>
+        <span class="text-muted text-lg" ng-show="order.order_status === 'CANCEL'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}"><i class="fa fa-times-circle"></i></span>
+        <span class="text-info text-lg" ng-show="order.order_status === 'GIFT'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}"><i class="fa fa-gift"></i></span>
+        <span class="text-info text-lg" ng-show="order.order_status === 'REFUND'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}"><i class="fa fa-minus-circle"></i></span>
+      </td>
+      <td>{{order.user_name}}</td>
+      <td class="tcol-180">
+        <a href="" class="btn btn-xs btn-primary" ng-click="confirm(order)" ng-show="order.order_status === 'INIT' && self.rights_check['4_order_manager']" tooltip-placement="bottom" tooltip="确认">确认</a>
+        <a href="" class="btn btn-xs btn-warning" ng-click="cancel(order)" ng-show="order.order_status === 'INIT' && self.rights_check['4_order_manager']" tooltip-placement="bottom" tooltip="取消">取消</a>
+        <a href="" class="btn btn-xs btn-danger" ng-click="refund(order)" ng-show="order.order_status === 'DONE' && self.rights_check['4_order_refund']" tooltip-placement="bottom" tooltip="退款">退款</a>
+        <a href="" class="btn btn-xs btn-info" ng-click="view(order)" tooltip-placement="bottom" tooltip="查看订单详情">详情</a>
+        <a href="" class="btn btn-xs btn-default" ng-click="sync(order)" tooltip-placement="bottom" tooltip="重新同步该订单数据"><i class="glyphicon glyphicon-refresh"></i></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<nav class="pull-right">
+  <ul class="pagination">
+    <li ng-class="{ disabled: !ordersData.page.since}"><a ng-click="prev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+    <li ng-class="{ disabled: !ordersData.page.max}"><a ng-click="next()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+  </ul>
+</nav>

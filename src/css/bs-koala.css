@@ -1,0 +1,31 @@
+/* ==========================================================================
+   bootstrap theme for koala @Leigh Zhu
+   ========================================================================== */
+
+.navbar {
+  border-radius: 0;
+}
+
+.table {
+  background: #fff;
+}
+
+.nav-pills > li > a {
+  border-radius: 0;
+}
+
+.sidebar .nav > li > a:hover, .nav > li > a:focus {
+  color: #fff;
+  background-color: rgba(225, 225, 225, .2);
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+  color: #fff;
+  background-color: rgba(51, 122, 183, .6);
+}
+
+/*fix backdrop, I don't know */
+.modal-backdrop {
+  position: fixed;
+  bottom: 0;
+}

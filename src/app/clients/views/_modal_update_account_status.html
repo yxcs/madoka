@@ -1,0 +1,101 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>帐号管理</h4>
+</div>
+<div class="modal-body">
+  <form action="" class="form-horizontal" ng-show="updateData.change_type === 'lock' || updateData.change_type === 'disable'">
+    <div class="alert alert-danger">
+      停用该云存储账号！操作后，客户云服务将停止。
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-4">
+        <input type="radio" ng-model="updateData.change_type" value="lock">人工停用
+      </label>
+      <label class="control-label col-sm-4">
+        <input type="radio" ng-model="updateData.change_type" value="disable">欠费停用
+      </label>
+    </div>
+    <div class="alert alert-warning"  ng-show="updateData.change_type === 'lock'">
+      该停用操作后，恢复使用必须人工手动操作。
+    </div>
+    <div class="alert alert-warning"  ng-show="updateData.change_type === 'disable'">
+      该停用操作后，用户只需加款充值，补还欠款金额，现金金额为正，即可恢复服务。
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-3" ng-show="updateData.change_type === 'lock'">停用理由：</label>
+      <label class="control-label col-sm-3" ng-show="updateData.change_type === 'disable'">停用理由：</label>
+      <div class="col-sm-8">
+        <textarea name="" id="" cols="30" rows="3" class="form-control" ng-model="updateData.change_value"></textarea>
+      </div>
+    </div>
+  </form>
+
+  <form action="" class="form-horizontal" ng-show="updateData.change_type === 'trial'">
+    <div class="alert alert-danger">
+      目前账号试用期还剩： {{updateData.trial_days_left}} 天
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-3">需延长天数</label>
+      <div class="col-sm-8">
+        <select name="" id="" class="form-control" ng-model="updateData.period">
+          <option value="1">1 天</option>
+          <option value="2">2 天</option>
+          <option value="3">3 天</option>
+          <option value="4">4 天</option>
+          <option value="5">5 天</option>
+          <option value="6">6 天</option>
+          <option value="7">7 天</option>
+        </select>
+      </div>
+    </div>
+  </form>
+
+  <form action="" class="form-horizontal" ng-show="updateData.change_type === 'block'">
+    <div class="alert alert-danger">
+      禁用用该云存储账号！操作后，客户云服务将停止同时无法登陆 Franky。
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-3">禁用理由：</label>
+      <div class="col-sm-8">
+        <textarea name="" id="" cols="30" rows="3" class="form-control" ng-model="updateData.change_value"></textarea>
+      </div>
+    </div>
+    <div class="text-danger text-center">
+      提醒: 任何账号的禁用,必须先联系客户过后,录入联系记录,再进行操作。
+    </div>
+  </form>
+
+  <div ng-show="updateData.change_type === 'recover'" class="clearfix">
+    恢复该云存储账号使用！操作后，客户账号将恢复原先状态。
+    <!--<ul class="pull-left list-unstyled">
+      <li>一、申请中被拒绝，操作恢复</li>
+      <li>二、试用中被停用，操作恢复</li>
+      <li>三、服务中被停用，操作恢复</li>
+      <li>四、欠费使用被停用，操作恢复</li>
+    </ul>
+    <ul class="pull-right list-unstyled">
+      <li>五、试用中被禁号，操作恢复</li>
+      <li>六、服务中被禁号，操作恢复</li>
+      <li>七、欠费试用被禁号，操作恢复</li>
+      <li>八、停用被禁号，操作恢复</li>
+    </ul>-->
+  </div>
+
+  <div ng-show="updateData.change_type === 'passwd'" class="clearfix">
+    <div class="alert alert-danger">
+      确定重置重置账号 {{updateData.account_name}} 登陆密码？
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-3">重置后的密码：</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" ng-model="updateData.change_value">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">修改</button>
+</div>

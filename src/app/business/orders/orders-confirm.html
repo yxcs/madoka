@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>订单确认</h4>
+</div>
+<div class="modal-body">
+  <p>
+
+确认订单支付后，该笔订单将转化为交易付款成功！
+
+注：请确定客户订单实际付款钱到账后操作.
+</p>
+
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label">支付方式</label>
+      <div class="col-sm-8">
+        <select name="" id="" ng-model="order.pay_type" ng-options="k as v for (k, v) in MAP.pay_type">
+          <option value="">选择</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label">备注</label>
+      <div class="col-sm-8">
+        <textarea name="" id="" cols="30" rows="5" class="form-control" ng-model="order.remark"></textarea>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">确认</button>
+</div>

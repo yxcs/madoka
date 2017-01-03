@@ -1,0 +1,102 @@
+<div class="content">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      处理信息
+      <div class="pull-right">
+        <a ng-if="invoice.status == '未开票'" ui-sref=".edit" class="btn btn-xs btn-danger">编辑</a>
+        <a ng-if="invoice.status == '未开票'" href="" class="btn btn-xs btn-danger" ng-click="deal(invoice.invoice_id)">处理</a>
+        <a ng-if="invoice.status == '已取消'" href="" class="btn btn-xs btn-danger" ng-click="delete(invoice.invoice_id)">删除</a>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="col-sm-3">负责人：{{invoice.user_name}}</div>
+      <div class="col-sm-3">处理状态：{{invoice.status}}</div>
+      <div class="col-sm-3">创建时间：{{invoice.create_time ? invoice.create_time * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
+      <div class="col-sm-3">处理时间：{{invoice.opt_time ? invoice.opt_time * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
+
+      <div class="col-sm-6" ng-if="invoice.status == '已取消'">取消原因：{{invoice.reason}}</div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      开票信息 <span class="bg-warning">
+        <span ng-show="invoice.order_numbers">订单发票</span>
+        <span ng-show="!invoice.order_numbers">账单发票</span>
+      </span>
+    </div>
+    <div class="panel-body">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td colspan="2">客户名称：{{invoice.client_name}}</td>
+            <td colspan="2">云存储帐号：{{invoice.account_name}}</td>
+          </tr>
+
+          <tr>
+            <td>发票抬头：{{invoice.title}}</td>
+            <td>开具类型：{{invoice.open_type === 'COMPANY' ? '企业' : '个人'}}</td>
+            <td>发票号码：{{invoice.invoice_number}} <a ng-hide="invoice.status == '已取消' || invoice.status === '未开票'" href="" class="btn btn-xs btn-primary" ng-click="update(invoice)">修改</a></td>
+            <td>开票日期：{{invoice.invoice_time ? invoice.invoice_time * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+          </tr>
+
+          <tr>
+            <td>发票金额：{{invoice.sum}} 元</td>
+            <td>发票内容：{{invoice.content}}</td>
+            <td>发票类型：{{MAP.invoice_type[invoice.invoice_type]}}</td>
+            <td>纳税人识别号：{{invoice.taxpayer_number}}</td>
+          </tr>
+
+          <tr ng-show="invoice.invoice_type === 'VAT_PRO'">
+            <td>基本户开户银行名称：{{invoice.open_bank}}</td>
+            <td>基本户开户帐号：{{invoice.open_account}}</td>
+            <td>注册场所地址：{{invoice.regist_place}}</td>
+            <td>注册固定电话：{{invoice.tel}}</td>
+          </tr>
+
+          <tr ng-show="invoice.invoice_type === 'VAT_PRO'">
+            <td>
+              <h5>营业执照复印件</h5>
+              <a ng-click="openLightboxModal(0)">
+                <img ng-src="{{images[0].thumbUrl}}" class="img-thumbnail" alt="" width="200">
+              </a>
+            </td>
+            <td>
+              <h5>税务登记证复印件</h5>
+              <a ng-click="openLightboxModal(1)">
+                <img ng-src="{{images[1].thumbUrl}}" class="img-thumbnail" alt="" width="200">
+              </a>
+            </td>
+            <td>
+              <h5>一般纳税人资格认证复印件</h5>
+              <a ng-click="openLightboxModal(2)">
+                <img ng-src="{{images[2].thumbUrl}}" class="img-thumbnail" alt="" width="200">
+              </a>
+            </td>
+            <td>
+              <h5>开户许可证复印件</h5>
+              <a ng-click="openLightboxModal(3)">
+                <img ng-src="{{images[3].thumbUrl}}" class="img-thumbnail" alt="" width="200">
+              </a>
+            </td>
+          </tr>
+          <tr rowspan="2">
+            <td colspan="4">开票订单：{{invoice.order_numbers}}<br>备注：{{invoice.remarks}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      邮寄信息
+    </div>
+    <div class="panel-body">
+      <div class="col-sm-3">收件人：{{invoice.addressee}}</div>
+      <div class="col-sm-3">联系电话：{{invoice.phone_number}}</div>
+      <div class="col-sm-6">收件地址：{{invoice.province + invoice.city + invoice.detail_add}}</div>
+    </div>
+  </div>
+
+</div>

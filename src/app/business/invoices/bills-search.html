@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>开票客户</h4>
+</div>
+<div class="modal-body">
+  <form ng-submit="fetchClientInfo()" class="form-horizontal">
+    <div class="form-group col-sm-2">
+      <h4>云存储帐号</h4>
+    </div>
+    <div class="form-group col-sm-4">
+      <input type="text" class="form-control" placeholder="" ng-model="params.key">
+    </div>
+    <input type="submit" class="btn btn-default" value="查询">
+  </form>
+  <br>
+
+  <form ng-show="clientDetail.account_name" name="form" ng-submit="submit()" class="form-horizontal form-validate">
+    <div class="row">
+      <div class="col-sm-2">客户名称：</div>
+      <div class="col-sm-3">{{clientDetail.name}}</div>
+      <div class="col-sm-1">账号：</div>
+      <div class="col-sm-2">{{clientDetail.account_name}}</div>
+      <div class="col-sm-2">负责人：</div>
+      <div class="col-sm-2">{{clientDetail.sell_name}}</div>
+    </div>
+    <div class="line-dash" style="width:auto"></div>
+    <div class="row">
+      <div class="col-sm-4">可开票金额：{{(clientDetail.total_consume - clientDetail.freeze_money) | number: 2}} 元</div>
+      <div class="col-sm-4">已冻结金额：{{clientDetail.freeze_money | number: 2}} 元</div>
+      <div class="col-sm-4">当前账户余额：{{clientDetail.balance | number: 2}} 元</div>
+    </div>
+    <div class="line-dash" style="width:auto"></div>
+    <div class="row" style="padding-bottom: 10px;">
+      <div class="col-sm-2">需开票金额：</div>
+      <div class="col-sm-6">
+        <input type="number"
+               name="sum"
+               class="form-control"
+               ng-model="clientDetail.sum"
+               step="0.01"
+               max="9999999"
+               min="0"
+               required/>
+      </div>
+    </div>
+    <div class="modal-footer" style="margin-right:-15px;margin-left:-15px;border-top: 1px dashed #dee5e7;">
+      <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+      <button type="submit" class="btn btn-sm btn-primary">确认</button>
+    </div>
+  </form>
+</div>

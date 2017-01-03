@@ -1,0 +1,128 @@
+<h3>{{vm.client.name}}({{vm.client.account_name}})
+  <a style="font-size:16px;margin-left: 20px;" href ng-click="vm.isAddNewContact = !vm.isAddNewContact">添加新的联系记录</a>
+  <a style="font-size:16px;margin-left: 20px;" href ng-click="vm.viewContactPerson = !vm.viewContactPerson">查看联系人</a>
+</h3>
+<div class="line-dash" ng-show="vm.viewContactPerson"></div>
+<div ng-show="vm.viewContactPerson" style="width:78%;padding-left:70px;">
+  <div class="panel panel-default">
+    <div class="panel-heading">联系人信息
+      <a ui-sref="contact.manage.new" class="btn btn-link pull-right" ng-hide="inPublic || !self.rights_check['2_put_concat']" target="_blank">添加联系人</a>
+    </div>
+    <div class="panel-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>联系人</th>
+            <th>职位</th>
+            <th>手机号</th>
+            <th>电话</th>
+            <th>QQ</th>
+            <th>创建日期</th>
+            <th>负责销售</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="contact in vm.contacts">
+            <td>{{contact.contact_name}}
+              <i class="glyphicon glyphicon-flag text-muted" tooltip-placement="right" tooltip="主联系人" ng-show="contact.is_main === 1"></i>
+            </td>
+            <td>{{contact.position}}</td>
+            <td>{{contact.cellphone}}</td>
+            <td>{{contact.telphone}}</td>
+            <td>{{contact.qq}}</td>
+            <td>{{contact.created_at ? contact.created_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+            <td>{{sellersMap[contact.sale_id]}}</td>
+            <td>
+              <a class="btn btn-xs btn-default" ng-click="vm.openContactPersonDetail(contact.contact_id)">详情</a>
+              <a href class="btn btn-xs btn-danger" ng-click="vm.delContact(contact)" ng-hide="vm.isPublic || contact.is_main === 1 || !self.rights_check['2_delete_concat']">删除</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="line-dash" ng-show="vm.isAddNewContact"></div>
+<form class="new-contact" ng-show="vm.isAddNewContact" ng-submit="vm.addNewContactRecord()">
+  <div class="panel panel-default">
+    <div class="panel-heading form-inline">
+      <div class="form-group">
+        <select class="form-control" ng-model="vm.params.contact_id" ng-options="contact.contact_id as contact.contact_name for contact in vm.contacts"
+        required>
+          
+        </select>
+      </div>
+      <div class="form-group">
+        <select name="" id="" class="form-control" ng-model="vm.params.contact_mode" required>
+          <option value="1">在线</option>
+          <option value="2">电话</option>
+          <option value="3">上门</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select class="form-control" ng-model="vm.params.contact_type" required>
+          <option value="1">发展客户</option>
+          <option value="2">业务合作</option>
+          <option value="3">客户回访</option>
+          <option value="4">客户关怀</option>
+          <option value="5">服务付费</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select class="form-control" ng-model="vm.params.contact_status" required>
+          <option value="1">联系成功</option>
+          <option value="0">联系失败</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="input-group input-daterange" style="width: auto;">
+          <span class="input-group-addon">联系日期</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="vm.dateRange" options="vm.dateOpts" required/>
+        </div>
+      </div>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="form-group textarea-group">
+        <textarea rows="10" ng-model="vm.params.content" required></textarea>
+      </div>
+      <div class="new-contact-buttons">
+        <input class="btn btn-primary" type="submit" value="新增联系记录" />
+        <a class="btn btn-default" ng-click="vm.isAddNewContact = false ">取消</a>
+      </div>
+    </div>
+  </div>
+</form>
+<hr>
+<div>
+  <ul class="contact-records-list">
+    <li class="contact-record" ng-repeat="record in vm.records track by $index">
+      <div class="contact-record-inner">
+        <div class="timeline-icon">
+          <span><i class="fa fa-circle"></i></span>
+        </div>
+        <div class="contact-record-content">
+          <div class="contact-record-content-header">
+            <div class="contact-record-content-header-text">
+              <a href title="查看联系人详情" ng-click="vm.openContactPersonDetail(record.contact_id)"><span class="contact-person">{{record.contact_name}}</span></a>              - {{record.sale_name}} {{record.contact_date|fromNow}}
+              <span class="label label-primary">{{record.contact_mode | contactMode}}</span>
+              <span class="label label-primary">{{record.contact_type | contactType}}</span>
+              <span class="label" ng-class="{
+                'label-success': '' + record.contact_status === '1',
+                'label-danger': '' + record.contact_status === '0'
+              }">{{record.contact_status | contactStatus}}</span>
+            </div>
+          </div>
+          <div class="contact-record-content-body" ng-show="{{record.content.length}}">
+            <div class="contact-record-content-body-text">
+              <p ng-repeat="content in (record.content | contactTransform) track by $index">{{content}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+<div ng-show="vm.records.length === 0">
+  没有联系记录
+</div>

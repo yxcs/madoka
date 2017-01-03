@@ -1,0 +1,166 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()">
+    <i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <search-filter on-click="vm.fetchOrderData()" ng-model="vm.params.key" search-type="vm.params.key_type"></search-filter>
+  <hr>
+  <div class="filters">
+    <form class="form-inline">
+      <div class="form-group">
+        <div class="input-group">
+          <span class="input-group-addon">月份</span>
+          <input type="text"
+                 class="form-control"
+                 datepicker-popup="yyyy-MM"
+                 is-open="open"
+                 ng-click="open = true;"
+                 ng-model="vm.params.month"
+                 ng-required="true"
+                 datepicker-options="vm.dateOptionForMonth"
+                 datepicker-mode="'month'"
+                 close-text="Close"
+                 style="border-top-right-radius: 4px;border-bottom-right-radius: 4px;"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-btn" dropdown>
+            <select class="form-control"
+                    ng-model="vm.params.filter_field"
+                    ng-options="k as v for (k, v) in vm.filter_fields"
+                    style="border-top-left-radius: 4px;border-bottom-left-radius: 4px;">
+            </select>
+          </div>
+          <input type="number" class="form-control" style="width: 100px" ng-model="vm.params.min">
+          <span class="input-group-addon"> - </span>
+          <input type="number" class="form-control" style="width: 100px" ng-model="vm.params.max">
+        </div>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-default" ng-click="vm.fetchOrderData()">筛选</button>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label>所属公司</label>
+        <select class="form-control"
+                ng-model="vm.params.company"
+                ng-options="company.type as company.name for company in vm.companys"
+                ng-change="vm.updateView('company');vm.fetchOrderData()">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>归属区域</label>
+        <select class="form-control"
+                ng-model="vm.params.area"
+                ng-options="region.key as region.value for region in vm.regions"
+                ng-change="vm.fetchOrderData()">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>负责人</label>
+        <select class="form-control"
+                ng-model="vm.params.user_id"
+                ng-change="vm.updateView('user');vm.fetchOrderData()"
+                ng-options="seller.user_id as seller.name for seller in vm.sellers">
+          <option value="">{{vm.defaultUser}}</option>
+        </select>
+      </div>
+      <hr class="max-1500">
+      <div class="form-group">
+        <label>购买状况</label>
+        <select class="form-control"
+                ng-model="vm.params.buy_type"
+                ng-change="vm.fetchOrderData()"
+                ng-options="k as v for (k,v) in vm.buy_types">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>账号类型</label>
+        <select class="form-control"
+                ng-model="vm.params.account_type"
+                ng-change="vm.fetchOrderData()"
+                ng-options="k as v for (k,v) in MAP.account_type">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>引入方式</label>
+        <select class="form-control"
+                ng-model="vm.params.call_type"
+                ng-change="vm.fetchOrderData()"
+                ng-options="call_type for call_type in vm.call_types">
+          <option value="">全部</option>
+        </select>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-bordered table-striped table-hover table-text-center">
+  <thead>
+  <tr>
+    <th>序</th>
+    <th>月份</th>
+    <th>客户名称</th>
+    <th>UPYUN账号</th>
+    <th>购买状况</th>
+    <th>引入方式</th>
+    <th>所在地区</th>
+    <th>负责人</th>
+    <th>创建订单（笔）</th>
+    <th>成交订单（笔）</th>
+    <th>订单金额（元）</th>
+    <th>实付金额（元）</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="client in vm.orderData.clients">
+    <td>{{client.seq}}</td>
+    <td>{{client.month}}</td>
+    <td>{{client.client_name || "-"}}</td>
+    <td>{{client.account_name || "-"}}</td>
+    <td>{{vm.all_buy_types[client.buy_type] || "-"}}</td>
+    <td>{{client.call_type || "-"}}</td>
+    <td>{{client.location.split('-')[0] | location}}<span ng-show="client.location.split('-')[1]">-</span>{{client.location.split('-')[1]
+      | location}}
+    </td>
+    <td>{{client.user_name || "-"}}</td>
+    <td>{{client.order_count}}</td>
+    <td>{{client.deal_count}}</td>
+    <td>{{client.order_money | number: 2}}</td>
+    <td>{{client.reality_money | number: 2}}</td>
+  </tr>
+  <tr>
+    <td colspan="8">本页合计</td>
+    <td>{{vm.orderData.page_statistics.order_count}}</td>
+    <td>{{vm.orderData.page_statistics.deal_count}}</td>
+    <td>{{vm.orderData.page_statistics.order_money | number: 2}}</td>
+    <td>{{vm.orderData.page_statistics.reality_money | number: 2}}</td>
+  </tr>
+  <tr>
+    <td colspan="8">查询合计</td>
+    <td>{{vm.orderData.total_statistics.order_count}}</td>
+    <td>{{vm.orderData.total_statistics.deal_count}}</td>
+    <td>{{vm.orderData.total_statistics.order_money | number: 2}}</td>
+    <td>{{vm.orderData.total_statistics.reality_money | number: 2}}</td>
+  </tr>
+  </tbody>
+</table>
+<nav class="pull-right">
+  <pagination total-items="vm.orderData.page.count"
+              items-per-page="vm.orderData.page.limit"
+              ng-model="vm.params.page_num"
+              max-size="5"
+              class="pagination-sm"
+              boundary-links="true"
+              ng-change="vm.fetchOrderData()"
+              rotate="false"
+              first-text="首页"
+              last-text="尾页"
+              previous-text="前一页"
+              next-text="后一页">
+  </pagination>
+</nav>

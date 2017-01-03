@@ -1,0 +1,12 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>客户首次购买时间重置</h4>
+</div>
+<div class="modal-body">
+  <p>该账号首次购买时间是 <span class="text-danger">{{account.first_buy_time ? account.first_buy_time * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</span></p>
+  <p>重置操作后，原先首次购买时间数据记录将清除。客户账号再次新的购买成功时间点即为该客户首次购买时间！</p>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">重置</button>
+</div>

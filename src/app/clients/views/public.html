@@ -1,0 +1,177 @@
+<tabset>
+  <tab active="wtf[0]">
+    <tab-heading>
+      注册客户池
+    </tab-heading>
+
+    <div class="well actions">
+      <button class="btn btn-default pull-right" ng-click="refresh('registed')"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+      <search-filter on-click="fetchPublicReg()" ng-model="params.key" search-type="params.key_type"></search-filter>
+      <hr>
+      <div class="filters">
+        <form action="" class="form-inline">
+          <div class="form-group">
+            <label for="follow">重要度</label>
+            <select class="form-control" ng-model="params.important" ng-change="fetchPublicReg()">
+              <option value="">全部</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="none">未设置</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group input-daterange">
+              <div class="input-group-btn" dropdown>
+                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>{{date.dateType === 'created' ? '创建时间' : '联系时间'}} <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a ng-click="date.dateType = 'created'">创建时间</a></li>
+                  <li><a ng-click="date.dateType = 'contact'">联系时间</a></li>
+                </ul>
+              </div>
+              <input date-range-picker class="form-control date-picker" type="text" ng-model="date.daterange" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="fetchPublicReg()">筛选</button>
+              </span>
+            </div>
+            <!-- /input-group -->
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="content">
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>客户名称</th>
+            <th>云存储帐号</th>
+            <th>所在地区</th>
+            <th class="tcol-80">帐号类型</th>
+            <th class="tcol-80">帐号状态</th>
+            <th class="tcol-60">重要度</th>
+            <th class="tcol-80">原负责人</th>
+            <th>创建日期</th>
+            <th>最近联系时间</th>
+            <th>丢弃时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="registed in registedData.clients">
+            <td>{{registed.name}}</td>
+            <td>{{registed.account_name}}</td>
+            <td>{{registed.region}}</td>
+            <td>{{registed.account_type === 'personal' ? '个人' : '企业'}}</td>
+            <td>{{MAP.account_status[registed.account_status]}}</td>
+            <td>{{registed.important}}</td>
+            <td>{{registed.sell_name}}</td>
+            <td>{{registed.registered_at ? registed.registered_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+            <td>{{registed.last_contacted_at ? registed.last_contacted_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+            <td>{{registed.dropped_at ? registed.dropped_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+            <td>
+              <a ui-sref="clients.personal.detail.info({account_name: registed.account_name})" class="btn btn-xs btn-info">查看</button>
+              <a ui-sref="business.usage.detail({account_name: registed.account_name})" class="btn btn-xs btn-info">使用状况</a>
+              <a href="" class="btn btn-xs btn-danger" ng-click="pickUp(registed)" ng-show="self.rights_check['3_pick_up_client']">拣回</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <nav class="pull-right">
+      <ul class="pagination">
+        <li ng-class="{ disabled: !registedData.page.since}"><a ng-click="regPrev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+        <li ng-class="{ disabled: !registedData.page.max}"><a ng-click="regNext()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+      </ul>
+    </nav>
+
+  </tab>
+
+
+  <tab active="wtf[1]">
+    <tab-heading>
+      潜在客户池
+    </tab-heading>
+
+    <div class="well actions">
+      <button class="btn btn-default pull-right" ng-click="refresh('potential')"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+      <search-filter on-click="fetchPublicPotential()" ng-model="params.key" search-type="params.key_type" options="{range: 'potential'}"></search-filter>
+      <hr>
+      <div class="filters">
+        <form action="" class="form-inline">
+          <div class="form-group">
+            <label for="follow">跟进状态</label>
+            <select class="form-control" ng-model="params.status" ng-change="fetchPublicPotential()">
+              <option value="">全部状态</option>
+              <option value="0">未处理</option>
+              <option value="1">已联系</option>
+              <option value="2">需跟进</option>
+              <option value="3">失败</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group input-daterange">
+              <div class="input-group-btn" dropdown>
+                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>{{date.dateType === 'created' ? '创建时间' : '联系时间'}} <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a ng-click="date.dateType = 'created'">创建时间</a></li>
+                  <li><a ng-click="date.dateType = 'contact'">联系时间</a></li>
+                </ul>
+              </div>
+              <input date-range-picker class="form-control date-picker" type="text" ng-model="date.daterange" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="fetchPublicReg()">筛选</button>
+              </span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="content">
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>客户名称</th>
+            <td>所在地区</td>
+            <th>跟进状态</th>
+            <th>原负责人</th>
+            <th>创建日期</th>
+            <th>最近联系时间</th>
+            <th>丢弃时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="potential in potentialData.clients">
+            <td>{{potential.name}}</td>
+            <td>{{potential.region}}</td>
+            <td>{{potential.status}}</td>
+            <td>{{potential.sell_name}}</td>
+            <td>{{potential.created_at ? potential.created_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+            <td>{{potential.last_contacted_at ? potential.last_contacted_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+            <td>{{potential.dropped_at ? potential.dropped_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+            <td>
+              <button ng-click="go('clients.public_pot_detail', {id: potential.client_id})" class="btn btn-xs btn-info">资料</button>
+              <a href="" class="btn btn-xs btn-danger" ng-click="pickUp(potential)">拣回</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <nav class="pull-right">
+      <ul class="pagination">
+        <li ng-class="{ disabled: !potentialData.page.since}"><a ng-click="potentialPrev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+        <li ng-class="{ disabled: !potentialData.page.max}"><a ng-click="potentialNext()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+      </ul>
+    </nav>
+
+  </tab>
+</tabset>

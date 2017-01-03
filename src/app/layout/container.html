@@ -1,0 +1,12 @@
+<nav class="navbar navbar-default" role="navigation" ng-controller="navCtrl">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="" ng-click="reload()" ng-hide="self.info.strange === true">Koala <small>loves you!</small></a>
+    <a class="navbar-brand" href="" ng-click="reload()" ng-show="self.info.strange === true">UPYUN | CRM </a>
+  </div>
+  <div class="container-fluid" ng-include="'app/layout/global_nav.html'"></div>
+</nav>
+<div class="sidebar"
+     ng-class="{ 'strange': self.info.strange === true }"
+     ng-include="'app/' + $state.current.name.split('.')[0] + '/views/_secondary.html'"
+     ng-class="{'has_new': app.has_new && !app.hideNotice}"></div>
+<div class="main" ui-view="main"></div>

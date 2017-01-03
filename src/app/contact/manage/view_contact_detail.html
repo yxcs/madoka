@@ -1,0 +1,47 @@
+<div class="clearfix">
+  <button class="btn btn-primary pull-right" ng-click="editContact()">编辑</button>
+</div>
+
+<div class="content">
+  <table class="table">
+    <tr>
+      <td>客户名称：{{contact.client_name}}</td>
+      <td>所述销售：{{sellersMap[contact.sale_id]}}</td>
+    </tr>
+    <tr>
+      <td>联系人：{{contact.contact_name}}</td>
+      <td>性别：{{contact.sex === 1 ? '男' : '女'}}</td>
+    </tr>
+    <tr>
+      <td>部门：{{contact.department}}</td>
+      <td>职位：{{contact.position}}</td>
+    </tr>
+    <tr>
+      <td>电话：{{contact.telphone}}</td>
+      <td>手机：{{contact.cellphone}}</td>
+    </tr>
+    <tr>
+      <td>QQ：{{contact.qq}}</td>
+      <td>微信：{{contact.weixin}}</td>
+    </tr>
+    <tr>
+      <td>邮箱：{{contact.email}}</td>
+      <td>旺旺：{{contact.wangxin}}</td>
+    </tr>
+    <tr>
+      <td>传真：{{contact.fax}}</td>
+      <td>生日：{{contact.birthday}}</td>
+    </tr>
+    <tr>
+      <td colspan="2">备注：{{contact.remark}}</td>
+    </tr>
+    <tr>
+      <td>创建日期：{{contact.created_at ? contact.created_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+      <td>创建人：{{contact.created_by}}</td>
+    </tr>
+    <tr>
+      <td>最近修改日期：{{contact.updated_at ? contact.updated_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+      <td>修改人：{{contact.updated_by}}</td>
+    </tr>
+  </table>
+</div>

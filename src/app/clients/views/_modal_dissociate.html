@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>解除关联</h4>
+</div>
+<div class="modal-body">
+  <p>
+    您确定操作解除 「{{info.name}}」 下账号 {{info.account_curr.account_name}} 和 账号 <span ng-repeat="account in info.account_left">「{{account.account_name}} 」,  </span> 关联关系！
+  </p>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">保存</button>
+</div>

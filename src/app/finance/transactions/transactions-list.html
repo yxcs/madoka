@@ -1,0 +1,168 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()">
+    <i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <div class="form-inline row">
+    <div class="col-md-5">
+      <search-filter on-click="vm.fetchTrans()" ng-model="vm.params.value" search-type="vm.params.key"></search-filter>
+    </div>
+    <div class="col-md-5">
+      <div class="input-group input-daterange col-md-5">
+        <span class="input-group-addon">
+          时间区间
+        </span>
+        <input date-range-picker
+               class="form-control date-picker"
+               type="text"
+               ng-model="vm.dateRange"
+               ng-change="vm.fetchTrans()"/>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="filters">
+    <form class="form-inline">
+      <div class="form-group">
+        <label>所属公司</label>
+        <select class="form-control"
+                ng-model="vm.params.company"
+                ng-options="company.type as company.name for company in vm.companys">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>归属区域</label>
+        <select class="form-control"
+                ng-model="vm.params.region_id"
+                ng-options="region.key as region.value for region in vm.regions"
+                ng-change="vm.fetchTrans()">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>负责人</label>
+        <select class="form-control"
+                ng-model="vm.params.user_id"
+                ng-options="seller.user_id as seller.name for seller in vm.sellers">
+          <option value="">{{vm.defaultUserLabel}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>账号类型</label>
+        <select class="form-control"
+                ng-model="vm.params.account_type"
+                ng-change="vm.fetchTrans()"
+                ng-options="k as v for (k,v) in MAP.account_type">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <hr/>
+      <div class="from-group">
+        <label>交易类型</label>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.in_out_type" ng-value="'RECHARGE'" ng-change="vm.fetchTrans()">
+            <span class="fa fa-circle"></span>账户加款
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.in_out_type" ng-value="'DAY_BILL'" ng-change="vm.fetchTrans()">
+            <span class="fa fa-circle"></span>日账单扣款
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.in_out_type" ng-value="'MONTH_BILL'" ng-change="vm.fetchTrans()">
+            <span class="fa fa-circle"></span>月账单扣款
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.in_out_type" ng-value="'RESOURCE'" ng-change="vm.fetchTrans()">
+            <span class="fa fa-circle"></span>资源购买
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.in_out_type" ng-value="'CASH'" ng-change="vm.fetchTrans()">
+            <span class="fa fa-circle"></span>余额提现
+          </label>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="actionbar clearfix form-group pull-right">
+      <div class="pull-right">
+        <a class="btn btn-primary" ui-sref="finance.details.new" ng-show="self.rights_check['8_charge_add']">
+          <i class="fa fa-plus"></i> 充值加款
+        </a>
+      </div>
+    </div>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th>时间</th>
+        <th>客户名称</th>
+        <th>云存储账号</th>
+        <th>负责人</th>
+        <th>交易类型</th>
+        <th>收入（元）</th>
+        <th>支出（元）</th>
+        <th>余额（元）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat-start="transData in vm.transData.tran_logs"
+          ng-click="transData.in_out_type === 'RECHARGE' ? vm.changeTableState($index) : false"
+          ng-class="{'bg-grey': !($index % 2), pointer: transData.in_out_type === 'RECHARGE'}">
+        <td>
+          <span ng-show="transData.in_out_type === 'RECHARGE'">
+            <i class="fa table-toggle" ng-class="{'fa-chevron-right': !vm.currentState.tableState[$index], 'fa-chevron-down': vm.currentState.tableState[$index]}">
+            </i>
+          </span>
+          {{transData.tran_create_time * 1000 | date: 'yyyy-MM-dd HH:mm'}}
+        </td>
+        <td>{{transData.client_name}}</td>
+        <td>{{transData.account_name}}</td>
+        <td>{{transData.user_name}}</td>
+        <td>{{vm.tranTypes[transData.in_out_type]}}</td>
+        <td>{{transData.in_amount | number: 2}}</td>
+        <td>{{transData.out_amount | number: 2}}</td>
+        <td>{{transData.balance | number: 2}}</td>
+      </tr>
+      <tr ng-repeat-end ng-show="vm.currentState.tableState[$index] && transData.in_out_type === 'RECHARGE'">
+        <td colspan="8" class="table-row-detail">
+          <ul class="list-inline">
+            <li><strong>打款方式：</strong>{{transData.extra.payment_method | paymentMethod}}</li>
+            <li ng-show="transData.extra.extra.trade_no"><strong>支付宝单号：</strong>{{transData.extra.extra.trade_no}}</li>
+            <li><strong>充值金额：</strong>{{transData.extra.pay | number: 2}} 元</li>
+            <li><strong>返赠金额：</strong>{{transData.extra.bonus | number: 2}} 元</li>
+            <li ng-show="transData.extra.bonus !== 0"><strong>加款折扣率：</strong>{{transData.extra.pay / (transData.extra.pay + transData.extra.bonus) | number: 4}}</li>
+            <li ng-show="transData.extra.bonus === 0"><strong>加款折扣率：</strong>1</li>
+          </ul>
+          <div><strong>备注：</strong>{{transData.extra.remark}}<br/></div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <nav class="pull-right">
+      <ul class="pagination">
+        <li ng-class="{ disabled: !vm.transData.page.since}">
+          <a ng-click="vm.prev()"><span>&laquo;前一页</span>
+          </a>
+        </li>
+        <li ng-class="{ disabled: !vm.transData.page.max}">
+          <a ng-click="vm.next()"><span>后一页&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

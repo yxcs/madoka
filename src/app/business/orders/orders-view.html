@@ -1,0 +1,73 @@
+<div class="modal-header clearfix">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4 class="pull-left">订单详情 <span class="bg-info">{{MAP.order_type[order.order_type]}}</span></h4>
+</div>
+<div class="modal-body">
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td><strong>购买客户：</strong>{{order.client_name}}</td>
+        <td><strong>云存储帐号：</strong>{{order.account_name}}</td>
+      </tr>
+      <tr>
+        <td><strong>订单编号：</strong>{{order.order_number}}</td>
+        <td><strong>下单时间：</strong>{{order.order_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+      </tr>
+      <tr>
+        <td><strong>订单状态：</strong>{{MAP.order_status[order.status]}}</td>
+        <td>
+          <div ng-show="order.status === 'CANCEL'"><strong>取消时间：</strong>{{order.update_time ? order.update_time * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
+          <div ng-show="order.status === 'REFUND'"><strong>退款时间：</strong>{{order.update_time ? order.update_time * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</div></td>
+      </tr>
+      <tr>
+        <td><strong>支付方式：</strong>{{MAP.pay_type[order.pay_type]}}</td>
+        <td>
+          <div><strong>付款时间：</strong>{{order.completed_at ? order.completed_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>备注：</strong>{{order.remarks}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td ng-show="order.content.storage"><strong>存储空间：</strong>{{order.content.storage}} GB</td>
+        <td ng-show="order.content.storage_period"><strong>存储有效期：</strong>{{order.content.storage_period}} 天</td>
+      </tr>
+      <tr ng-show="order.storage_paid">
+        <td colspan="2"><strong>存储费用：</strong>{{order.storage_paid}}</td>
+      </tr>
+      <tr ng-show="order.content.transfer">
+        <td colspan="2"><strong>流量大小：</strong>{{order.content.transfer}} GB</td>
+      </tr>
+      <tr ng-show="order.transfer_paid">
+        <td colspan="2"><strong>流量费用：</strong>{{order.transfer_paid}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+
+  <table class="table table-bordered" ng-show="order.content.https_period">
+    <tbody>
+      <tr>
+        <td><strong>HTTPS: </strong>{{order.content.https_period}} 年</td>
+        <td><strong>HTTPS 费用： </strong>{{order.https_paid}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td><strong>订单金额：</strong>{{order.order_paid}}</td>
+        <td><strong>实际付款：</strong>{{order.actual_paid}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">关闭</button>
+</div>

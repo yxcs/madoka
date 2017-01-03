@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>成员管理</h4>
+</div>
+<div class="modal-body">
+  <div class="btn-group">
+      <label class="btn btn-default" ng-model="added" btn-radio="'Y'" ng-click="getMembers('Y')">已添加</label>
+      <label class="btn btn-default" ng-model="added" btn-radio="'N'" ng-click="getMembers('N')">未添加</label>
+  </div>
+  <hr>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th>邮箱</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="member in members">
+        <td>{{member.name}}</td>
+        <td>{{member.email}}</td>
+        <td>{{member.status === 1 && '启用' || '停用'}}</td>
+        <td>
+          <a class="btn btn-xs btn-primary" ng-show="added === 'Y'" ng-click="remove(member.user_id)">移除</a>
+          <a class="btn btn-xs btn-primary" ng-show="added === 'N'" ng-click="add(member.user_id)">添加</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">关闭</button>
+</div>

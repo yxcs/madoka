@@ -1,0 +1,54 @@
+<div class="modal-header clearfix">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4 class="pull-left">订单退款</h4>
+</div>
+<div class="modal-body clearfix">
+  <p class="alert alert-danger">
+    请确定财务已给客户退款成功，操作订单退款。操作订单退款后，客户该订单购买服务将扣回。
+  </p>
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td><strong>购买客户：</strong>{{order.client_name}}</td>
+        <td><strong>云存储帐号：</strong>{{order.account_name}}</td>
+      </tr>
+      <tr>
+        <td><strong>订单编号：</strong>{{order.order_number}}</td>
+        <td><strong>下单时间：</strong>{{order.order_time * 1000 | date: 'yyyy-MM-dd'}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td ng-show="order.content.storage"><strong>存储空间：</strong>{{order.content.storage}} GB</td>
+        <td ng-show="order.content.storage_period"><strong>存储有效期：</strong>{{order.content.storage_period}} 天</td>
+      </tr>
+      <tr ng-show="order.content.transfer">
+        <td colspan="2"><strong>流量大小：</strong>{{order.content.transfer}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+
+  <table class="table table-bordered" ng-show="order.content.https_period">
+    <tbody>
+      <tr>
+        <td><strong>HTTPS: </strong>{{order.content.https_period}} 年</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">备注</label>
+    <div class="col-sm-8">
+      <textarea name="" id="" cols="30" rows="5" class="form-control" ng-model="order.remark"></textarea>
+    </div>
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-danger" ng-click="submit()">确定退款</button>
+  <button class="btn btn-sm btn-link" ng-click="skip()">关闭</button>
+</div>

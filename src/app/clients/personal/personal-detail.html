@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs">
+  <li ui-sref=".info" ui-sref-active="active"><a href>基本信息</a></li>
+  <li ui-sref=".contact" ui-sref-active="active"><a href>联系记录</a></li>
+  <li ui-sref=".usage" ui-sref-active="active"><a href>使用情况</a></li>
+  <li ui-sref=".recharge" ui-sref-active="active"><a href>交易记录</a></li>
+  <li ui-sref=".log" ui-sref-active="active" ng-if="self.rights_check['0_operation_log']"><a href>操作日志</a></li>
+</ul>
+<ui-view></ui-view>

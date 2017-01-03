@@ -1,0 +1,86 @@
+<div class="panel">
+  <div class="panel-body">
+    <h4>当前待审核申请：{{vm.init_verifies_count}} 条</h4>
+  </div>
+</div>
+<tabset justified="true" style="margin-bottom:30px;">
+  <tab heading="待审核" select="vm.params.verify_status = 'wait';vm.params.page_size = 10"></tab>
+  <tab heading="审核拒绝" select="vm.params.verify_status = 'refuse';vm.params.page_size = 10"></tab>
+</tabset>
+<div class="identity-list" ng-class="{'maximized': vm.maxSelect > -1}">
+  <div class="panel card" ng-repeat="item in vm.verifies" ng-class="{'maximized-card': $index === vm.maxSelect}">
+    <div class="panel-heading">
+      <div class="actionbar clearfix form-group pull-right" style="margin-left:30px">
+        <div class="pull-right">
+          <a href ng-click="vm.maxSelect === $index ? vm.maxSelect = -1 : vm.maxSelect = $index">
+            <i class="fa fa-plus" ng-class="{'fa-plus': vm.maxSelect !== $index,'fa-minus': vm.maxSelect === $index}" style="font-size:20px;color:#5b5b5b;"></i>
+          </a>
+        </div>
+      </div>
+      <div class="alert alert-danger" style="margin-bottom: 0px;text-align:center;overflow:hidden;" ng-if="item.conflicts.length > 0">
+        <div ng-repeat="conflict in item.conflicts">
+          <p style="margin:0">该帐号的
+            <span>
+              <span ng-show="item.client_type === 'company'">营业执照注册号</span>
+              <span ng-show="item.client_type === 'person'">身份证号</span>
+            </span>
+            已被认证使用！认证客户信息：{{conflict.client_name}}({{conflict.account_name}})
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="clearfix" ng-if="vm.params.verify_status === 'wait'">
+        <span class="pull-right" style="margin: 0;color: #9e9e9e;">{{item.created_at | fromNow}}</span>
+      </div>
+      <div>
+        <dl class="dl-horizontal">
+          <dt style="font-weight:normal;">云存储账号</dt>
+          <dd>{{item.account_name}}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+          <dt style="font-weight:normal;">账号状态</dt>
+          <dd>{{MAP.account_status[item.status]}}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+          <dt style="font-weight:normal;" ng-show="item.client_type === 'company'">企业名称</dt>
+          <dt style="font-weight:normal;" ng-show="item.client_type === 'person'">个人名称</dt>
+          <dd>{{item.client_name}}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+          <dt style="font-weight:normal;" ng-show="item.client_type === 'company'">营业执照注册号</dt>
+          <dt style="font-weight:normal;" ng-show="item.client_type === 'person'">身份证号</dt>
+          <dd>{{item.papers_id}}</dd>
+        </dl>
+        <dl class="dl-horizontal" ng-show="item.client_type === 'company'">
+          <dt style="font-weight:normal;">组织机构代码</dt>
+          <dd>{{item.extra.org_code}}</dd>
+        </dl>
+        <dl class="dl-horizontal" ng-show="vm.params.verify_status === 'refuse'">
+          <dt style="font-weight:normal;">处理时间</dt>
+          <dd>{{item.updated_at * 1000| date: 'yyyy-MM-dd HH:mm:ss'}}</dd>
+        </dl>
+        <dl class="dl-horizontal" ng-show="vm.params.verify_status === 'refuse'">
+          <dt style="font-weight:normal;">拒绝原因</dt>
+          <dd>{{item.reject_reason}}</dd>
+        </dl>
+      </div>
+      <div style="margin-left:-18px;margin-right:-18px;margin-bottom:20px;">
+        <div ng-if="item.extra.img_1">
+          <img width="100%" ng-click="vm.openLightboxModal(item.extra.img_1)" ng-src="{{item.extra.img_1}}"></img>
+        </div>
+        <div ng-if="item.extra.img_2" style="margin-top:10px;">
+          <img width="100%" ng-click="vm.openLightboxModal(item.extra.img_2)" ng-src="{{item.extra.img_2}}"></img>
+        </div>
+      </div>
+      <div ng-show="item.verify_status !== 'refuse'">
+        <button class="btn btn-default pull-left btn-sm" ng-click="vm.reject(item.verify_id)">审核不通过</button>
+        <button class="btn btn-success pull-right btn-sm" ng-click="vm.pass(item.verify_id)">审核通过</button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button class="btn btn-block btn-default" type="button" ng-click="vm.more()" ng-show="vm.page.total_pages > 1">加载更多</button>
+    <button class="btn btn-block btn-default" type="button" ng-show="vm.page.total_pages === 1">没有更多</button>
+  </div>
+</div>

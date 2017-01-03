@@ -1,0 +1,81 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <div class="form-inline row">
+    <div class="col-md-5">
+      <search-filter on-click="getConflicts()" ng-model="params.key" search-type="params.key_type" options="{range: 'none'}" label="请输入云储存账号"></search-filter>
+    </div>
+    <div class="col-md-5">
+      <div class="btn-group pull-left">
+        <label class="btn btn-default" ng-model="params.client_type" btn-radio="'registed'" ng-click="params.client_type = 'registed'; getConflicts()">注册客户信息冲突</label>
+        <label class="btn btn-default" ng-model="params.client_type" btn-radio="'potential'" ng-click="params.client_type = 'potential'; getConflicts()">潜在客户信息冲突</label>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <form class="form-inline" role="form">
+    <div class="form-group">
+      <label for="follow">负责销售</label>
+      <select class="form-control" ng-model="params.user_id" ng-options="seller.user_id as seller.name for seller in sellers" ng-change="getConflicts()">
+        <option value="">当前用户</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <div class="input-group input-daterange">
+        <span class="input-group-addon">冲突时间</span>
+        <input date-range-picker class="form-control date-picker" type="text" ng-model="daterange" />
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="getConflicts()">筛选</button>
+          </span>
+      </div>
+      <!-- /input-group -->
+    </div>
+
+  </form>
+</div>
+
+<div class="content">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>帐号类型</th>
+        <th>云存储帐号</th>
+        <th>客户名称</th>
+        <th>所在地区</th>
+        <th>网站地址</th>
+        <th>销售ID</th>
+        <th>负责人</th>
+        <th>冲突日期</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat-start="conflict in conflictsData.conflicts">
+        <td colspan="10"></td>
+      </tr>
+      <tr class="active" ng-class="{ warning: $index === 0}" ng-repeat="account in conflict.data">
+        <td>{{account.is_company ? '企业' : '个人'}}</td>
+        <td>{{account.account_name}}</td>
+        <td>{{account.name}}</td>
+        <td>{{MAP.region[account.region_id]}}</td>
+        <td>{{account.web_site}}</td>
+        <td>{{sellersMap[account.sell_id]}}</td>
+        <td>{{sellersMap[account.owner_id]}}</td>
+        <td class="active" ng-show="$index === 0" rowspan="{{$index === 0 ? conflict.data.length : 1}}">{{conflict.created_at * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        <td class="active" ng-show="$index === 0" rowspan="{{$index === 0 ? conflict.data.length : 1}}">
+          <a class="btn btn-xs btn-info" target="_blank" href="/clients/conflict/{{conflict.conflict_id}}/">查看</a>
+          <a class="btn btn-xs btn-primary" ng-show="self.rights_check['4_conflict_allot']" ng-click="dispatch(conflict.conflict_id)">分配</a>
+        </td>
+      </tr>
+      <tr ng-repeat-end>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav class="pull-right">
+    <ul class="pagination">
+      <li ng-class="{ disabled: !conflictsData.page.max}"><a ng-click="prev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+      <li ng-class="{ disabled: !conflictsData.page.since}"><a ng-click="next()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+    </ul>
+  </nav>
+</div>

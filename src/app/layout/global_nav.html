@@ -1,0 +1,141 @@
+<div class="collapse navbar-collapse">
+  <ul class="nav navbar-nav">
+    <li class="" ng-class="{ active: $state.includes('clients') }" dropdown ng-if="self.rights_check['0_client_manage']">
+      <a href="#" class="dropdown-toggle" dropdown-toggle>客户管理 <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a ui-sref="clients.personal">我的客户</a>
+        </li>
+        <li ng-show="self.rights_check['0_latent_client']">
+          <a ui-sref="clients.potential">潜在客户</a>
+        </li>
+        <li ng-show="self.rights_check['0_register_client']">
+          <a ui-sref="clients.registed">注册客户</a>
+        </li>
+        <li ng-show="self.rights_check['0_public_client']">
+          <a ui-sref="clients.public">公海客户</a>
+        </li>
+        <li ng-show="self.rights_check['0_conflict_client']">
+          <a ui-sref="clients.conflict">冲突客户</a>
+        </li>
+        <li ng-show="self.rights_check['0_drop_client']">
+          <a ui-sref="clients.discarded">丢弃客户</a>
+        </li>
+        <li ng-show="self.rights_check['0_identity_review']">
+          <a ui-sref="clients.identity">身份审核</a>
+        </li>
+      </ul>
+    </li>
+    <li class="" ng-class="{ active: $state.includes('contact') }" dropdown ng-if="self.rights_check['0_client_concat']">
+      <a href="#" class="dropdown-toggle" dropdown-toggle>客户联系 <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-show="self.rights_check['0_concat_log']">
+          <a ui-sref="contact.records">联系记录</a>
+        </li>
+        <li ng-show="self.rights_check['0_concat_manage']">
+          <a ui-sref="contact.manage">联系人管理</a>
+        </li>
+      </ul>
+    </li>
+    <li class="" ng-class="{ active: $state.includes('business') }" dropdown ng-if="self.rights_check['0_business_manage']">
+      <a href="#" class="dropdown-toggle" dropdown-toggle>业务管理 <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-show="self.rights_check['0_service_use']">
+          <a ui-sref="business.usage">服务使用</a>
+        </li>
+        <li ng-show="self.rights_check['0_order_manage']">
+          <a ui-sref="business.orders">订单管理</a>
+        </li>
+        <li ng-show="self.rights_check['0_invoice_manage']">
+          <a ui-sref="business.invoices">发票管理</a>
+        </li>
+        <li ng-show="self.rights_check['0_charge_confs']">
+          <a ui-sref="business.charges">计费管理</a>
+        </li>
+      </ul>
+    </li>
+    <li class="" ng-class="{ active: $state.includes('datahub') }" dropdown ng-if="self.rights_check['0_data_hub']">
+      <a href="#" class="dropdown-toggle" dropdown-toggle>数据中心 <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-show="self.rights_check['0_client_order']">
+          <a ui-sref="datahub.orderdata">客户购买</a>
+        </li>
+        <li ng-show="self.rights_check['0_client_data']">
+          <a ui-sref="datahub.clientdata">客户数据</a>
+        </li>
+      </ul>
+    </li>
+    <li ng-class="{ active: $state.includes('finance') }" dropdown ng-if="self.rights_check['0_finance_manage']">
+      <a href="#" class="dropdown-toggle" dropdown-toggle>财务管理 <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-show="self.rights_check['0_charge_detail']">
+          <a ui-sref="finance.details">加款管理（新）</a>
+        </li>
+        <li ng-show="self.rights_check['0_service_income']">
+          <a ui-sref="finance.income">服务收入</a>
+        </li>
+        <li ng-show="self.rights_check['0_debt_manage']">
+          <a ui-sref="finance.debts">欠费管理</a>
+        </li>
+        <li ng-show="self.rights_check['0_income']">
+          <a ui-sref="finance.bills">账单管理</a>
+        </li>
+        <li ng-show="self.rights_check['0_client_transaction']">
+          <a ui-sref="finance.transactions">客户收支</a>
+        </li>
+        <li ng-show="self.rights_check['0_refund_manage']">
+          <a ui-sref="finance.refunds">提现管理</a>
+        </li>
+        <li ng-show="self.rights_check['0_order_income']">
+          <a ui-sref="finance.orderin">订单收入</a>
+        </li>
+      </ul>
+    </li>
+    <li class="" ng-class="{ active: $state.includes('admin') }" dropdown ng-if="self.rights_check['0_system_manage']">
+      <a href="#" class="dropdown-toggle" dropdown-toggle>系统管理 <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-class="{ 'active': $state.current.name.indexOf('roles') >= 0}" ng-show="self.rights_check['0_role_manage']">
+          <a ui-sref="admin.roles">角色管理</a>
+        </li>
+        <li ng-class="{ 'active': $state.current.name.indexOf('staffs') >= 0}" ng-show="self.rights_check['0_crm_user']">
+          <a ui-sref="admin.staffs">员工管理</a>
+        </li>
+        <li ng-class="{ 'active': $state.current.name.indexOf('log') >= 0}" ng-show="self.rights_check['0_operation_log']">
+          <a ui-sref="admin.log">操作日志</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="" dropdown>
+      <a href="#" class="dropdown-toggle" dropdown-toggle>{{self.info.name}} <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a ui-sref="global.settings">个人设置</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" ng-click="referral()">Referral</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" ng-click="logout()">退出</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <form class="navbar-form navbar-right form-inline" autocomplete="off" ng-submit="swtfyw(search.keyword)" role="search" >
+    <div class="input-group">
+      <input type="text" class="form-control global-search" ng-model="search.keyword" ng-change="searchThrottle(search.keyword)">
+      <div dropdown is-open="((searchResult.private.length + searchResult.public.length) > 0) && !closeTip">
+        <ul class="dropdown-menu" role="menu" style="right:auto;left:auto;top:31px;">
+          <li role="menuitem" ng-repeat="client in searchResult.private | orderBy: orderClient"><a href="#" ng-click="goDetail(client)">私海：{{client.client_name}} <span>（{{client.account_name || '-'}}）</span></a></li>
+          <li role="menuitem" class="divider" ng-show="searchResult.private.length > 0"></li>
+          <li role="menuitem" ng-repeat="client in searchResult.public | orderBy: orderClient"><a href="#" ng-click="goDetail(client)">公海：{{client.client_name}}<span>（{{client.account_name || '-'}}）</span></a></li>
+          <li role="menuitem" class="text-center">查询结果共<strong class="text-danger">{{searchResult.total}}</strong>条</li>
+        </ul>
+      </div>
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit" ng-disabled="isDisabled"><i class="fa fa-search"></i></button>
+      </span>
+    </div>
+  </form>
+</div>

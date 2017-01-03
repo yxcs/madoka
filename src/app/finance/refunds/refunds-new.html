@@ -1,0 +1,95 @@
+<div class="panel panel-default">
+  <div class="panel-heading">账户提现申请</div>
+  <div class="panel-body">
+    <form  ng-submit="vm.postRefunds()" class="form-horizontal form-validate" name="refundApply">
+      <div class="form-group">
+        <p class="col-md-12 text-warning">
+          提现申请处理说明：
+          <br/>
+          1.正常情况下，所有服务停止使用的客户账号才能申请提现；
+          <br/>
+          2.特殊情况下，服务中的客户账号申请提现，账户必须预留金额用于服务结算。
+          <br/>
+          3.提现处理完成后，若充值订单存在“系统赠送金额”将清零。
+          <br/>
+          <br/>
+          提现申请打款规范：（原进原出）
+          <br/>
+          1.客户是通过支付宝充值的，提现处理就打款到之前充值的支付宝账号。
+          <br/>
+          2.客户是通过公司银行账户（对公账户）汇款的，提现处理就打款到之前对公账户。
+        </p>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">云存储账号</label>
+
+        <div class="col-md-6">
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   name="account_name"
+                   ng-model="vm.params.account_name"
+                   ng-disabled="true"/>
+              <span class="input-group-btn">
+                <button class="btn btn-primary" ng-click="vm.searchClient()" type="button">查询</button>
+              </span>
+          </div>
+        </div>
+      </div>
+      <div class="line-dash" ng-show="vm.params.account_name"></div>
+      <div class="form-group" ng-show="vm.params.account_name">
+        <label class="control-label col-md-2">客户名称</label>
+
+        <div class="col-md-2"><p class="form-control-static">{{vm.client.name}}</p></div>
+        <label class="control-label col-md-2">负责人</label>
+
+        <div class="col-md-2"><p class="form-control-static">{{vm.client.sell_name}}</p></div>
+      </div>
+      <div class="line-dash" ng-show="vm.params.account_name"></div>
+      <div class="form-group" ng-show="vm.params.account_name">
+        <label class="control-label col-md-2">当前账户余额</label>
+
+        <div class="col-md-2"><p class="form-control-static">{{vm.client.balance | number: 2}} 元</p></div>
+        <label class="control-label col-md-2">可提现金额</label>
+
+        <div class="col-md-2"><p class="form-control-static">{{vm.client.refundable | number: 2}} 元</p></div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">提现金额</label>
+
+        <div class="col-md-6">
+          <input type="number"
+                 name="refund_amount"
+                 class="form-control"
+                 ng-model="vm.params.refund_amount"
+                 min="0"
+                 max="{{vm.client.refundable}}"
+                 step="0.01"
+                 required/>
+          <span class="text-danger"
+                ng-show="vm.validateInput('refund_amount', 'required')">请输入提现金额</span>
+        </div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">提现备注</label>
+        <div class="col-md-6">
+          <textarea class="form-control"
+                    rows="3"
+                    placeholder="请填写客户需提现到账的账户信息，或其它备注说明"
+                    ng-model="vm.params.remark"
+                    required></textarea>
+        </div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <div class="col-md-4 col-md-offset-2">
+          <a class="btn btn-default" ui-sref="finance.refunds">取消</a>
+          <button type='submit' class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

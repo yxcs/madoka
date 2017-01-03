@@ -1,0 +1,111 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <div class="form-inline row">
+    <div class="col-md-5">
+      <search-filter on-click="vm.fetchListData()" ng-model="vm.params.key" search-type="vm.params.key_type"></search-filter>
+    </div>
+    <div class="col-md-5">
+      <div class="form-group">
+        <lable>注册日期</lable>
+        <div class="input-group">
+          <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" is-open="openedS" ng-click="openedS = true; openedE = false"
+          ng-model="vm.dateRange.dateStart     " ng-required="true" close-text="Close" />
+          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+        </div>
+        <div class="input-group">
+          <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" is-open="openedE" ng-click="openedE = true; openedS = false"
+          ng-model="vm.dateRange.dateEnd" ng-required="true" close-text="Close" />
+          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+        </div>
+        <button type="button" class="btn btn-default" ng-click="vm.fetchListData()">筛选</button>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="follow">负责销售</label>
+        <select class="form-control" ng-model="vm.params.user_id" ng-change="vm.fetchListData()" ng-options="seller.user_id as seller.name for seller in sellers">
+          <option value="">请选择销售</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="follow">类型 </label>
+        <select class="form-control" ng-model="vm.params.account_type" ng-change="vm.fetchListData()" ng-options="accountType.key as accountType.value for accountType in vm.accountType">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="follow">状态 </label>
+        <select class="form-control" ng-model="vm.params.status" ng-change="vm.fetchListData()" ng-options="k as v for (k,v) in vm.accountStatus">
+          <option value="">全部</option>
+          <option value="company">个人</option>
+          <option value="personal">公司</option>
+          <option value="none">未设置</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="follow">重要程度 </label>
+        <select class="form-control" ng-change="vm.fetchListData()" ng-model="vm.params.important">
+          <option value="">全部</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+          <option value="none">未设置</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="follow">购买意愿 </label>
+        <select class="form-control" ng-change="vm.fetchListData()" ng-model="vm.params.willing">
+          <option value="">全部</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+          <option value="none">未设置</option>
+        </select>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>注册日期</th>
+          <th>客户名称（帐号）</th>
+          <th>类型</th>
+          <th>状态</th>
+          <th>重要程度</th>
+          <th>购买意愿</th>
+          <th>负责人</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="client in vm.clients">
+          <td width="10%">{{client.created_at * 1000 | date: 'yyyy-MM-dd HH:mm'}}</td>
+          <td>{{client.client_name}}({{client.account_name}})</td>
+          <td width="10%">{{client.account_type | accountType}}</td>
+          <td width="10%">{{client.status | accountStatus}}</td>
+          <td width="10%">{{client.important}}</td>
+          <td width="10%">{{client.willing}}</td>
+          <td width="10%">{{client.user_name}}</td>
+          <td width="10%">
+            <button class="btn btn-xs btn-primary" ui-sref="clients.personal.detail.info({account_name: client.account_name})">查看</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <nav class="pull-right">
+      <pagination total-items="vm.totalItems" items-per-page="vm.page.page_size" ng-model="vm.page_num_to_go" max-size="5" class="pagination-sm"
+      boundary-links="true" rotate="false" first-text="首页" last-text="尾页" previous-text="前一页" next-text="后一页">
+      </pagination>
+    </nav>
+  </div>
+</div>

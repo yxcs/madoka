@@ -1,0 +1,46 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>客户查找</h4>
+</div>
+<div class="modal-body">
+  <form ng-submit="fetchClients()" class="form-horizontal">
+    <div class="form-group col-sm-4">
+      <select class="form-control" ng-model="params.key_type">
+        <option value="">选择搜索类型</option>
+        <option value="username">云存储帐号</option>
+        <option value="name">客户名称</option>
+        <option value="bucket">空间名</option>
+        <option value="domain">网站域名</option>
+        <option value="contact">联系人</option>
+        <option value="cellphone">手机</option>
+        <option value="email">邮箱</option>
+        <option value="qq">QQ</option>
+      </select>
+    </div>
+    <div class="form-group col-sm-4">
+      <input type="text" class="form-control" placeholder="" ng-model="params.key">
+    </div>
+    <input type="submit" class="btn btn-default" value="查询">
+  </form>
+
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>客户名称</th>
+      <th>云存储帐号</th>
+      <th>负责销售</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="client in clients.clients">
+      <td>{{client.name}}</td>
+      <td>{{client.account_name}}</td>
+      <td>{{client.sell_name}}</td>
+      <td>
+        <a class="btn-link" ng-click="assign(client)" style="cursor: pointer;">指定</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

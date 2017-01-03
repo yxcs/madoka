@@ -1,0 +1,11 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="vm.skip()">&times;</button>
+  <h4>删除提现申请</h4>
+</div>
+<div class="modal-body">
+  确定删除编号为 <strong class="text-danger">{{vm.id}}</strong> 提现申请？
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="vm.skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="vm.submit()">确定</button>
+</div>

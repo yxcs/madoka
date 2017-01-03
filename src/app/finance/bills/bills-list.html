@@ -1,0 +1,169 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <div class="form-inline row">
+    <div class="col-md-5">
+      <search-filter on-click="vm.fetchBills()" ng-model="vm.params.value" search-type="vm.params.key" label="按账号、账单编号搜索" options="{extraKeyType: ['bill_id']}"></search-filter>
+    </div>
+    <div class="col-md-5">
+      <div class="form-group">
+        <div class="input-group input-daterange" style="width: 280px;" ng-show="vm.params.bill_type==='DAILY'">
+          <span class="input-group-addon">
+            <i class="fa fa-calendar"></i>
+          </span>
+          <input date-range-picker
+                 class="form-control date-picker"
+                 type="text"
+                 ng-model="vm.dateRange"
+                 options="vm.dateOptionForDay"
+                 ng-change="vm.fetchBills()"/>
+        </div>
+        <div class="input-group input-daterange" style="width: 280px;" ng-show="vm.params.bill_type==='MONTHLY'">
+          <span class="input-group-addon">
+            <i class="fa fa-calendar"></i>
+          </span>
+           <input type="text" class="form-control" datepicker-popup="yyyy-MM" is-open="open"
+                 ng-click="open = true;" ng-model="vm.dateMonth" datepicker-options="{minMode: 'month'}" datepicker-mode="'month'" close-text="关闭" clear-text="清除" current-text="当前月份" ng-change="vm.fetchBills()"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="filters">
+    <form class="form-inline">
+      <div class="form-group">
+        <label>所属公司</label>
+        <select class="form-control"
+                ng-model="vm.params.company"
+                ng-options="company.type as company.name for company in vm.companys">
+          <option value="">全部</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>归属区域</label>
+        <select class="form-control" ng-model="vm.params.region_id"
+                ng-options="k as v for (k,v) in MAP.region" ng-change="vm.fetchBills()">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>负责人</label>
+        <select class="form-control"
+                ng-model="vm.params.user_id"
+                ng-options="seller.user_id as seller.name for seller in vm.sellers">
+          <option value="">{{vm.defaultUserLabel}}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>账号类型</label>
+        <select class="form-control"
+                ng-model="vm.params.account_type"
+                ng-change="vm.fetchBills()"
+                ng-options="k as v for (k,v) in MAP.account_type">
+          <option value="">全部</option>
+        </select>
+      </div>
+
+      <div class="form-group" ng-show="vm.params.bill_type==='MONTHLY'">
+        <label>月账单扣款</label>
+        <select class="form-control"
+                ng-model="vm.deductState"
+                ng-change="vm.fetchBills()">
+          <option value="">全部</option>
+          <option value="0">无需扣款</option>
+          <option value="1">已扣款</option>
+          <option value="-1">未扣款</option>
+        </select>
+      </div>
+    </form>
+  </div>
+</div>
+
+<tabset>
+  <tab select="vm.params.bill_type='DAILY';vm.fetchBills()" active="vm.tabactive[0]">
+    <tab-heading>
+      日账单
+    </tab-heading>
+  </tab>
+  <tab select="vm.params.bill_type='MONTHLY';vm.fetchBills()" active="vm.tabactive[1]">
+    <tab-heading>
+      月账单
+    </tab-heading>
+  </tab>
+</tabset>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>账单编号</th>
+          <th>客户名称</th>
+          <th>云存储账号</th>
+          <th>负责人</th>
+          <th>CDN 数据使用费用（元）</th>
+          <th>CDN 动态请求费用（元）</th>
+          <th>存储费用（元）</th>
+          <th>HTTPS 服务费用（元）</th>
+          <th>合计（元）</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat-start="bill in vm.billdata.list"
+            class="pointer"
+            ng-class="{'bg-grey': !($index % 2)}"
+            ng-click="vm.currentState.tableState[$index] = !vm.currentState.tableState[$index]">
+          <td>
+            <i class="fa table-toggle" ng-class="{'fa-chevron-right': !vm.currentState.tableState[$index], 'fa-chevron-down': vm.currentState.tableState[$index]}"></i>
+            {{bill.bill_id}}
+          </td>
+          <td>{{bill.client_name}}</td>
+          <td>{{bill.account_name}}<i class="glyphicon glyphicon-flag text-muted" tooltip-placement="right" tooltip="合同客户" ng-show="bill.is_pact"></i></td>
+          <td>{{bill.user_name || "-"}}</td>
+          <td>{{bill.cdn.fee | number: 2}}
+            <span ng-show="bill.cdn.service_type === 'FLOW'">（流量费用）</span>
+            <span ng-show="bill.cdn.service_type === 'BANDWIDTH'">（带宽费用）</span>
+          </td>
+          <td>{{bill.cdn_request.fee | number: 2}}</td>
+          <td>{{bill.storage.fee | number: 2}}</td>
+          <td>{{bill.https.fee | number: 2}}</td>
+          <td>{{(bill.storage.fee + bill.cdn.fee + bill.cdn_request.fee + bill.https.fee) | number: 2}}</td>
+          <td>
+            <a class="btn btn-xs btn-info" ui-sref=".detail({id: bill.bill_id})" ng-click="$event.stopPropagation()">详情</a>
+          </td>
+        </tr>
+        <tr ng-repeat-end ng-show="vm.currentState.tableState[$index]">
+          <td colspan="10" class="table-row-detail">
+            <span>
+              <strong>计费时间：</strong>{{bill.start_time * 1000| date: 'yyyy-MM-dd HH:mm'}} 至 {{bill.end_time * 1000| date: 'yyyy-MM-dd HH:mm'}}<br/>
+            </span>
+            <span>
+              <strong><span ng-show="vm.params.bill_type==='MONTHLY'">本月&nbsp;</span>CDN&nbsp;数据使用：</strong>
+              <span ng-show="bill.cdn.service_type === 'FLOW'">{{bill.cdn.amount | byteToGb}} GB</span>
+              <span ng-show="bill.cdn.service_type === 'BANDWIDTH'">{{bill.cdn.amount | bpsToMbps}} Mbps</span>
+              <br/>
+            </span>
+            <span>
+              <strong><span ng-show="vm.params.bill_type==='MONTHLY'">本月&nbsp;</span>CDN&nbsp;动态请求次数：</strong>{{bill.cdn_request.amount}} 次<br/>
+            </span>
+            <span>
+              <strong ng-show="vm.params.bill_type==='DAILY'">存储使用量：</strong>
+              <strong ng-show="vm.params.bill_type==='MONTHLY'">本月存储使用累计值：</strong>{{bill.storage.amount | byteToGb}} GB<br/>
+            </span>
+            <span>
+              <strong><span ng-show="vm.params.bill_type==='MONTHLY'">本月&nbsp;</span>HTTPS&nbsp;请求次数：</strong>{{bill.https.amount}} 次<br/>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <nav class="pull-right">
+      <pagination total-items="vm.totalItems" items-per-page="vm.billdata.page.size" ng-model="vm.page_num_to_go" max-size="5" class="pagination-sm" boundary-links="true" rotate="false" first-text="首页" last-text="尾页" previous-text="前一页" next-text="后一页"></pagination>
+    </nav>
+  </div>
+</div>

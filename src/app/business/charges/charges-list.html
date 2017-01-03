@@ -1,0 +1,120 @@
+<!--controller_file: businessChargeCtrl-->
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <search-filter on-click="vm.fetchCharge()" ng-model="vm.params.key" search-type="vm.params.key_type"></search-filter>
+  <hr>
+
+  <div class="filters">
+    <form class="form-inline">
+      <div class="form-group">
+        <label>负责人</label>
+        <select class="form-control" ng-model="vm.params.user_id" ng-change="vm.fetchCharge()"
+                ng-options="seller.user_id as seller.name for seller in sellers">
+          <option value="">全部</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>归属区域</label>
+        <select class="form-control" ng-model="vm.params.region_id" ng-change="vm.fetchCharge()"
+                ng-options="k as v for (k, v) in MAP.region">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>付费方式</label>
+        <select class="form-control" ng-model="vm.params.charge_type" ng-change="vm.fetchCharge()"
+                ng-options="k as v for (k, v) in MAP.charge_type">
+          <option value="">所有方式</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>结算方式</label>
+        <select class="form-control" ng-model="vm.params.period_type" ng-change="vm.fetchCharge()"
+                ng-options="k as v for (k, v) in MAP.period_type">
+          <option value="">所有方式</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-right: 0">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">创建时间</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="vm.dateRange" ng-change="vm.fetchCharge()"/>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="actionbar clearfix form-group pull-right">
+  <div class="pull-right">
+    <button class="btn btn-primary" ng-show="self.rights_check['6_create_chargeconf']" ui-sref="business.charges.new"><i class="fa fa-plus"></i>
+      客户计费配置</button>
+    <button class="btn btn-primary" ui-sref="business.charges.standard">标准报价配置</button>
+    </a>
+  </div>
+</div>
+
+<tabset>
+  <tab select="vm.params.status = 'PASS';vm.fetchCharge()" active="vm.tabactive[0]">
+    <tab-heading>
+      启用中
+    </tab-heading>
+  </tab>
+  <tab select="vm.params.status = 'INIT';vm.fetchCharge()" active="vm.tabactive[1]">
+    <tab-heading>
+      待审核
+    </tab-heading>
+  </tab>
+  <tab select="vm.params.status = 'REJECT';vm.fetchCharge()" active="vm.tabactive[2]">
+    <tab-heading>
+      审核拒绝
+    </tab-heading>
+  </tab>
+</tabset>
+
+<table class="table table-bordered table-striped table-hover">
+  <thead>
+  <tr>
+    <th>创建时间</th>
+    <th>生效时间</th>
+    <th>计费编号</th>
+    <th>合同编号</th>
+    <th>客户名称</th>
+    <th>云存储账号</th>
+    <th>结算方式</th>
+    <th>CDN计费模式</th>
+    <th>配置状态</th>
+    <th>负责人</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="chargeConf in vm.chargeConfs.charg_confs">
+    <td>{{chargeConf.create_at ? chargeConf.create_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
+    <td>{{chargeConf.effective_at ? chargeConf.effective_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
+    <td>{{chargeConf.charge_conf_id || '-'}}</td>
+    <td>{{chargeConf.pact_number || '-'}}</td>
+    <td>{{chargeConf.client_name || '-'}}</td>
+    <td>{{chargeConf.account_name || '-'}}</td>
+    <td>{{MAP.period_type[chargeConf.period_type] || '-'}}</td>
+    <td>{{vm.translate(chargeConf.cdn_bill_type)}}</td>
+    <td>{{MAP.charge_conf_status[chargeConf.status] || '-'}}</td>
+    <td>{{chargeConf.user_name || '-'}}</td>
+    <td><a class="btn btn-xs btn-info" ui-sref="business.charges.detail({id: chargeConf.charge_conf_id})">管理</a></td>
+  </tr>
+  </tbody>
+</table>
+
+<nav class="pull-right">
+  <ul class="pagination">
+    <li ng-class="{ disabled: !vm.chargeConfs.page.since}"><a ng-click="vm.prev()"><span
+        aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+    <li ng-class="{ disabled: !vm.chargeConfs.page.max}"><a ng-click="vm.next()"><span
+        aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+  </ul>
+</nav>
+

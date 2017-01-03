@@ -1,0 +1,32 @@
+<div class="well clearfix">
+  <div class="pull-left">
+    角色数量：{{roles.length}}
+  </div>
+
+  <div class="pull-right">
+    <a class="btn btn-primary" ui-sref="admin.roles_create" ng-show="self.rights_check['5_put_role']">创建角色</a>
+  </div>
+</div>
+
+<div class="content">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>角色名称</th>
+        <th>角色帐号数量</th>
+        <th>创建时间</th>
+        <th colspan="3">管理</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="role in roles">
+        <td><span tooltip-placement="right" tooltip="{{role.illustrate}}">{{role.role_name}}</span></td>
+        <td>{{role.user_count}}</td>
+        <td>{{role.created_at * 1000 | date: 'yyyy-MM-dd'}}</td>
+        <td><a class="btn btn-xs btn-primary" ng-click="manage(role.role_id)" ng-show="self.rights_check['5_user_role_manage']">成员管理</a></td>
+        <td><a class="btn btn-xs btn-primary" ui-sref="admin.roles_edit({role_id: role.role_id})" ng-show="self.rights_check['5_role_right_manage']">编辑角色</a></td>
+        <td><a class="btn btn-xs btn-danger" ng-click="del(role)" ng-show="self.rights_check['5_delete_role']">删除</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

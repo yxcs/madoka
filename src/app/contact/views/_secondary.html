@@ -1,0 +1,4 @@
+<ul class="nav nav-pills nav-stacked" role="menu">
+  <li ng-class="{ 'active': $state.current.name.indexOf('record') >= 0}" ng-if="self.rights_check['0_concat_log']"><a ui-sref="contact.records">联系记录</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('manage') >= 0}" ng-if="self.rights_check['0_concat_manage']"><a ui-sref="contact.manage">联系人管理</a></li>
+</ul>

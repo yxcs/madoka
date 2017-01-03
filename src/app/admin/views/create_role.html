@@ -1,0 +1,76 @@
+<div class="content">
+  <form action="" class="form-horizontal">
+    <div class="form-group">
+      <label for="role_name" class="col-sm-2 control-label">角色名称</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="role_name" ng-model="role.role_name">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="role_name" class="col-sm-2 control-label">角色说明</label>
+      <div class="col-sm-10">
+        <textarea name="" id="" cols="30" rows="3" class="form-control" ng-model="role.illustrate"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="role_name" class="col-sm-2 control-label">模块显示</label>
+      <div class="col-sm-10">
+        <fieldset>
+          <legend>模块显示</legend>
+          <label class="col-sm-3" ng-repeat="show in shows"><input type="checkbox" class="" ng-model="modules[show.key]"> {{show.value}}</label>
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+      <label for="role_name" class="col-sm-2 control-label">角色权限</label>
+      <div class="col-sm-10">
+        <fieldset>
+          <legend>信息查看权限</legend>
+          <label class="col-sm-5" ng-repeat="viewPerm in viewPerms"><input type="checkbox" class="" ng-model="permissons[viewPerm.key]"> {{viewPerm.value}}</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>客户资料权限组</legend>
+          <label class="col-sm-3" ng-repeat="clientProfile in clientProfiles"><input type="checkbox" class="" ng-model="permissons[clientProfile.key]"> {{clientProfile.value}}</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>客户管理</legend>
+          <label class="col-sm-3" ng-repeat="clientManage in clientManages"><input type="checkbox" class="" ng-model="permissons[clientManage.key]"> {{clientManage.value}}</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>帐号管理</legend>
+          <label class="col-sm-4" ng-repeat="accountManage in accountManages"><input type="checkbox" class="" ng-model="permissons[accountManage.key]">{{accountManage.value}}</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>计费管理</legend>
+          <label class="col-sm-4" ng-repeat="chargeconf in chargeconfs"><input type="checkbox" class="" ng-model="permissons[chargeconf.key]">{{chargeconf.value}}</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>数据查看</legend>
+          <label class="col-sm-4" ng-repeat="dataview in dataviews"><input type="checkbox" class="" ng-model="permissons[dataview.key]">{{dataview.value}}</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>超管权限</legend>
+          <label class="col-sm-3" ng-repeat="sa in sas"><input type="checkbox" class="" ng-model="permissons[sa.key]">{{sa.value}}</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>财务管理</legend>
+          <label class="col-sm-3" ng-repeat="finance in finances"><input type="checkbox" class="" ng-model="permissons[finance.key]">{{finance.value}}</label>
+        </fieldset>
+      </div>
+      <hr>
+      <div class="col-sm-10 col-sm-offset-2">
+        <a class="btn btn-primary" ng-click="submit()">确认</a>
+        <a class="btn btn-default" href="/admin/roles/">取消</a>
+      </div>
+    </div>
+  </form>
+</div>

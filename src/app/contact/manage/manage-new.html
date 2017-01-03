@@ -1,0 +1,112 @@
+<form class="form-horizontal" role="form" name="createContact">
+  <p class="col-sm-offset-2 col-sm-10 alert alert-warning">联系人的手机 、 qq 、 邮箱，必填一个！</p>
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">所属客户</label>
+    <div class="col-sm-4">
+      <div class="input-group">
+        <input type="text" class="form-control" ng-model="contact.client_name" disabled>
+        <span class="input-group-btn">
+          <button ng-click="searchClient()" class="btn btn-primary">查询</button>
+        </span>
+      </div>
+    </div>
+    <label for="" class="col-sm-2 control-label">所属负责人</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" value="{{sellersMap[contact.sale_id]}}" disabled>
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="contact.upyun_account">
+    <label for="" class="col-sm-2 control-label">云存储帐号</label>
+    <div class="col-sm-4">
+      <p class="form-control-static">{{contact.upyun_account}}</p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">姓名</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.contact_name" required>
+    </div>
+    <label for="" class="col-sm-2 control-label">性别</label>
+    <div class="col-sm-4">
+      <select name="" id="" class="form-control" ng-model="contact.sex">
+        <option value="">选择</option>
+        <option value="1">男</option>
+        <option value="2">女</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">部门</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.department">
+    </div>
+    <label for="" class="col-sm-2 control-label">职位</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.position">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">电话</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.telphone">
+    </div>
+    <label for="" class="col-sm-2 control-label">手机</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.cellphone" ng-disabeld="contact.is_main === 1">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">QQ</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.qq" ng-disabled="contact.is_main === 1">
+    </div>
+    <label for="" class="col-sm-2 control-label">微信</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.weixin">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">邮箱</label>
+    <div class="col-sm-4">
+      <input type="email" class="form-control" ng-model="contact.email" ng-disabled="contact.is_main === 1">
+    </div>
+    <label for="" class="col-sm-2 control-label">旺旺</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.wangwang">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">传真</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.fax">
+    </div>
+    <label for="" class="col-sm-2 control-label">生日</label>
+    <div class="col-sm-4">
+      <div class="input-group">
+        <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" is-open="openedS" ng-click="openedS = true;" ng-model="contact.birthday" close-text="Close" />
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">备注</label>
+    <div class="col-sm-10">
+      <textarea name="" id="" cols="30" rows="5" class="form-control" ng-model="contact.remark"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-10 col-sm-offset-2">
+      <button class="btn btn-primary" ng-click="submit()" ng-disabled="createContact.$invalid || !(contact.cellphone || contact.email || contact.qq)">保存</button>
+      <button class="btn btn-defalut" ng-click="cancel()">取消</button>
+    </div>
+  </div>
+</form>

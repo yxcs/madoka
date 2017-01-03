@@ -1,0 +1,482 @@
+/* ==========================================================================
+   global @Leigh Zhu
+   ========================================================================== */
+
+
+body {
+  background: #f8f8f8;
+  font-family: "Italiana", "Helvetica Neue", "Open Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+}
+
+.header {
+  padding-left: 20px;
+  background: #f8f8f8;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.new-win {
+  top: -1px;
+  left: -1px;
+  width: 25px;
+  height: 52px;
+  text-align: center;
+  line-height: 50px;
+  background: #fff;
+  box-shadow: 2px 0 2px #e8e8e8;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ccc;
+  text-decoration: none;
+}
+
+.new-win:hover {
+  background: #02a3c6;
+  text-decoration: none;
+}
+
+.navbar .navbar-brand {
+  margin: 0;
+  font-size: 20px;
+  color: #02a3c8;
+}
+
+.navbar .navbar-brand:hover {
+  color: #02a3c8;
+}
+
+.navbar .navbar-brand small {
+  color: #666;
+  font-size: 12px;
+}
+
+.section {
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.section-title  {
+  border-bottom: 1px solid #ddd;
+}
+
+.well .filters .form-group {
+  margin-right: 20px;
+}
+
+.well .filters .form-group input[type='radio'] {
+  margin-left: 20px;
+}
+
+/* Don't know why angular don't generate this */
+.ng-hide {
+  /* this is just another form of hiding an element */
+  display:block!important;
+  position:absolute;
+  top:-9999px;
+  left:-9999px;
+}
+
+.inline-block {
+  display: inline-block
+}
+
+.actionbar {
+  margin-bottom: 10px;
+}
+
+.required {
+  color: red;
+  display: inline-block;
+}
+
+.version a{
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1024;
+  color: #555;
+}
+
+.input-daterange {
+  width: 350px;
+}
+
+
+ /*move datepicker to left*/
+.daterangepicker {
+  margin-left: -130px;
+}
+
+.daterangepicker.opensright:after {
+  left: 140px;
+}
+.daterangepicker.opensright:before {
+  left: 139px;
+}
+
+
+/*order_type*/
+.order-type {
+  border-left-width: 5px !important;
+  border-left-style: solid !important;
+}
+
+.order-type-title {
+  border-color: #fff;
+}
+
+.order-type-ORDER_TYPE_NORMAL {
+  border-left-color: #337ab7 !important;
+}
+
+.order-type-MONTH_PAY {
+  border-left-color: #3c763d !important;
+}
+
+.order-type-SYS_GIFT {
+  border-left-color: #8a6d3b !important;
+}
+
+.order-type-REPARATION {
+  border-left-color: #a94442 !important;
+}
+.navbar-nav>li:hover .dropdown-menu {
+  display: block;
+}
+
+#history-nav {
+  position: fixed;
+  bottom: 30px;
+  left: 5px;
+  z-index: 1024;
+}
+
+#history-nav a{
+  color: #fff;
+  background-color: #0C1021;
+  border-color: #0C1021;
+}
+
+.m0 {
+  margin: 0 !important;
+}
+
+.m20 {
+  margin-left: 20px;
+}
+.bt {
+  border-top: 1px dotted #cccccc;
+}
+
+.mt-sm {
+  margin-top:5px;
+}
+
+.pt-sm {
+  padding-top:5px;
+}
+
+.text-bold {
+  font-weight: bold !important;
+}
+
+.b0 {
+  border: 0 !important;
+}
+
+.line-dash {
+  border-width: 0;
+  margin-right: -15px;
+  margin-left: -15px;
+  background-color: transparent;
+  border-bottom: 1px dashed #dee5e7;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  font-size: 0;
+}
+
+
+.form-validate .form-control.ng-dirty.ng-invalid {
+  border-color: #f05050;
+}
+.form-validate .form-control.ng-dirty.ng-valid, .form-validate .form-control.ng-dirty.ng-valid:focus {
+  border-color: #27c24c;
+}
+
+
+.table-grey {
+  background-color: #f5f5f5;
+}
+
+.table-grey.table-hover > tbody > tr:hover {
+  background-color: #fafbfc;
+}
+
+.table-toggle {
+  font-size: 12px;
+  color: #888888;
+  margin-right: 5px;
+}
+
+.line-dash-after::after {
+  content: ' ';
+  border-width: 0;
+  margin-right: -15px;
+  margin-left: -15px;
+  background-color: transparent;
+  border-bottom: 1px dashed #dee5e7;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  font-size: 0;
+}
+
+/**/
+.c-checkbox,
+.c-radio {
+  margin-right: 4px;
+}
+.c-checkbox *,
+.c-radio * {
+  cursor: pointer;
+}
+.c-checkbox input,
+.c-radio input {
+  opacity: 0;
+  position: absolute;
+  margin-left: 0 !important;
+}
+.c-checkbox span,
+.c-radio span {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  margin-left: -20px;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+  text-align: center;
+}
+.c-checkbox span:before,
+.c-radio span:before {
+  margin-left: 0;
+}
+.c-checkbox:hover span,
+.c-radio:hover span {
+  border-color: #5d9cec;
+}
+.form-inline .c-checkbox span,
+.form-inline .c-radio span {
+  margin-left: 0;
+}
+.c-checkbox.c-checkbox-rounded span,
+.c-radio.c-checkbox-rounded span,
+.c-checkbox.c-radio-rounded span,
+.c-radio.c-radio-rounded span {
+  border-radius: 500px;
+}
+/* override for radio */
+.c-radio span {
+  border-radius: 500px;
+}
+/* the icon */
+.c-checkbox span:before,
+.c-radio span:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  text-align: center !important;
+  font-size: 12px;
+  line-height: 18px;
+  vertical-align: middle;
+}
+/* Checked state */
+.c-checkbox,
+.c-radio {
+  /* override for radio */
+  /* Disable state */
+  /* override for radio */
+}
+.c-checkbox input[type=checkbox]:checked + span:before,
+.c-radio input[type=checkbox]:checked + span:before,
+.c-checkbox input[type=radio]:checked + span:before,
+.c-radio input[type=radio]:checked + span:before {
+  color: #fff;
+  opacity: 1;
+  transition: color 0.3s ease-out;
+}
+.c-checkbox input[type=checkbox]:checked + span,
+.c-radio input[type=checkbox]:checked + span,
+.c-checkbox input[type=radio]:checked + span,
+.c-radio input[type=radio]:checked + span {
+  border-color: #5d9cec;
+  background-color: #5d9cec;
+}
+.c-checkbox input[type=radio]:checked + span,
+.c-radio input[type=radio]:checked + span {
+  background-color: #fff;
+}
+.c-checkbox input[type=radio]:checked + span:before,
+.c-radio input[type=radio]:checked + span:before {
+  color: #5d9cec;
+}
+.c-checkbox input[type=checkbox]:disabled + span,
+.c-radio input[type=checkbox]:disabled + span,
+.c-checkbox input[type=radio]:disabled + span,
+.c-radio input[type=radio]:disabled + span {
+  border-color: #dddddd !important;
+  background-color: #dddddd !important;
+}
+.c-checkbox input[type=radio]:disabled + span,
+.c-radio input[type=radio]:disabled + span {
+  background-color: #fff !important;
+}
+.c-checkbox input[type=radio]:disabled + span:before,
+.c-radio input[type=radio]:disabled + span:before {
+  color: #dddddd;
+}
+.c-radio.c-radio-nofont {
+  /* override for radio */
+  /* Disable state */
+  /* override for radio */
+}
+.c-radio.c-radio-nofont span:before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  top: 50%;
+  left: 50%;
+  margin-top: -5px;
+  margin-left: -5px;
+  border-radius: 500px;
+}
+.c-radio.c-radio-nofont input[type=radio]:checked + span:before {
+  color: #fff;
+  opacity: 1;
+  transition: color 0.3s ease-out;
+}
+.c-radio.c-radio-nofont input[type=radio]:checked + span {
+  border-color: #5d9cec;
+  background-color: #5d9cec;
+}
+.c-radio.c-radio-nofont input[type=radio]:checked + span {
+  background-color: #fff;
+}
+.c-radio.c-radio-nofont input[type=radio]:checked + span:before {
+  background-color: #5d9cec;
+}
+.c-radio.c-radio-nofont input[type=radio]:disabled + span {
+  border-color: #dddddd !important;
+  background-color: #dddddd !important;
+}
+.c-radio.c-radio-nofont input[type=radio]:disabled + span {
+  background-color: #fff !important;
+}
+.c-radio.c-radio-nofont input[type=radio]:disabled + span:before {
+  background-color: #dddddd;
+}
+.form-control-rounded {
+  border-radius: 100px;
+}
+.switch .form-control {
+  padding-top: 7px;
+  margin-bottom: 0;
+}
+.switch * {
+  cursor: pointer;
+}
+.switch input {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+.switch span {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 100px;
+  transition: all .5s;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1) inset;
+  vertical-align: middle;
+}
+.switch span:after {
+  content: "";
+  position: absolute;
+  background-color: #fff;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  border: 1px solid #ddd;
+  border-radius: 400px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-transition: all .2s;
+}
+.switch.switch-lg span {
+  width: 50px;
+  height: 25px;
+}
+.switch.switch-lg span:after {
+  height: 23px;
+  width: 23px;
+}
+.switch.switch-sm span {
+  width: 30px;
+  height: 15px;
+}
+.switch.switch-sm span:after {
+  height: 13px;
+  width: 13px;
+}
+.switch input:checked + span {
+  background-color: #5d9cec;
+  border-color: #5d9cec;
+  transition: all .5s;
+}
+.switch input:checked + span:after {
+  left: 50%;
+  transition: all .2s;
+}
+.form-control-feedback {
+  left: 16px;
+  right: auto;
+}
+.form-control + .form-control-feedback,
+.form-control + .parsley-errors-list + .form-control-feedback {
+  right: 0;
+  left: auto;
+  top: 10px;
+}
+.input-sm + .form-control-feedback,
+.input-sm + .parsley-errors-list + .form-control-feedback {
+  top: 0;
+}
+label + .form-control + .form-control-feedback,
+label + .form-control + .parsley-errors-list + .form-control-feedback {
+  top: 36px;
+}
+.input-md {
+  width: 260px;
+}
+
+/**/
+.bg-grey {
+  background-color: #f9f9f9;
+}
+
+.table-row-detail>span {
+  line-height: 1.8em;
+}

@@ -1,0 +1,94 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <search-filter on-click="fetchInvoices()" ng-model="params.key" search-type="params.key_type"></search-filter>
+  <hr>
+
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="follow">发票类型</label>
+        <select class="form-control" ng-model="params.invoice_type" ng-change="fetchInvoices()" ng-options="k as v for (k, v) in MAP.invoice_type">
+          <option value="">全部类型</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="follow">负责人</label>
+
+        <!-- TODO: salers api  -->
+        <select class="form-control" ng-model="params.user_id" ng-change="fetchInvoices()" ng-options="seller.user_id as seller.name for seller in sellers">
+          <option value="">请选择销售</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">创建时间</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="daterange" ng-change="fetchInvoices()"/>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="actionbar clearfix">
+  <div class="pull-right">
+    <a class="btn btn-primary" ui-sref=".new" ng-show="self.rights_check['4_create_invoice']"><i class="fa fa-plus"></i> 新建发票处理</a>
+    <button class="btn btn-primary" ng-click="searchOrdersStatus()" ng-show="self.rights_check['1_get_private_invoices']">开票订单查询</button>
+  </div>
+</div>
+
+
+<tabset>
+  <tab select="params.status = 'INIT'; lazyfetch()" active="tabactive[0]">
+    <tab-heading>
+      未开票
+    </tab-heading>
+  </tab>
+  <tab select="params.status = 'FINISH'; lazyfetch()" active="tabactive[1]">
+    <tab-heading>
+      已开票
+    </tab-heading>
+  </tab>
+  <tab select="params.status = 'CANCEL'; lazyfetch()" active="tabactive[2]">
+    <tab-heading>
+      已取消
+    </tab-heading>
+  </tab>
+</tabset>
+
+<table class="table table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th>创建时间</th>
+      <th>客户名称</th>
+      <th>云存储帐号</th>
+      <th>发票金额（元）</th>
+      <th>发票类型</th>
+      <th>处理状态</th>
+      <th>负责人</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="invoice in invoicesData.invoices">
+      <td>{{invoice.create_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+      <td>{{invoice.client_name}}</td>
+      <td>{{invoice.account_name}}</td>
+      <td>{{invoice.sum}}</td>
+      <td>{{invoice.invoice_type}}</td>
+      <td>{{invoice.status}}</td>
+      <td>{{invoice.user_name}}</td>
+      <td>
+        <a ui-sref=".detail({id: invoice.invoice_id})">查看</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<nav class="pull-right">
+  <ul class="pagination">
+    <li ng-class="{ disabled: !invoicesData.page.since}"><a ng-click="prev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+    <li ng-class="{ disabled: !invoicesData.page.max}"><a ng-click="next()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+  </ul>
+</nav>

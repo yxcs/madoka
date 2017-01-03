@@ -1,0 +1,180 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()">
+    <i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <search-filter on-click="vm.fetchTrans()" ng-model="vm.params.value" search-type="vm.params.key"></search-filter>
+  <hr>
+  <div class="filters">
+    <form class="form-inline">
+      <div class="form-group">
+        <label>所属公司</label>
+        <select class="form-control"
+                ng-model="vm.params.company"
+                ng-options="company.type as company.name for company in vm.companys">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>归属区域</label>
+        <select class="form-control"
+                ng-model="vm.params.region_id"
+                ng-options="region.key as region.value for region in vm.regions">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>负责人</label>
+        <select class="form-control"
+                ng-model="vm.params.user_id"
+                ng-options="seller.user_id as seller.name for seller in vm.sellers">
+          <option value="">{{vm.defaultUserLabel}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>账号类型</label>
+        <select class="form-control"
+                ng-model="vm.params.account_type"
+                ng-options="k as v for (k,v) in MAP.account_type">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <hr/>
+      <div class="from-group">
+        <label>账号状态：</label>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.status" ng-value="'NORMAL'">
+            <span class="fa fa-circle"></span>服务中
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.status" ng-value="'OVERDUE'">
+            <span class="fa fa-circle"></span>欠费中
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.status" ng-value="'DISABLED'">
+            <span class="fa fa-circle"></span>欠费停用
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.status" ng-value="'BLOCKED'">
+            <span class="fa fa-circle"></span>人工禁用
+          </label>
+        </div>
+        <div class="radio-inline c-radio">
+          <label>
+            <input type="radio" ng-model="vm.params.status" ng-value="'LOCKED'">
+            <span class="fa fa-circle"></span>人工停用
+          </label>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <table class="table table-hover table-striped">
+      <thead>
+      <tr>
+        <th>客户名称</th>
+        <th>云存储账号</th>
+        <th>状态</th>
+        <th>负责人</th>
+        <th>
+          <a ng-click="vm.orderBy('pay_remain')" style="cursor: pointer;">充值余额（元）
+          <span class="order-arrow">
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'pay_remain' , up: vm.params.order_key !== 'pay_remain' || vm.params.order_type === 'asc' }"></div>
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'pay_remain',  down: vm.params.order_key !== 'pay_remain' || vm.params.order_type === 'desc' }"></div>
+          </span>
+          </a>
+        </th>
+        <th>
+          <a ng-click="vm.orderBy('bonus_remain')" style="cursor: pointer;">返赠余额（元）
+          <span class="order-arrow">
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'bonus_remain' , up: vm.params.order_key !== 'bonus_remain' || vm.params.order_type === 'asc' }"></div>
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'bonus_remain',  down: vm.params.order_key !== 'bonus_remain' || vm.params.order_type === 'desc' }"></div>
+          </span>
+          </a>
+        </th>
+        <th>代金卷（张）</th>
+        <th>流量包（GB）</th>
+        <th>
+          <a ng-click="vm.orderBy('debt_money')" style="cursor: pointer;">欠费金额（元）
+          <span class="order-arrow">
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'debt_money' , up: vm.params.order_key !== 'debt_money' || vm.params.order_type === 'asc' }"></div>
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'debt_money',  down: vm.params.order_key !== 'debt_money' || vm.params.order_type === 'desc' }"></div>
+          </span>
+          </a>
+        </th>
+        <th>
+          <a ng-click="vm.orderBy('debt_time')" style="cursor: pointer;">欠费时间（天）
+          <span class="order-arrow">
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'debt_time' , up: vm.params.order_key !== 'debt_time' || vm.params.order_type === 'asc' }"></div>
+            <div class="arrow" ng-class="{actived: vm.params.order_key === 'debt_time',  down: vm.params.order_key !== 'debt_time' || vm.params.order_type === 'desc' }"></div>
+          </span>
+          </a>
+        </th>
+        <th>管理</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="transData in vm.transData.list" >
+        <td>{{transData.client_name}}</td>
+        <td>{{transData.account_name}}</td>
+        <td>{{transData.status | accoutStatus}}</td>
+        <td>{{transData.user_name}}</td>
+        <td>{{transData.pay_remain | number : 2}}</td>
+        <td>{{transData.bonus_remain | number : 2}}</td>
+        <td>{{transData.coupon | number : 0}}</td>
+        <td>{{(transData.flow | byteToGb) | number : 2}}</td>
+        <td><span style="color: red">{{transData.debt_money | number : 2}}</span></td>
+        <td>{{transData.debt_time | number : 0}}</td>
+        <td>
+          <a class="btn btn-xs btn-primary" ui-sref="clients.personal.detail.recharge({account_name: transData.account_name})">详情</a>
+          <a href="" class="btn btn-xs btn-default" ng-click="sync(transData.account_name)" tooltip-placement="bottom" tooltip="实时数据同步"><i class="glyphicon glyphicon-refresh"></i></a>
+        </td>
+      </tr>
+        <td colspan="4" class="text-center">本页合计</td>
+        <td>{{vm.pageTotal.pay_remain | number : 2}}</td>
+        <td>{{vm.pageTotal.bonus_remain | number : 2}}</td>
+        <td>{{vm.pageTotal.coupon | number : 0}}</td>
+        <td>{{(vm.pageTotal.flow | byteToGb) | number : 2}}</td>
+        <td>{{vm.pageTotal.debt_money | number : 2}}</td>
+        <td>{{vm.pageTotal.debt_time | number : 0}}</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td colspan="4" class="text-center">查询合计</td>
+        <td>{{vm.transData.total.pay_remain | number : 2}}</td>
+        <td>{{vm.transData.total.bonus_remain | number : 2}}</td>
+        <td>{{vm.transData.total.coupon | number : 0}}</td>
+        <td>{{(vm.transData.total.flow | byteToGb) | number : 2}}</td>
+        <td>{{vm.transData.total.debt_money | number : 2}}</td>
+        <td>{{vm.transData.total.debt_time | number : 0}}</td>
+        <td></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <nav class="pull-right">
+      <pagination total-items="vm.totalItems"
+              items-per-page="vm.size"
+              ng-model="vm.page_num_to_go"
+              max-size="5"
+              class="pagination-sm"
+              boundary-links="true"
+              rotate="false"
+              first-text="首页"
+              last-text="尾页"
+              previous-text="前一页"
+              next-text="后一页">
+      </pagination>
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>删除角色</h4>
+</div>
+<div class="modal-body">
+  <p ng-show="role.user_count > 0">该账户角色已被使用在多个账号中，请先去除该角色和账号关系，才能删除该账户角色！</p>
+  <p ng-show="role.user_count == 0">您将要删除 [{{role.role_name}}] 这个角色</p>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-danger"  ng-show="role.user_count == 0" ng-click="submit()">删除</button>
+</div>

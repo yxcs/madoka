@@ -1,0 +1,5 @@
+<ul class="nav nav-pills nav-stacked" role="menu">
+  <li ng-class="{ 'active': $state.current.name.indexOf('roles') >= 0}" ng-if="self.rights_check['0_role_manage']"><a ui-sref="admin.roles">角色管理</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('staffs') >= 0}" ng-if="self.rights_check['0_crm_user']"><a ui-sref="admin.staffs">员工管理</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('log') >= 0}" ng-if="self.rights_check['0_operation_log']"><a ui-sref="admin.log">操作日志</a></li>
+</ul>

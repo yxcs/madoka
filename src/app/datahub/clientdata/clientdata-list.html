@@ -1,0 +1,308 @@
+<div class="panel panel-default">
+  <h4 class="panel-heading m0">整体数据概况</h4>
+  <div class="panel-body">
+    <div class="form-inline">
+      <div class="form-group">
+        <select class="form-control" ng-model="vm.nTparams.company" ng-change="vm.fetchNewAccount()">
+          <option value="">所有公司</option>
+          <option value="BEIJING">北京公司</option>
+          <option value="SHANGHAI">上海公司</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select class="form-control"
+                ng-model="vm.nTparams.region_id"
+                ng-options="region.key as region.value for region in vm.regions"
+                ng-change="vm.fetchTotalAccountData()">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select class="form-control"
+                ng-model="vm.nTparams.user_id"
+                ng-change="vm.fetchTotalAccountData()"
+                ng-options="seller.user_id as seller.name for seller in sellers">
+          <option value="">所有负责人</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select class="form-control"
+                ng-model="vm.nTparams.call_type"
+                ng-change="vm.fetchTotalAccountData()">
+          <option value="">所有拓展用户</option>
+          <option value="CALL_IN">Call in 客户</option>
+          <option value="CALL_OUT">Call out 客户</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">截至日期</span>
+          <input date-range-picker
+                 class="form-control date-picker"
+                 type="text"
+                 ng-model="vm.nTDateRange"
+                 options="vm.nTDateOption"
+                 ng-change="vm.fetchTotalAccountData()"/>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <table class="table table-bordered section-content">
+      <tr>
+        <td class="text-center">注册客户总数</td>
+        <td class="text-center">首年客户数</td>
+        <td class="text-center">次年客户数</td>
+        <td class="text-center">续费客户数</td>
+        <td class="text-center">续费率</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.total_com_num + vm.totalAccountData.total_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.total_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.total_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.first_year_com_num + vm.totalAccountData.first_year_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.first_year_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.first_year_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.second_year_com_num + vm.totalAccountData.second_year_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.second_year_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.second_year_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.continue_pay_com_num + vm.totalAccountData.continue_pay_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.continue_pay_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.continue_pay_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{ (vm.totalAccountData.continue_pay_com_num + vm.totalAccountData.continue_pay_per_num)
+            / (vm.totalAccountData.total_com_num + vm.totalAccountData.total_per_num)
+            * 100 | number: 2}}%
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">
+              {{vm.totalAccountData.continue_pay_com_num
+              / vm.totalAccountData.total_com_num
+              * 100
+              | number: 2}}%
+            </span>
+            <br>个人：
+            <span class="text-info text-bold">
+              {{vm.totalAccountData.continue_pay_per_num
+              / vm.totalAccountData.total_per_num
+              * 100
+              | number: 2}}%
+            </span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="b0"></td>
+        <td class="b0"></td>
+        <td class="b0"></td>
+        <td class="b0"></td>
+        <td class="b0"></td>
+      </tr>
+      <tr>
+        <td class="text-center">Call in客户</td>
+        <td class="text-center">Call out客户</td>
+        <td class="text-center">未付费客户数</td>
+        <td class="text-center">付费客户数</td>
+        <td class="text-center">付费率</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.callin_com_num + vm.totalAccountData.callin_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.callin_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.callin_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.callout_com_num + vm.totalAccountData.callout_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.callout_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.callout_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.nopay_com_num + vm.totalAccountData.nopay_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.nopay_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.nopay_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.totalAccountData.pay_com_num + vm.totalAccountData.pay_per_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.totalAccountData.pay_com_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.totalAccountData.pay_per_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{ (vm.totalAccountData.pay_com_num + vm.totalAccountData.pay_per_num)
+            / (vm.totalAccountData.total_com_num + vm.totalAccountData.total_per_num)
+            * 100 | number: 2}}%
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">
+              {{vm.totalAccountData.pay_com_num
+              / vm.totalAccountData.total_com_num
+              * 100
+              | number: 2}}%
+            </span>
+            <br>个人：
+            <span class="text-info text-bold">
+              {{vm.totalAccountData.pay_per_num
+              / vm.totalAccountData.total_per_num
+              * 100
+              | number: 2}}%
+            </span>
+          </div>
+        </td>
+
+      </tr>
+    </table>
+  </div>
+</div>
+<div class="panel panel-default">
+  <h4 class="panel-heading m0">新注册客户数据概况</h4>
+  <div class="panel-body">
+    <div class="form-inline">
+      <div class="form-group">
+        <select class="form-control" ng-model="vm.nAparams.company" ng-change="vm.fetchNewAccount()">
+          <option value="">所有公司</option>
+          <option value="BEIJING">北京公司</option>
+          <option value="SHANGHAI">上海公司</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select class="form-control" ng-model="vm.nAparams.call_type" ng-change="vm.fetchNewAccount()">
+          <option value="">所有拓展用户</option>
+          <option value="CALL_IN">Call in 客户</option>
+          <option value="CALL_OUT">Call out 客户</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+          <input date-range-picker
+                 class="form-control date-picker"
+                 type="text"
+                 ng-model="vm.nADateRange"
+                 options="vm.nADateOption"
+                 ng-change="vm.fetchNewAccount()"/>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <table class="table table-bordered section-content">
+      <tr>
+        <td class="text-center">新注册客户数</td>
+        <td class="text-center">华北新注册客户</td>
+        <td class="text-center">华东新注册客户</td>
+        <td class="text-center">华南新注册客户</td>
+        <td class="text-center">港澳台新注册客户</td>
+        <td class="text-center">海外新注册客户</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.newAccountData.all_company_num + vm.newAccountData.all_personal_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.newAccountData.all_company_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.newAccountData.all_personal_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.newAccountData.china_north_company_num + vm.newAccountData.china_north_personal_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.newAccountData.china_north_company_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.newAccountData.china_north_personal_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.newAccountData.china_south_company_num + vm.newAccountData.china_south_personal_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.newAccountData.china_south_company_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.newAccountData.china_south_personal_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.newAccountData.china_east_company_num + vm.newAccountData.china_east_personal_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.newAccountData.china_east_company_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.newAccountData.china_east_personal_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.newAccountData.china_other_company_num + vm.newAccountData.china_other_personal_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.newAccountData.china_other_company_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.newAccountData.china_other_personal_num | number}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="h1 text-bold text-info text-center m0">
+            {{vm.newAccountData.foreigner_company_num + vm.newAccountData.foreigner_personal_num | number}}
+          </div>
+          <div class="bt mt-sm pt-sm">企业：
+            <span class="text-info text-bold">{{vm.newAccountData.foreigner_company_num | number}}</span>
+            <br>个人：
+            <span class="text-info text-bold">{{vm.newAccountData.foreigner_personal_num | number}}</span>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

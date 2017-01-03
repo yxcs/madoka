@@ -1,0 +1,82 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <search-filter on-click="fetchContacts()" ng-model="params.key" search-type="params.key_type"></search-filter>
+  <hr>
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="follow">负责销售</label>
+        <select class="form-control" ng-model="params.sale_id" ng-options="seller.user_id as seller.name for seller in sellers" ng-change="fetchContacts()">
+          <option value="">请选择销售</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="follow">客户状况</label>
+        <select class="form-control" ng-model="params.is_potential" ng-change="fetchContacts()">
+          <option value="0">注册客户</option>
+          <option value="1">潜在客户</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">创建时间</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="daterange" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="fetchContacts()">筛选</button>
+          </span>
+        </div><!-- /input-group -->
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="actionbar clearfix">
+  <a class="btn btn-primary pull-right" ui-sref=".new" ng-show="self.rights_check['2_put_concat']">新建联系人</a>
+</div>
+
+<div class="content">
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>客户名称</th>
+        <th class="tcol-80">客户状况</th>
+        <th>云存储帐号</th>
+        <th>联系人</th>
+        <th>职位</th>
+        <th class="tcol-100">手机号</th>
+        <th>电话</th>
+        <th>QQ</th>
+        <th>创建日期</th>
+        <th class="tcol-80">负责销售</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="contact in contacts.data">
+        <td>{{contact.client_name}}</td>
+        <td>{{contact.potential_user === 0 ? '注册客户' : '潜在客户'}}</td>
+        <td><a ui-sref="clients.personal.detail.info({account_name: contact.upyun_account})" target="_blank">{{contact.upyun_account}}</a></td>
+        <td>{{contact.contact_name}} <i class="glyphicon glyphicon-flag text-muted" tooltip-placement="right" tooltip="主联系人" ng-show="contact.is_main === 1"></i></td>
+        <td>{{contact.position}}</td>
+        <td>{{contact.cellphone}}</td>
+        <td>{{contact.telphone}}</td>
+        <td>{{contact.qq}}</td>
+        <td>{{contact.created_at ? contact.created_at * 1000 : '-' | date: 'yyyy-MM-dd' }}</td>
+        <td>{{sellersMap[contact.sale_id]}}</td>
+        <td>
+          <a class="btn btn-xs btn-default" ng-click="editContact(contact)">详情</a>
+          <a href="" class="btn btn-danger btn-xs" ng-click="delContact(contact)" ng-show="contact.is_main !== 1 && self.rights_check['2_delete_concat']">删除</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <nav class="pull-right">
+    <ul class="pagination">
+      <li ng-class="{ disabled: !contacts.page.since}"><a ng-click="prev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+      <li ng-class="{ disabled: !contacts.page.max}"><a ng-click="next()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+    </ul>
+  </nav>
+</div>

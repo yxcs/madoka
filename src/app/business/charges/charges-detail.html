@@ -1,0 +1,342 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-3">
+        <label>计费编号： </label>{{vm.chargeConf.charge_conf_id}}
+      </div>
+      <div class="col-md-3">
+        <label>计费模式状态： </label>{{vm.dicMap.charge_conf_status[vm.chargeConf.status]}}
+      </div>
+      <div class="col-md-12"></div>
+      <div class="col-md-3">
+        <label>创建时间： </label>{{vm.chargeConf.create_at ? vm.chargeConf.create_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}
+      </div>
+      <div class="col-md-3">
+        <label>生效时间： </label>{{vm.chargeConf.effective_at ? vm.chargeConf.effective_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}
+      </div>
+      <div class="col-md-3">
+        <label>失效时间： </label>{{vm.chargeConf.end_at !== 9007199254740991 ? (vm.chargeConf.end_at * 1000 | date: 'yyyy-MM-dd HH:mm:ss') : '∞' }}
+      </div>
+      <ul class="list-inline pull-right">
+        <li><a class="btn btn-danger btn-sm" href="" ng-click="vm.deleteCharge(vm.chargeConf.charge_conf_id)"
+               ng-show="self.rights_check['6_delete_chargeconf']">删除</a></li>
+        <li><a class="btn btn-info btn-sm"
+               ui-sref=".edit"
+               ng-show="self.rights_check['6_update_chargeconf']">修改</a></li>
+        <li><a class="btn btn-warning btn-sm" href="" ng-click="vm.rejectCharge(vm.chargeConf.charge_conf_id)"
+               ng-show="self.rights_check['6_pass_or_reject_chargeconf'] && vm.chargeConf.status === 'INIT'">拒绝</a></li>
+        <li><a class="btn btn-success btn-sm" href="" ng-click="vm.passCharge(vm.chargeConf.charge_conf_id)"
+               ng-show="self.rights_check['6_pass_or_reject_chargeconf'] && vm.chargeConf.status === 'INIT'">通过</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    计费客户信息
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-4">
+        <label>客户名称：</label>{{vm.chargeConf.client_name}}
+      </div>
+      <div class="col-md-2">
+        <label>帐号：</label>{{vm.chargeConf.account_name}}
+      </div>
+      <div class="col-md-2">
+        <label>负责人：</label>{{vm.chargeConf.user_name}}
+      </div>
+      <div class="col-md-12"></div>
+      <div class="col-md-4">
+        <label>付费方式： </label>{{vm.dicMap.charge_type[vm.chargeConf.charge_type]}}
+      </div>
+      <div class="col-md-2">
+        <label>结算方式： </label>
+        {{vm.dicMap.period_type[vm.chargeConf.period_type]}}
+      </div>
+      <div class="col-md-2">
+        <label>服务方式： </label>
+        {{vm.chargeConf.can_arrear === true ? '欠费使用' : '收费使用'}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    服务计费配置
+  </div>
+  <div class="panel-body">
+    <div class="panel-group">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          CDN 服务（数据使用）计费
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <label>计费模式： </label>
+                  {{vm.dicMap.service_type[vm.chargeConf.cdn.service_type]}}计费
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.cdn.service_type === 'FLOW'">
+                  <label>流量计费模式： </label>
+                  {{vm.dicMap.period_bill_type[vm.chargeConf.cdn.period_bill_type]}}使用流量计费
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.cdn.service_type === 'BANDWIDTH'">
+                  <label>带宽计费模式： </label>
+                  {{vm.dicMap.amount_cal_type[vm.chargeConf.cdn.amount_cal_type]}}
+                </li>
+                <li class="list-group-item">
+                  <label>定价配置： </label>
+                  {{vm.dicMap.price_type[vm.chargeConf.cdn.price_type]}}
+                </li>
+                <li class="list-group-item">
+                  <label>计价模式： </label>
+                  {{vm.dicMap.ladder_type[vm.chargeConf.cdn.ladder_type]}}
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <table class="table table-text-center">
+                <caption>
+                  <span ng-show="vm.chargeConf.cdn.service_type === 'FLOW'">流量阶梯价格</span>
+                  <span ng-show="vm.chargeConf.cdn.service_type === 'BANDWIDTH'">带宽阶梯价格</span>
+                </caption>
+                <thead>
+                <tr>
+                  <th>
+                    <span ng-show="vm.chargeConf.cdn.service_type === 'FLOW'">流量大小范围（GB）</span>
+                    <span ng-show="vm.chargeConf.cdn.service_type === 'BANDWIDTH'">带宽峰值大小范围（Mbps）</span>
+                  </th>
+                  <th>
+                    <span ng-show="vm.chargeConf.cdn.service_type === 'FLOW'">设定售价（元/GB）</span>
+                    <span ng-show="vm.chargeConf.cdn.service_type === 'BANDWIDTH'">
+                      <span ng-show="vm.chargeConf.cdn.period_bill_type === 'DAILY'">设定售价（元/Mbps/日）</span>
+                      <span ng-show="vm.chargeConf.cdn.period_bill_type === 'MONTHLY'">设定售价（元/Mbps/月）</span>
+                    </span>
+                  </th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="unit_price_ladder in vm.chargeConf.cdn.unit_price_ladder"
+                    ng-class="{'success': $index % 4 === 0,'warning': $index % 4 === 1,'danger': $index % 4 === 2,'info': $index % 4 === 3}">
+                  <td>{{unit_price_ladder.min}} - {{unit_price_ladder.max | getInfinity}}</td>
+                  <td>{{unit_price_ladder.unit_price}}</td>
+                  <td>
+                    <span ng-show="unit_price_ladder.is_min_guarantee">
+                      保底{{vm.dicMap.ladder_type[vm.chargeConf.cdn.service_type]}}
+                    </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-green">
+        <div class="panel-heading">
+          CDN 服务（动态使用）
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <label>计费模式： </label>
+                  {{vm.dicMap.service_type[vm.chargeConf.cdn_request.service_type]}}计费
+                </li>
+                <li class="list-group-item">
+                  <label>请求计费模式： </label>
+                  {{vm.dicMap.period_bill_type[vm.chargeConf.cdn_request.period_bill_type]}}请求次数计费
+                </li>
+                <li class="list-group-item">
+                  <label>定价配置： </label>
+                  {{vm.dicMap.price_type[vm.chargeConf.cdn_request.price_type]}}
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.cdn_request.price_type === 'COSTOM_PRICE'">
+                  <label>计价模式： </label>
+                  {{vm.dicMap.ladder_type[vm.chargeConf.cdn_request.ladder_type]}}
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.cdn_request.price_type === 'STANDARD_PRICE'">
+                  <label>服务价格： </label>
+                  {{vm.chargeConf.cdn_request.unit_price_ladder[0].unit_price}} 元/万次
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6" ng-show="vm.chargeConf.cdn_request.price_type === 'COSTOM_PRICE'">
+              <table class="table table-text-center">
+                <caption>动态请求阶梯价格</caption>
+                <thead>
+                <tr>
+                  <th>请求大小范围（万次）</th>
+                  <th>设定售价（元/GB）</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="unit_price_ladder in vm.chargeConf.cdn_request.unit_price_ladder"
+                    ng-class="{'success': $index % 4 === 0,'warning': $index % 4 === 1,'danger': $index % 4 === 2,'info': $index % 4 === 3}">
+                  <td>{{unit_price_ladder.min}} - {{unit_price_ladder.max | getInfinity}}</td>
+                  <td>{{unit_price_ladder.unit_price}}</td>
+                  <td>
+                    <span ng-show="unit_price_ladder.is_min_guarantee">
+                      保底{{vm.dicMap.ladder_type[vm.chargeConf.cdn_request.service_type]}}
+                    </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-green">
+        <div class="panel-heading">
+          存储服务计费
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <label>计费模式： </label>
+                  {{vm.dicMap.service_type[vm.chargeConf.storage.service_type]}}计费
+                </li>
+                <li class="list-group-item">
+                  <label>存储计费模式： </label>
+                  {{vm.dicMap.period_bill_type[vm.chargeConf.storage.period_bill_type]}}使用存储计费
+                </li>
+                <li class="list-group-item">
+                  <label>定价配置： </label>
+                  {{vm.dicMap.price_type[vm.chargeConf.storage.price_type]}}
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.storage.price_type === 'COSTOM_PRICE'">
+                  <label>计价模式： </label>
+                  {{vm.dicMap.ladder_type[vm.chargeConf.storage.ladder_type]}}
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.storage.price_type === 'STANDARD_PRICE'">
+                  <label>存储价格： </label>
+                  {{vm.chargeConf.storage.unit_price_ladder[0].unit_price}} 元/GB
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6" ng-show="vm.chargeConf.storage.price_type === 'COSTOM_PRICE'">
+              <table class="table table-text-center">
+                <caption>存储阶梯价格</caption>
+                <thead>
+                <tr>
+                  <th>存储大小范围（GB）</th>
+                  <th>设定售价（元/GB）</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="unit_price_ladder in vm.chargeConf.storage.unit_price_ladder"
+                    ng-class="{'success': $index % 4 === 0,'warning': $index % 4 === 1,'danger': $index % 4 === 2,'info': $index % 4 === 3}">
+                  <td>{{unit_price_ladder.min}} - {{unit_price_ladder.max | getInfinity}}</td>
+                  <td>{{unit_price_ladder.unit_price}}</td>
+                  <td>
+                    <span ng-show="unit_price_ladder.is_min_guarantee">
+                      保底{{vm.dicMap.ladder_type[vm.chargeConf.storage.service_type]}}
+                    </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          HTTPS 服务计费
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <label>计费模式： </label>
+                  {{vm.dicMap.service_type[vm.chargeConf.https.service_type]}}服务计费
+                </li>
+                <li class="list-group-item">
+                  <label>请求计费模式： </label>
+                  {{vm.dicMap.period_bill_type[vm.chargeConf.https.period_bill_type]}}请求次数计费
+                </li>
+                <li class="list-group-item">
+                  <label>定价配置： </label>
+                  {{vm.dicMap.price_type[vm.chargeConf.https.price_type]}}
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.https.price_type === 'COSTOM_PRICE'">
+                  <label>计价模式： </label>
+                  {{vm.dicMap.ladder_type[vm.chargeConf.https.ladder_type]}}
+                </li>
+                <li class="list-group-item"
+                    ng-show="vm.chargeConf.https.price_type === 'STANDARD_PRICE'">
+                  <label>服务价格： </label>
+                  {{vm.chargeConf.https.unit_price_ladder[0].unit_price}} 元/万次
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6" ng-show="vm.chargeConf.https.price_type === 'COSTOM_PRICE'">
+              <table class="table table-text-center">
+                <caption>HTTPS 阶梯价格</caption>
+                <thead>
+                <tr>
+                  <th>请求大小范围（万次）</th>
+                  <th>设定售价（元/万次）</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="unit_price_ladder in vm.chargeConf.https.unit_price_ladder"
+                    ng-class="{'success': $index % 4 === 0,'warning': $index % 4 === 1,'danger': $index % 4 === 2,'info': $index % 4 === 3}">
+                  <td>{{unit_price_ladder.min}} - {{unit_price_ladder.max | getInfinity}}</td>
+                  <td>{{unit_price_ladder.unit_price}}</td>
+                  <td>
+                    <span ng-show="unit_price_ladder.is_min_guarantee">
+                      保底{{vm.dicMap.ladder_type[vm.chargeConf.https.service_type]}}
+                    </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    费用支付配置
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-4">
+        <label>合同编号：</label>{{vm.chargeConf.pact_number}}
+      </div>
+      <div class="col-md-2">
+        <label>付费周期: </label>
+        {{vm.transPayPeriod(vm.chargeConf.pay_period)}}
+      </div>
+      <div class="col-md-12" ng-show="vm.chargeConf.remark">
+        <label>付款说明: </label>{{vm.chargeConf.remark}}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="col-md-8 col-md-offset-2">
+  <button class="btn btn-default pull-right" ng-click="refresh()">
+    <i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <form class="form-inline" ng-submit="search()">
+    <div class="input-group">
+      <input type="text" class="form-control" ng-model="params.query" name="clientSearch" style="width:300px;">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit" ng-disabled="isDisabled"><i class="fa fa-search"></i></button>
+      </span>
+    </div>
+    <span class="text-muted" style="margin-left:20px;font-size:13px;vertical-align:-8px">查询结果共<strong>{{resultTotal || 0}}</strong>条</span>
+  </form>
+  <hr>
+  <div class="form-inline form-filters">
+    <div class="form-group">
+      <label>所属公司</label>
+      <select class="form-control" ng-model="params.company" ng-options="company.type as company.name for company in companys">
+        <option value="">全部</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>归属区域</label>
+      <select class="form-control" ng-model="params.region_id" ng-options="region.key as region.value for region in regions">
+        <option value="">所有区域</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>负责人</label>
+      <select class="form-control" ng-model="params.user_id" ng-options="seller.user_id as seller.name for seller in sellers">
+        <option value="">{{defaultUserLabel}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>账号类型</label>
+      <select class="form-control" ng-model="params.account_type" ng-options="k as v for (k,v) in MAP.account_type">
+        <option value="">全部</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>客户状况</label>
+      <select class="form-control" ng-model="params.registered" ng-options="k as v for (k,v) in MAP.registered_status">
+        <option value="">全部</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>引入方式</label>
+      <select class="form-control" ng-model="params.call_type" ng-options="k as v for (k,v) in MAP.call_type">
+        <option value="">全部</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="col-md-12">
+  <hr>
+</div>
+<div class="col-md-8 col-md-offset-2">
+  <table class="table table-bordered">
+    <thead>
+      <tr class="active">
+        <th width="14%">所属</th>
+        <th width="34%">客户</th>
+        <th width="10%">状态</th>
+        <th width="12%">地区</th>
+        <th width="10%">负责人</th>
+        <th width="14%">创建日期</th>
+        <th width="6%">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="client in clients | orderBy : orderConflict">
+        <td>{{clientType[client.type]}}</td>
+        <td>{{client.client_name}}<span ng-show="client.account_name">({{client.account_name}})</span></td>
+        <td>{{MAP.account_status[client.status]}}</td>
+        <td>{{client.location || '-'}}</td>
+        <td>{{client.user_name}}</td>
+        <td>{{client.created_at * 1000 | date: 'yyyy-MM-dd'}}</td>
+        <td ng-switch="client.type">
+          <a ng-switch-when="conflict" ui-sref="clients.conflict({account_name: client.account_name})" class="btn btn-xs btn-default">冲突处理</a>
+          <a ng-switch-when="pri_potential_mine" ui-sref="clients.potential_detail({id: client.client_id})" class="btn btn-xs btn-default">详情</a>
+          <a ng-switch-when="pri_registered_mine" ui-sref="clients.personal.detail.info({account_name: client.account_name})" class="btn btn-xs btn-default">详情</a>
+          <a ng-switch-when="pub_potential" ui-sref="clients.potential_detail({id: client.client_id})" class="btn btn-xs btn-default">详情</a>
+          <a ng-switch-when="pub_registered" ui-sref="clients.personal.detail.info({account_name: client.account_name})" class="btn btn-xs btn-default">详情</a>
+          <span ng-switch-when="pri_potential_other">
+            <a ng-if="self.rights_check['1_get_latent_client_detail']" ui-sref="clients.potential_detail({id: client.client_id})" class="btn btn-xs btn-default">详情</a>
+            <a ng-if="!self.rights_check['1_get_latent_client_detail']" ng-click="isForbidden=true" ng-disabled="isForbidden" ng-class="{true: 'btn btn-xs btn-danger', false: 'btn btn-xs btn-default'}[isForbidden]">{{isForbidden ? '无权查看' : '详情'}}</a>
+          </span>
+          <span ng-switch-when="pri_registered_other">
+            <a ng-if="self.rights_check['1_get_register_client_detail']" ui-sref="clients.personal.detail.info({account_name: client.account_name})" class="btn btn-xs btn-default">详情</a>
+            <a ng-if="!self.rights_check['1_get_register_client_detail']" ng-click="isForbidden=true" ng-disabled="isForbidden" ng-class="{true: 'btn btn-xs btn-danger', false: 'btn btn-xs btn-default'}[isForbidden]">{{isForbidden ? '无权查看' : '详情'}}</a>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <nav class="pull-right">
+    <pagination total-items="totalItems" items-per-page="page.size" ng-model="page_num_to_go" max-size="5" class="pagination-sm"
+    boundary-links="true" rotate="false" first-text="首页" last-text="尾页" previous-text="前一页" next-text="后一页">
+    </pagination>
+  </nav>
+</div>

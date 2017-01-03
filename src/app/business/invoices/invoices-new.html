@@ -1,0 +1,213 @@
+<p class="text-info">温馨提示：发票申请中所有信息项都必须填写；2015年5月之前的订单请核查是否开过发票！</p>
+<form class="form-horizontal">
+  <h4>开票客户</h4>
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">索要客户</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" ng-model="invoice.account_name" disabled required>
+      </div>
+      <div class="col-sm-4">
+        <button type="button" ng-click="searchClient()" class="btn btn-primary">开取十月前订单发票</button>
+        <button type="button" ng-click="searchBills()" class="btn btn-info">开取十月后账单发票</button>
+      </div>
+  </div>
+
+  <h4>开票信息</h4>
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">开票类型</label>
+    <div class="col-sm-6">
+      <p class="form-control-static" ng-show="invoice.tag_type === 'ORDER_TAG'">订单发票</p>
+      <p class="form-control-static" ng-show="invoice.tag_type === 'INVOICE_TAG'">账单发票</p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">开票订单</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" ng-model="invoice.order_numbers" ng-disabled="true">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">发票金额</label>
+    <div class="col-sm-6">
+      <input type="number" class="form-control" id="" ng-model="invoice.sum" ng-disabled="true">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">备注</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.remarks">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">发票内容</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.content">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-sm-2">开具类型</label>
+    <div class="col-sm-3">
+      <label><input type="radio" name="open_type" ng-model="invoice.open_type" value="COMPANY" ng-change="change_type()">企业</label>
+    </div>
+    <div class="col-sm-3">
+      <label><input type="radio" name="open_type" ng-model="invoice.open_type" value="PERSONAL" ng-change="change_type()">个人</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">发票抬头</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.title" ng-disabled="invoice.open_type === 'PERSONAL'">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-sm-2">发票类型</label>
+    <div class="col-sm-3">
+      <label><input type="radio" name="invoice_type" ng-model="invoice.invoice_type" value="VAT_NORMAL" ng-disabled="invoice.open_type === 'PERSONAL'">增值税普通发票</label>
+    </div>
+    <div class="col-sm-3">
+      <label><input type="radio" name="invoice_type" ng-model="invoice.invoice_type" value="VAT_PRO" ng-disabled="invoice.open_type === 'PERSONAL'">增值税专用发票</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">纳税人识别号</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.taxpayer_number" >
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">基本户开户银行名称</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.open_bank" >
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">基本户开户账号</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.open_account" >
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">注册场所地址：</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.regist_place" >
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">注册固定电话：</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="" ng-model="invoice.tel" >
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">营业执照复印件：</label>
+    <div class="col-sm-6">
+      <div ngf-drop ng-model="files.business_licence_pic" class="drop-box"
+        ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true">请将营业执照复印件图片拖拽至此</div>
+        <div class="col-sm-12"><progressbar class="progress-striped active" max="100" value="progressPercentage.business_licence_pic" type="info"><i>{{progressPercentage.business_licence_pic}} %</i></progressbar></div>
+    </div>
+    <div class="col-sm-4 invoice-upload-preview" ng-show="invoice.business_licence_pic">
+      <img ng-src="{{'http://' + invoice.domain + invoice.business_licence_pic + '?_upt=' + invoice.business_licence_pic_upt}}" alt="">
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">税务登记复印件：</label>
+    <div class="col-sm-6">
+      <div ngf-drop ng-model="files.tax_regist_pic" class="drop-box"
+        ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true">请将税务登记复印件图片拖拽至此</div>
+        <div class="col-sm-12"><progressbar class="progress-striped active" max="100" value="progressPercentage.tax_regist_pic" type="info"><i>{{progressPercentage.tax_regist_pic}} %</i></progressbar></div>
+    </div>
+    <div class="col-sm-4 invoice-upload-preview" ng-show="invoice.tax_regist_pic">
+      <img ng-src="{{'http://' + invoice.domain + invoice.tax_regist_pic + '?_upt=' + invoice.tax_regist_pic_upt}}" alt="">
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">一般纳税人资格认证复印件：</label>
+    <div class="col-sm-6">
+      <div ngf-drop ng-model="files.rate_payer_pic" class="drop-box"
+        ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true">请将一般纳税人资格认证复印件图片拖拽至此</div>
+        <div class="col-sm-12"><progressbar class="progress-striped active" max="100" value="progressPercentage.rate_payer_pic" type="info"><i>{{progressPercentage.rate_payer_pic}} %</i></progressbar></div>
+    </div>
+    <div class="col-sm-4 invoice-upload-preview" ng-show="invoice.rate_payer_pic">
+      <img ng-src="{{'http://' + invoice.domain + invoice.rate_payer_pic + '?_upt=' + invoice.rate_payer_pic_upt}}" alt="">
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="invoice.invoice_type === 'VAT_PRO'">
+    <label for="" class="col-sm-2 control-label">开户许可证：</label>
+    <div class="col-sm-6">
+      <div ngf-drop ng-model="files.open_licence_pic" class="drop-box"
+        ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true">请将开户许可证图片拖拽至此</div>
+        <div class="col-sm-12"><progressbar class="progress-striped active" max="100" value="progressPercentage.open_licence_pic" type="info"><i>{{progressPercentage.open_licence_pic}} %</i></progressbar></div>
+    </div>
+    <div class="col-sm-4 invoice-upload-preview" ng-show="invoice.open_licence_pic">
+      <img ng-src="{{'http://' + invoice.domain + invoice.open_licence_pic + '?_upt=' + invoice.open_licence_pic_upt}}" alt="">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label"></label>
+    <div class="col-sm-6">
+      <label><input type="checkbox" ng-model="setDeafaultInvoiceInfo">设置为默认发票资料</label>
+    </div>
+  </div>
+
+  <h4>邮寄信息</h4>
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">收件人：</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" ng-model="invoice.addressee">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">联系电话：</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" ng-model="invoice.phone_number">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">收件地址：</label>
+    <div class="col-sm-3">
+      <select class="form-control" ng-model="invoice.province" ng-options="province.name as province.name for province in provinces" ng-change="getCities()">
+      </select>
+    </div>
+    <div class="col-sm-3">
+      <select class="form-control" ng-model="invoice.city">
+        <option value="{{city.name}}" ng-repeat="city in cities">{{city.name}}</option>
+      </select>
+    </div>
+    <br>
+    <div class="col-sm-6 col-sm-offset-2">
+      <input type="text" class="form-control" ng-model="invoice.detail_add" placeholder="详细地址">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label"></label>
+    <div class="col-sm-6">
+      <label><input type="checkbox" ng-model="setDefaultPostInfo">设置为默认发票邮寄地址</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-6 col-sm-offset-2">
+      <a href="" class="btn btn-primary" ng-click="submit()">确定创建</a>
+      <a ui-sref="^" class="btn btn-default">取消关闭</a>
+    </div>
+  </div>
+
+</form>

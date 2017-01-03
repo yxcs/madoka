@@ -1,0 +1,196 @@
+<h3>{{vm.client.name}}({{vm.client.account_name}})</h3>
+<hr>
+<div class="panel panel-default">
+  <div class="panel-body wealth clearfix">
+    <div class="pull-right"><a href ng-click="vm.refreshDebts()"><i class="fa fa-refresh"></i> 同步金额数据</a></div>
+    <div class="wealth-item" style="width: 160px;">
+      <h5>充值余额</h5>
+      <p>
+        <span class="integer">{{(vm.debts.pay_remain | number: 2).split('.')[0]}}</span><span class="decimal">.{{(vm.debts.pay_remain | number: 2).split('.')[1]}}(元)</span>
+      </p>
+    </div>
+    <div class="wealth-item">
+      <h5>返赠余额</h5>
+      <p>
+        <span class="integer">{{(vm.debts.bonus_remain | number: 2).split('.')[0]}}</span><span class="decimal">.{{(vm.debts.bonus_remain | number: 2).split('.')[1]}}(元)</span>
+      </p>
+    </div>
+    <div class="wealth-item" ng-show="vm.debts.debt_money">
+      <h5>欠费金额</h5>
+      <p>
+        <span class="integer">{{(vm.debts.debt_money | number: 2).split('.')[0]}}</span><span class="decimal">.{{(vm.debts.debt_money | number: 2).split('.')[1]}}(元)</span>
+      </p>
+    </div>
+    <div class="wealth-item">
+      <h5>代金券</h5>
+      <p>
+        <span class="integer">{{vm.debts.coupon | number: 0}}</span><span class="decimal">(张)</span>
+      </p>
+    </div>
+    <div class="wealth-item">
+      <h5>流量包</h5>
+      <p>
+        <span class="integer">{{(vm.debts.flow | byteToGb).split('.')[0]}}</span><span class="decimal">.{{(vm.debts.flow | byteToGb).split('.')[1]}}(GB)</span>
+      </p>
+    </div>
+    <div class="wealth-item" style="width:300px;text-align:left;margin-left: 0px;">
+      <ul class="list-unstyled">
+        <li ng-show="vm.state.chargeConfCount">
+          <i class="fa fa-info-circle"></i>
+          <a href ui-sref="business.charges.detail({id: vm.state.chargeConfId})" class="text-warning" style="margin-left: 10px;" title="点击查看详情"
+          target="_blank">
+            有 {{vm.state.chargeConfCount}} 条启用中计费配置
+          </a>
+        </li>
+        <li ng-show="vm.state.noChargeBillCount">
+          <i class="fa fa-info-circle"></i>
+          <a href class="text-warning" style="margin-left: 10px;" title="点击查看详情" ui-sref="finance.bills.detail({id: vm.state.noChargeBill[0].bill_id})" target="_blank" ng-show="vm.state.noChargeBillCount === 1">
+            有 {{vm.state.noChargeBillCount}} 条未扣款月账单
+          </a>
+          <a href class="text-warning" style="margin-left: 10px;" title="点击查看详情" ui-sref="finance.bills" target="_blank" ng-show="vm.state.noChargeBillCount > 1">
+            有 {{vm.state.noChargeBillCount}} 条未扣款月账单
+          </a>
+        </li>
+        <li ng-show="(vm.state.invoicesCount[0] + vm.state.invoicesCount[1]) > 0">
+          <i class="fa fa-info-circle"></i>
+          <a href class="text-warning" style="margin-left: 10px;" title="点击查看详情" ui-sref="business.invoices({'account_name': vm.client.account_name})" target="_blank">
+            有 {{vm.state.invoicesCount[0]}} 条未开票发票、{{vm.state.invoicesCount[1]}} 条已开票发票
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="form-inline">
+      <div class="actionbar clearfix form-group pull-right">
+        <div class="pull-right">
+          <a class="btn btn-primary" ui-sref="finance.transactions.new({account_name: vm.client.account_name})" ng-show="self.rights_check['8_recharge_opt']"
+          target="_blank">
+            <i class="fa fa-plus"></i> 充值加款
+          </a>
+          <a class="btn btn-primary" ui-sref="business.invoices.new" ng-show="self.rights_check['4_create_invoice']" target="_blank">
+            <i class="fa fa-plus"></i> 创建发票
+          </a>
+          <!--<a class="btn btn-primary" ui-sref="business.charges.new" ng-show="self.rights_check['6_create_chargeconf']" target="_blank">
+            <i class="fa fa-plus"></i> 创建计费配置
+          </a>-->
+        </div>
+      </div>
+      <div class="form-group" style="margin-right:20px">
+        <label>交易类型：</label>
+        <select class="form-control" ng-options="k as v for (k,v) in vm.trans_types" ng-model="vm.params.in_out_type">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>扣款时间：</label>
+        <input date-range-picker class="form-control date-picker" type="text" ng-model="vm.dateRange" style="width: 250px" />
+      </div>
+    </div>
+    <hr>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>时间</th>
+          <th>交易类型</th>
+          <th>金额 | 明细(元)</th>
+          <th>余额(元)</th>
+          <th>备注</th>
+          <th style="text-align: center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="transLog in vm.transLogs">
+          <td width="15%">{{transLog.tran_create_time * 1000 | date: 'yyyy-MM-dd HH:mm'}}</td>
+          <td width="15%">{{transLog.in_out_type | transtypes}}</td>
+          <td width="25%">
+            <div ng-show="transLog.in_out_type  === 'RECHARGE' || transLog.in_amount">
+              <span class="text-success" style="font-size: 16px;font-weight: 700;">+ {{transLog.in_amount | number: 2}}</span>
+              <span popover-template="'inOutDetail.html'" popover-placement="right" popover-trigger="mouseenter" ng-show="transLog.extra.pay !== undefined && transLog.extra.bonus !== undefined">
+                <i class="fa fa-align-justify"></i>
+              </span>
+              <p ng-show="transLog.extra.bonus" style="color: #9a9a9a;margin:0;font-size:12px;">（返赠：{{transLog.extra.bonus | number: 2}}）</p>
+            </div>
+            <div ng-show="transLog.in_out_type  !== 'RECHARGE' || transLog.out_amount">
+              <span class="text-danger" style="font-size: 16px;font-weight: 700;">- {{transLog.out_amount | number: 2}}</span>
+              <span popover-template="'billDetail.html'" popover-placement="right" popover-trigger="mouseenter" ng-show="transLog.extra.bill.bill_id">
+                <i class="fa fa-align-justify"></i>
+              </span>
+              <p ng-show="(transLog.extra.bill.total !== undefined && transLog.extra.bill.total !== transLog.extra.bill.earn) || transLog.extra.bill.discount || transLog.extra.bill.bonus_cut"
+              style="color: #9a9a9a;margin:0;font-size:12px;">（服务费用：{{transLog.extra.bill.total | number: 2}}）</p>
+            </div>
+          </td>
+          <td width="10%">{{transLog.balance | number: 2}}</td>
+          <td width="25%">
+            <p style="font-size:12px;color:#999;margin:0;padding:0;" ng-show="transLog.extra.payment_method">付款方式：{{transLog.extra.payment_method | paymentMethod}}</p>
+            <p style="font-size:12px;color:#999;margin:0;padding:0;" ng-show="transLog.extra.extra.trade_no">交易单号：{{transLog.extra.extra.trade_no}}</p>
+            <p style="font-size:12px;color:#999;margin:0;padding:0;" ng-show="transLog.extra.remark">备注：{{transLog.extra.remark}}</p>
+          </td>
+          <td width="10%" style="text-align: center">
+            <span ng-show="transLog.extra.bill.bill_id">
+              <a class="btn btn-xs btn-info" ui-sref="finance.bills.detail({id: transLog.extra.bill.bill_id})" ng-click="$event.stopPropagation()" target="_blank">详情</a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <nav class="pull-right">
+      <ul class="pagination">
+        <li ng-class="{ disabled: !vm.page.since}" class="pointer">
+          <a ng-click="vm.prev()"><span>&laquo;前一页</span>
+          </a>
+        </li>
+        <li ng-class="{ disabled: !vm.page.max}" class="pointer">
+          <a ng-click="vm.next()"><span>后一页&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+<script type="text/ng-template" id="inOutDetail.html">
+  <table class="table" style="overflow: hidden;margin-bottom:0">
+    <tbody>
+      <tr ng-if="transLog.extra.pay !== undefined">
+        <th style="white-space:nowrap;text-align:right;border-top:0">充值金额</th>
+        <td style="white-space:nowrap;border-top:0">{{transLog.extra.pay | number: 2}}</td>
+      </tr>
+      <tr>
+        <th style="white-space:nowrap;text-align:right;">返赠余额</th>
+        <td style="white-space:nowrap;">{{transLog.extra.bonus | number: 2}}</td>
+      </tr>
+      <tr ng-if="transLog.extra.bonus !== undefined && transLog.extra.bonus !== undefined">
+        <th style="white-space:nowrap;text-align:right;">加款折扣率</th>
+        <td style="white-space:nowrap;">{{transLog.extra.pay / (transLog.extra.pay + transLog.extra.bonus) | number: 4}}</td>
+      </tr>
+    </tbody>
+  </table>
+</script>
+<script type="text/ng-template" id="billDetail.html">
+  <table class="table" style="overflow: hidden;margin-bottom:0">
+    <tbody>
+      <tr ng-if="transLog.extra.bill !== undefined">
+        <th style="white-space:nowrap;text-align:right;border-top:0">服务费用</th>
+        <td style="white-space:nowrap;border-top:0">{{transLog.extra.bill.total | number: 2}}</td>
+      </tr>
+      <tr>
+        <th style="white-space:nowrap;text-align:right;">优惠金额</th>
+        <td style="white-space:nowrap;">{{transLog.extra.bill.discount | number: 2}}</td>
+      </tr>
+      <tr>
+        <th style="white-space:nowrap;text-align:right;">扣款金额</th>
+        <td style="white-space:nowrap;">{{transLog.extra.bill.invoice | number: 2}}</td>
+      </tr>
+      <tr>
+        <th style="white-space:nowrap;text-align:right;">返赠减免</th>
+        <td style="white-space:nowrap;">{{transLog.extra.bill.bonus_cut | number: 2}}</td>
+      </tr>
+      <tr>
+        <th style="white-space:nowrap;text-align:right;">实收金额</th>
+        <td style="white-space:nowrap;">{{transLog.extra.bill.earn | number: 2}}</td>
+      </tr>
+    </tbody>
+  </table>
+</script>

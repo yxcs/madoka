@@ -1,0 +1,125 @@
+<div class="panel panel-default" ng-if="vm.dealData.status === 'PENDING'">
+  <div class="panel-heading">账户加款</div>
+  <div class="panel-body">
+    <div class="col-md-7 col-md-offset-1">&nbsp;</div>
+    <div class="col-md-6 col-md-offset-2">
+    	<div class="col-md-6"><p>充值编号：{{vm.dealData.order_id}}</p></div>
+    	<div class="col-md-6"><p>处理状态：待充值</p></div>
+    	<div class="col-md-6"><p>申请时间：{{vm.dealData.created_at * 1000 | date: 'yyyy-MM-dd HH:mm'}}</p></div>
+    	<div class="col-md-6"><p>处理时间：-</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+    	<div class="col-md-12"><p>客户名称：{{vm.dealData.client_name}}</p></div>
+    	<div class="col-md-6"><p>云存储帐号：{{vm.dealData.account_name}}</p></div>
+    	<div class="col-md-6"><p>负责人：{{vm.dealData.user_name}}</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+    	<div class="col-md-12"><p>加款金额：{{vm.dealData.pay | number : 2}} 元</p></div>
+    	<div class="col-md-12"><p>充值优惠：加款折扣，充值返赠</p></div>
+    	<div class="col-md-6"><p>返赠金额：{{vm.dealData.bonus | number : 2}}</p></div>
+    	<div class="col-md-6"><p>加款折扣：{{vm.dealData.pay === vm.dealData.money ? '1' : (vm.dealData.pay / vm.dealData.money | number : 4)}}</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+    	<div class="col-md-12"><p>打款方式：{{vm.payType[vm.dealData.extra.pay_type]}}</p></div>
+    	<div class="col-md-12"><p>备注：{{vm.dealData.extra.remark}}</p></div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-3">
+      <div class="col-md-12">
+      	  <button class="btn btn-sm btn-primary" ng-click="vm.dealPass(vm.dealData)">确认加款</button>
+    	  <button class="btn btn-sm btn-primary" ng-click="vm.dealCancel(vm.order_id)">取消加款</button>
+    	  <button class="btn btn-sm btn-danger" ng-click="vm.dealDelete(vm.order_id)">删除</button>
+    	  <a class="btn btn-sm btn-default" ui-sref="finance.details">取消</a>
+      </div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-1">&nbsp;</div>
+  </div>
+</div>
+
+<div class="panel panel-default" ng-if="vm.dealData.status !== 'PENDING' && vm.dealData.status !== 'CANCEL'">
+  <div class="panel-heading">账户加款</div>
+  <div class="panel-body">
+    <div class="col-md-7 col-md-offset-1">&nbsp;</div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-6"><p>充值编号：{{vm.dealData.order_id}}</p></div>
+        <div class="col-md-6"><p>处理状态：已充值</p></div>
+        <div class="col-md-6"><p>申请时间：{{vm.dealData.pay_time * 1000 | date: 'yyyy-MM-dd HH:mm'}}</p></div>
+        <!-- <div class="col-md-6"><p>处理时间：{{vm.dealData.updated_at * 1000 | date: 'yyyy-MM-dd HH:mm'}}</p></div> -->
+        <div class="col-md-12"><p>充值后余额：{{vm.dealData.balance}}</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-12"><p>客户名称：{{vm.dealData.client_name}}</p></div>
+        <div class="col-md-6"><p>云存储帐号：{{vm.dealData.account_name}}</p></div>
+        <div class="col-md-6"><p>负责人：{{vm.dealData.user_name}}</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-12"><p>加款金额：{{vm.dealData.pay | number : 2}} 元</p></div>
+        <div class="col-md-12"><p>充值优惠：加款折扣，充值返赠</p></div>
+        <div class="col-md-6"><p>返赠金额：{{vm.dealData.bonus | number : 2}}</p></div>
+        <div class="col-md-6"><p>加款折扣：{{vm.dealData.pay === vm.dealData.money ? '1' : (vm.dealData.pay / vm.dealData.money | number : 4)}}</p></div>
+    </div>
+    <!-- <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-12"><p>打款方式：{{vm.payType[vm.dealData.extra.pay_type]}}</p></div>
+        <div class="col-md-12"><p>备注：{{vm.dealData.extra.remark}}</p></div>
+    </div> -->
+
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-3">
+      <div class="col-md-12">
+          <a class="btn btn-sm btn-default" ui-sref="finance.details">返回</a>
+      </div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-1">&nbsp;</div>
+  </div>
+</div>
+
+<div class="panel panel-default" ng-if="vm.dealData.status === 'CANCEL'">
+  <div class="panel-heading">账户加款</div>
+  <div class="panel-body">
+    <div class="col-md-7 col-md-offset-1">&nbsp;</div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-6"><p>充值编号：{{vm.dealData.order_id}}</p></div>
+        <div class="col-md-6"><p>处理状态：已取消</p></div>
+        <div class="col-md-6"><p>申请时间：{{vm.dealData.created_at * 1000 | date: 'yyyy-MM-dd HH:mm'}}</p></div>
+        <div class="col-md-6"><p>处理时间：{{vm.dealData.updated_at * 1000 | date: 'yyyy-MM-dd HH:mm'}}</p></div>
+        <div class="col-md-12"><p>取消原因：{{vm.dealData.reason}}</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-12"><p>客户名称：{{vm.dealData.client_name}}</p></div>
+        <div class="col-md-6"><p>云存储帐号：{{vm.dealData.account_name}}</p></div>
+        <div class="col-md-6"><p>负责人：{{vm.dealData.user_name}}</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-12"><p>加款金额：{{vm.dealData.pay | number : 2}} 元</p></div>
+        <div class="col-md-12"><p>充值优惠：加款折扣，充值返赠</p></div>
+        <div class="col-md-6"><p>返赠金额：{{vm.dealData.bonus | number : 2}}</p></div>
+        <div class="col-md-6"><p>加款折扣：{{vm.dealData.pay === vm.dealData.money ? '1' : (vm.dealData.pay / vm.dealData.money | number : 4)}}</p></div>
+    </div>
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-12"><p>打款方式：{{vm.payType[vm.dealData.extra.pay_type]}}</p></div>
+        <div class="col-md-12"><p>备注：{{vm.dealData.extra.remark}}</p></div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-1"><hr></div>
+    <div class="col-md-6 col-md-offset-3">
+      <div class="col-md-12">
+          <button class="btn btn-sm btn-danger" ng-click="vm.dealDelete(vm.order_id)">删除</button>
+          <a class="btn btn-sm btn-default" ui-sref="finance.details">取消</a>
+      </div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-1">&nbsp;</div>
+  </div>
+</div>

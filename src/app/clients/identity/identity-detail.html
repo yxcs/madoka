@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="vm.skip()">&times;</button>
+  <h4>认证信息</h4>
+</div>
+<div class="modal-body">
+  <div class="panel card">
+    <div class="panel-body">
+      <div>
+        <dl class="dl-horizontal">
+          <dt style="font-weight:normal;" ng-show="vm.verifies.client_type === 'company'">营业执照注册号</dt>
+          <dt style="font-weight:normal;" ng-show="vm.verifies.client_type === 'person'">身份证号</dt>
+          <dd>{{vm.verifies.papers_id}}</dd>
+        </dl>
+        <dl class="dl-horizontal" ng-show="vm.verifies.client_type === 'company'">
+          <dt style="font-weight:normal;">组织机构代码</dt>
+          <dd>{{vm.verifies.extra.org_code}}</dd>
+        </dl>
+        <dl class="dl-horizontal" ng-show="vm.params.verify_status === 'refuse'">
+          <dt style="font-weight:normal;">处理时间</dt>
+          <dd>{{vm.verifies.created_at * 1000| date: 'yyyy-MM-dd HH:mm:ss'}}</dd>
+        </dl>
+        <dl class="dl-horizontal" ng-show="vm.params.verify_status === 'refuse'">
+          <dt style="font-weight:normal;">拒绝原因</dt>
+          <dd>{{vm.verifies.reject_reason}}</dd>
+        </dl>
+      </div>
+      <div style="margin-left:-18px;margin-right:-18px;margin-bottom:20px;">
+        <div ng-if="vm.verifies.extra.img_1">
+          <img width="100%" ng-click="vm.openLightboxModal(vm.verifies.extra.img_1)" ng-src="{{vm.verifies.extra.img_1}}"></img>
+        </div>
+        <div ng-if="vm.verifies.extra.img_2" style="margin-top:10px;">
+          <img width="100%" ng-click="vm.openLightboxModal(vm.verifies.extra.img_2)" ng-src="{{vm.verifies.extra.img_2}}"></img>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

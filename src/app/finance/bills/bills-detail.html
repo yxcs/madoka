@@ -1,0 +1,389 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-3 text-danger ">
+        <strong style="font-size: 20px" ng-show="vm.detail.is_deducted && vm.detail.is_deductable">出错了，请联系管理员！</strong>
+        <strong style="font-size: 20px" ng-show="vm.detail.is_deducted && !vm.detail.is_deductable">账单已扣款！</strong>
+        <strong style="font-size: 20px" ng-show="!vm.detail.is_deducted && vm.detail.is_deductable">账单未扣款！</strong>
+        <strong style="font-size: 20px" ng-show="!vm.detail.is_deducted && !vm.detail.is_deductable">账单无需扣款！</strong>
+      </div>
+      <div class="col-md-3">
+        <strong>出账时间：</strong>
+        {{vm.detail.bill_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}
+      </div>
+      <div class="col-md-3" ng-show="vm.detail.deduct_time && (vm.detail.is_deducted || vm.detail.is_deductable)">
+        <strong>扣款时间：</strong>
+        {{vm.detail.deduct_time ? (vm.detail.deduct_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss') : '-'}}
+      </div>
+      <div class="col-md-3" ng-show="vm.detail.remark">
+        <strong>扣款说明：</strong>
+         {{vm.detail.remark}}
+      </div>
+      <div class="col-md-3">
+        <a class="btn btn-danger"
+           ui-sref=".charge"
+           ng-show="vm.detail.is_deductable && !vm.detail.is_deducted && self.rights_check['8_month_bill_opt']">执行扣款</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-3">
+        <strong>客户名称：</strong>
+        {{vm.detail.client_name}}
+      </div>
+      <div class="col-md-3">
+        <strong>云存储账号：</strong>
+        {{vm.detail.account_name}} <i class="glyphicon glyphicon-flag text-muted" tooltip-placement="right"
+                                      tooltip="合同客户" ng-show="vm.detail.is_pact"></i>
+      </div>-
+      <div class="col-md-3">
+        <strong>负责人：</strong>
+        {{vm.detail.user_name}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    账单信息
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-3">
+        <strong>账单编号：</strong>
+        {{vm.detail.bill_id}}
+      </div>
+      <div class="col-md-6">
+        <strong>计费时间：</strong>
+        {{vm.detail.start_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}} 至 {{vm.detail.end_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}
+      </div>
+      <br/>
+      <br/>
+      <div class="col-md-3">
+        <strong>费用合计：</strong>
+        {{vm.detail.total_cost | number: 2}} 元
+      </div>
+      <div class="col-md-3">
+        <strong>优惠金额：</strong>
+        {{((vm.detail.total_cost - vm.detail.reality_pay) < 0 ? 0 :  (vm.detail.total_cost - vm.detail.reality_pay)) | number: 2}} 元（代金券抵扣 {{vm.detail.preferential.cash}} 元）
+      </div>
+      <div class="col-md-3">
+        <strong>实付金额：</strong>
+        {{vm.detail.reality_pay | number: 2}} 元<span class="text-danger" ng-show="vm.detail.is_deductable && !vm.detail.is_deducted">（尚未扣款）</span>
+      </div>
+      <div class="col-md-2">
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default"  ng-show="!vm.flag.isMonth">
+  <div class="panel-body">
+    <table class="table table-striped">
+      <caption>
+        <span ng-show="vm.detail.service_type === 'FLOW'">CDN 服务费用（流量费用）</span>
+        <span ng-show="vm.detail.service_type === 'BANDWIDTH'">CDN 服务费用（带宽费用）</span>
+      </caption>
+      <thead>
+      <tr>
+        <th style="width:35%">
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">流量（GB）</span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">带宽（Mbps）</span>
+        </th>
+        <th style="width:35%">
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">计费单价（元/GB）</span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">计费单价（元/Mbps/月）</span>
+        </th>
+        <th style="width:30%">费用金额（元）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">
+            {{vm.detail.cdn.amount | byteToGb}}
+            <span ng-show="vm.flag.isPfFLOW">
+                （流量包已抵扣{{vm.detail.preferential.resource[0].amount | digiUnit}}）
+            </span>
+          </span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">{{vm.detail.cdn.amount | bpsToMbps}}</span>
+        </td>
+        <td>
+          <span ng-show="vm.detail.cdn.unit_price_ladder.length === 1">
+            {{vm.detail.cdn.unit_price_ladder[0].unit_price}}
+          </span>
+          <span ng-show="vm.detail.cdn.unit_price_ladder.length > 1">
+            <ul>
+              <li ng-repeat="ul in vm.detail.cdn.unit_price_ladder">
+                {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+              </li>
+            </ul>
+          </span>
+        </td>
+        <td>{{vm.detail.cdn.fee}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-striped">
+      <caption>
+        CDN 服务费用（请求计费）
+      </caption>
+      <thead>
+      <tr>
+        <th style="width:35%">请求次数（次）</th>
+        <th style="width:35%">计费单价（元/万次）</th>
+        <th style="width:30%">费用金额（元）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          {{vm.detail.cdn_request.amount}}
+        </td>
+        <td>
+          <span ng-show="vm.detail.cdn_request.unit_price_ladder.length === 1">
+            {{vm.detail.cdn_request.unit_price_ladder[0].unit_price}}
+          </span>
+          <span ng-show="vm.detail.cdn_request.unit_price_ladder.length > 1">
+            <ul>
+              <li ng-repeat="ul in vm.detail.cdn_request.unit_price_ladder">
+                {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+              </li>
+            </ul>
+          </span>
+        </td>
+        <td>{{vm.detail.cdn_request.fee}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-striped">
+      <caption>存储服务费用（存储计费）</caption>
+      <thead>
+      <tr>
+        <th style="width:35%">存储（GB）</th>
+        <th style="width:35%">计费单价（元/GB）</th>
+        <th style="width:30%">费用金额（元）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          {{vm.detail.storage.amount | byteToGb}} <span ng-show="vm.detail.storage.discount">（流量已抵扣{{vm.detail.storage.discount | digiUnit}}）</span>
+        </td>
+        <td>
+          <span ng-show="vm.detail.storage.unit_price_ladder.length === 1">
+            {{vm.detail.storage.unit_price_ladder[0].unit_price}}
+          </span>
+          <span ng-show="vm.detail.storage.unit_price_ladder.length > 1">
+            <ul>
+              <li ng-repeat="ul in vm.detail.storage.unit_price_ladder">
+                {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+              </li>
+            </ul>
+          </span>
+        </td>
+        <td>{{vm.detail.storage.fee}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-striped">
+      <caption>
+        HTTPS 服务费用（请求计费）
+      </caption>
+      <thead>
+      <tr>
+        <th style="width:35%">请求次数（次）</th>
+        <th style="width:35%">计费单价（元/万次）</th>
+        <th style="width:30%">费用金额（元）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          {{vm.detail.https.amount}}
+        </td>
+        <td>
+          <span ng-show="vm.detail.https.unit_price_ladder.length === 1">
+            {{vm.detail.https.unit_price_ladder[0].unit_price}}
+          </span>
+          <span ng-show="vm.detail.https.unit_price_ladder.length > 1">
+            <ul>
+              <li ng-repeat="ul in vm.detail.https.unit_price_ladder">
+                {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+              </li>
+            </ul>
+          </span>
+        </td>
+        <td>{{vm.detail.https.fee}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="panel panel-default" ng-show="vm.flag.isMonth">
+  <div class="panel-heading">
+    服务计费明细
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped" ng-show="vm.detail.cdn.period_bill_type === 'MONTHLY'">
+      <caption>
+        <span ng-show="vm.detail.cdn.service_type === 'FLOW'">cdn 服务费用（流量计费）</span>
+        <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">cdn 服务费用（带宽计费）</span>
+      </caption>
+      <thead>
+      <tr>
+        <th>
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">计费流量（GB）</span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">计费带宽（Mbps）</span>
+        </th>
+        <th>
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">计费单价（元/GB）</span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">计费单价（元/Mbps/月）</span>
+        </th>
+        <th>费用金额（元）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">
+            {{vm.detail.cdn.amount | byteToGb}}
+            <span ng-show="vm.flag.isPfFLOW">
+                （流量包已抵扣{{vm.detail.preferential.resource[0].amount | digiUnit}}）
+            </span>
+          </span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">{{vm.detail.cdn.amount | bpsToMbps}}</span>
+        </td>
+        <td>
+          <span ng-show="vm.detail.cdn.unit_price_ladder.length === 1">
+            {{vm.detail.cdn.unit_price_ladder[0].unit_price}}
+          </span>
+          <span ng-show="vm.detail.cdn.unit_price_ladder.length > 1">
+            <ul>
+              <li ng-repeat="ul in vm.detail.cdn.unit_price_ladder">
+                {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+              </li>
+            </ul>
+          </span>
+        </td>
+        <td>{{vm.detail.cdn.fee}}</td>
+      </tr>
+      </tbody>
+    </table>
+    <table class="table table-striped">
+      <caption>
+        <span ng-show="vm.detail.cdn.period_bill_type === 'MONTHLY'">其它</span>服务费用明细
+      </caption>
+      <thead>
+      <tr>
+        <th>时间</th>
+        <th ng-if="vm.detail.cdn.period_bill_type !== 'MONTHLY'">
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">流量（GB）</span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">带宽（Mbps）</span>
+        </th>
+        <th ng-if="vm.detail.cdn.period_bill_type !== 'MONTHLY'">
+          <span ng-show="vm.detail.cdn.service_type === 'FLOW'">流量费用(元)</span>
+          <span ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">带宽费用（元）</span>
+        </th>
+        <th>动态请求（次）</th>
+        <th>动态请求费用（元）</th>
+        <th>存储（GB）</th>
+        <th>存储费用（元）</th>
+        <th>HTTPS 请求（次）</th>
+        <th>HTTPS 请求费用（元）</th>
+        <th>费用合计（元）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="m in vm.monthDetail.list">
+        <td>{{m.start_time * 1000 | date: 'yyyy-MM-dd'}}</td>
+        <td ng-if="vm.detail.cdn.period_bill_type !== 'MONTHLY'">
+          <span ng-show="m.cdn.service_type === 'FLOW'">
+            {{m.cdn.amount | byteToGb}}
+            <span ng-show="m.preferential.resource">
+                （流量包已抵扣{{m.preferential.resource[0].amount | digiUnit}}）
+            </span>
+          </span>
+          <span ng-show="m.cdn.service_type === 'BANDWIDTH'">{{m.cdn.amount | bpsToMbps}}</span>
+        </td>
+        <td ng-if="vm.detail.cdn.period_bill_type !== 'MONTHLY'">{{m.cdn.fee}}</td>
+        <td>{{m.cdn_request.amount}}</td>
+        <td>{{m.cdn_request.fee}}</td>
+        <td>{{m.storage.amount | byteToGb}} <span ng-show="m.storage.discount">（流量已抵扣{{m.storage.discount | digiUnit}}）</span></td>
+        <td>{{m.storage.fee}}</td>
+        <td>{{m.https.amount}}</td>
+        <td>{{m.https.fee}}</td>
+        <td>{{(m.cdn.fee + m.cdn_request.fee + m.storage.fee + m.https.fee) | number: 2}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="panel panel-default" ng-show="vm.detail.bill_type === 'MONTHLY'">
+  <div class="panel-heading">
+    服务价格
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-3">
+        <strong ng-show="vm.detail.cdn.service_type === 'FLOW'">cdn 流量价格（元/GB）：</strong>
+        <strong ng-show="vm.detail.cdn.service_type === 'BANDWIDTH'">cdn 带宽价格（元/Mbps/月）：</strong>
+        <span ng-show="vm.detail.cdn.unit_price_ladder.length === 1">
+          {{vm.detail.cdn.unit_price_ladder[0].unit_price}}
+        </span>
+        <span ng-show="vm.detail.cdn.unit_price_ladder.length > 1">
+          <ul>
+            <li ng-repeat="ul in vm.detail.cdn.unit_price_ladder">
+              {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+            </li>
+          </ul>
+        </span>
+      </div>
+      <div class="col-md-3">
+        <strong>cdn 动态请求价格（元/万次）：</strong>
+        <span ng-show="vm.detail.cdn_request.unit_price_ladder.length === 1">
+          {{vm.detail.cdn_request.unit_price_ladder[0].unit_price}}
+        </span>
+        <span ng-show="vm.detail.cdn_request.unit_price_ladder.length > 1">
+          <ul>
+            <li ng-repeat="ul in vm.detail.cdn_request.unit_price_ladder">
+              {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+            </li>
+          </ul>
+        </span>
+      </div>
+      <div class="col-md-3">
+        <strong>存储价格（元/GB）：</strong>
+        <span ng-show="vm.detail.storage.unit_price_ladder.length === 1">
+          {{vm.detail.storage.unit_price_ladder[0].unit_price}}
+        </span>
+        <span ng-show="vm.detail.storage.unit_price_ladder.length > 1">
+          <ul>
+            <li ng-repeat="ul in vm.detail.storage.unit_price_ladder">
+              {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+            </li>
+          </ul>
+        </span>
+      </div>
+      <div class="col-md-3">
+        <strong>HTTPS 请求价格（元/万次）：</strong>
+        <span ng-show="vm.detail.https.unit_price_ladder.length === 1">
+          {{vm.detail.https.unit_price_ladder[0].unit_price}}
+        </span>
+        <span ng-show="vm.detail.https.unit_price_ladder.length > 1">
+          <ul>
+            <li ng-repeat="ul in vm.detail.https.unit_price_ladder">
+              {{ul.min}} - {{ul.max >= 9007199254740991 ? '∞' : ul.max}} {{ul.unit_price}} <span ng-show="ul.is_min_guarantee">（保底）</span>
+            </li>
+          </ul>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

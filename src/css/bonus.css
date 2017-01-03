@@ -1,0 +1,9 @@
+.sidebar {
+  background-color: #0C1021;
+  background-image: url('../images/whale-sm.png');
+  background-repeat:  no-repeat;
+  background-position: 120px 160px
+}
+.sidebar.strange {
+  background-image: none;
+}

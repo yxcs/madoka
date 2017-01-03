@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>负责客户区域管理</h4>
+</div>
+<div class="modal-body clearfix">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th class="tcol-120">区域</th>
+        <th>地区</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><label><input type="checkbox" ng-model="region_id[1]">华北地区</label></td>
+        <td>北京市、天津市、河北省、山西省、内蒙古自治区、辽宁省、吉林省、黑龙江省、陕西省、甘肃省、青海省、宁夏回族自治区、新疆维吾尔自治区</td>
+      </tr>
+      <tr>
+        <td><label><input type="checkbox" ng-model="region_id[2]">华东地区</label></td>
+        <td>上海市、江苏省、浙江省、安徽省、江西省、山东省、河南省、福建省</td>
+      </tr>
+      <tr>
+        <td><label><input type="checkbox" ng-model="region_id[3]">华南地区</label></td>
+        <td>广东省、广西壮族自治区、海南省、湖北省、湖南省、重庆市、四川省、贵州省、云南省、西藏自治区</td>
+      </tr>
+      <tr>
+        <td><label><input type="checkbox" ng-model="region_id[4]">港澳台地区</label></td>
+        <td>香港特别行政区、澳门特别行政区、台湾省</td>
+      </tr>
+      <tr>
+        <td><label><input type="checkbox" ng-model="region_id[6]">海外地区</label></td>
+        <td>海外</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">添加</button>
+</div>

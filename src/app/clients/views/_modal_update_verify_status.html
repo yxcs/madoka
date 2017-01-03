@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>账号身份认证管理</h4>
+</div>
+<div class="modal-body">
+  <div ng-if="op === 'IGNORE'">
+    <p>操作“忽略认证”后，“未认证”帐号将无需进行身份认证</p>
+    <p class="text-warning">注：账号将启用UPYUN的外链服务</p>
+  </div>
+  <div ng-if="op === 'CANCEL'">
+    <p>操作“取消认证”后，“已认证”帐号将调整为“未认证”</p>
+    <p class="text-warning">
+      注：
+      <br>
+      1.帐号需要重新操作身份认证
+      <br>
+      2.帐号将停用UPYUN的外链服务。
+    </p>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">保存</button>
+</div>

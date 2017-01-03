@@ -1,0 +1,9 @@
+<ul class="nav nav-pills nav-stacked" role="menu">
+  <li ng-class="{ 'active': $state.current.name.indexOf('personal') >= 0}"><a ui-sref="clients.personal">我的客户</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('potential') >= 0}" ng-if="self.rights_check['0_latent_client']"><a ui-sref="clients.potential">潜在客户</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('registed') >= 0}" ng-if="self.rights_check['0_register_client']"><a ui-sref="clients.registed">注册客户</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('public') >= 0}" ng-if="self.rights_check['0_public_client']"><a ui-sref="clients.public">公海客户</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('conflict') >= 0}" ng-if="self.rights_check['0_conflict_client']"><a ui-sref="clients.conflict">冲突客户</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('discarded') >= 0}" ng-if="self.rights_check['0_drop_client']"><a ui-sref="clients.discarded">丢弃客户</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('identity') >= 0}" ng-if="self.rights_check['0_identity_review']"><a ui-sref="clients.identity">身份审核</a></li>
+</ul>

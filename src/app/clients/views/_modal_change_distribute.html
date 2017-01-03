@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>账号负责管理</h4>
+</div>
+<div class="modal-body">
+  <p>标记账号为“预留客户”后，该账号不纳入自动流转体系！</p>
+  <form action="" class="form-horizontal">
+    <div class="form-group">
+      <div class="col-sm-3">
+        <label><input type="radio" name="distribute_able" ng-model="params.distribute_able" value="can_distribute">关闭</label>
+      </div>
+      <div class="col-sm-3">
+        <label><input type="radio" name="distribute_able" ng-model="params.distribute_able" value="can_not_distribute">开启</label>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">修改</button>
+</div>

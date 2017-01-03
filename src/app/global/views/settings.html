@@ -1,0 +1,40 @@
+<div class="content col-md-10 col-md-offset-1" style="margin-top:20px;">
+  <div class="panel panel-default">
+    <div class="panel-heading clearfix">
+      <div class="col-sm-2">消息通知设置</div>
+    </div>
+    <div class="panel-body">
+      <form>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['0_identity_review']">
+            <label><input ng-model="vm.checkMessage.verify_wait_auth" type="checkbox">身份待审核消息通知</label>
+          </div>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['0_identity_review']">
+            <label><input ng-model="vm.checkMessage.verify_refuse_auth" type="checkbox">身份审核拒绝消息通知</label>
+          </div>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['8_recharge_opt']">
+            <label><input ng-model="vm.checkMessage.charge_pending_auth" type="checkbox">付款待处理消息通知</label>
+          </div>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['0_finance_manage']">
+            <label><input ng-model="vm.checkMessage.charge_pass_auth" type="checkbox">付款成功消息通知</label>
+          </div>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['8_refund_opt']">
+            <label><input ng-model="vm.checkMessage.refunds_init_auth" type="checkbox">提现未处理消息通知</label>
+          </div>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['0_refund_manage']">
+            <label><input ng-model="vm.checkMessage.refunds_done_auth" type="checkbox">提现成功消息通知</label>
+          </div>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['0_charge_confs']">
+            <label><input ng-model="vm.checkMessage.config_init_auth" type="checkbox">计费待审核消息通知</label>
+          </div>
+          <div class="col-md-3" class="form-group" ng-show="self.rights_check['0_charge_confs']">
+            <label><input ng-model="vm.checkMessage.config_init_pass" type="checkbox">计费审核成功消息通知</label>
+          </div>
+          <div class="col-md-12"><hr></div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-sm btn-primary" ng-click="vm.submitMess()">确认</button>
+            <button type="button" class="btn btn-sm btn-default" ng-click="vm.reset()">返回</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>

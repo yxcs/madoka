@@ -1,0 +1,16 @@
+<form class="form-inline" ng-submit="searchOnClick()">
+  <div class="input-group">
+    <input type="search" ng-model="search" ng-change="getPreSearch();" class="form-control" placeholder="{{label}}" style="width: 320px"
+    />
+    <button class="input-group-addon btn btn-default" type="submit" style="cursor: pointer;height: 34px;"><i class="fa fa-search"></i></button>
+  </div>
+  <div dropdown is-open="datas.length > 0 && !closeTip">
+    <ul class="dropdown-menu" role="menu">
+      <li role="menuitem" ng-repeat="client in datas">
+        <a href="#" ng-click="clickSearch(client.client_name, client.account_name)">
+          <span ng-show="client.client_name">{{client.client_name}}<span ng-show="client.account_name"> | {{client.account_name}}</span></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</form>

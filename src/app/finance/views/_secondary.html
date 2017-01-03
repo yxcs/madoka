@@ -1,0 +1,9 @@
+<ul class="nav nav-pills nav-stacked" role="menu">
+  <li ng-class="{ 'active': $state.current.name.indexOf('details') >= 0}" ng-if="self.rights_check['0_charge_detail']"><a ui-sref="finance.details">加款管理<span class="badge">新</span></a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('income') >= 0}" ng-if="self.rights_check['0_service_income']"><a ui-sref="finance.income">服务收入</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('debts') >= 0}" ng-if="self.rights_check['0_debt_manage']"><a ui-sref="finance.debts">欠费管理</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('bills') >= 0}" ng-if="self.rights_check['0_income']"><a ui-sref="finance.bills">账单管理</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('transactions') >= 0}" ng-if="self.rights_check['0_client_transaction']"><a ui-sref="finance.transactions">客户收支</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('refunds') >= 0}" ng-if="self.rights_check['0_refund_manage']"><a ui-sref="finance.refunds">提现管理</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('orderin') >= 0}" ng-if="self.rights_check['0_order_income']"><a ui-sref="finance.orderin">订单收入</a></li>
+</ul>

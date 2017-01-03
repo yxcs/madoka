@@ -1,0 +1,150 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()">
+    <i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <div class="form-inline row">
+    <div class="col-md-5">
+      <search-filter on-click="vm.fetchRefunds()" ng-model="vm.params.value" search-type="vm.params.key"></search-filter>
+    </div>
+    <div class="col-md-5">
+      <div class="input-group input-daterange col-md-5">
+        <span class="input-group-addon">
+          申请时间
+        </span>
+        <input date-range-picker
+               class="form-control date-picker"
+               type="text"
+               ng-model="vm.dateRange"
+               ng-change="vm.fetchRefunds()"/>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="filters">
+    <form class="form-inline">
+      <div class="form-group">
+        <label>所属公司</label>
+        <select class="form-control"
+                ng-model="vm.params.company"
+                ng-options="company.type as company.name for company in vm.companys">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>归属区域</label>
+        <select class="form-control"
+                ng-model="vm.params.region_id"
+                ng-options="region.key as region.value for region in vm.regions"
+                ng-change="vm.fetchRefunds()">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>负责人</label>
+        <select class="form-control"
+                ng-model="vm.params.user_id"
+                ng-options="seller.user_id as seller.name for seller in vm.sellers">
+          <option value="">{{vm.defaultUserLabel}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>账号类型</label>
+        <select class="form-control"
+                ng-model="vm.params.account_type"
+                ng-change="vm.fetchRefunds()"
+                ng-options="k as v for (k,v) in MAP.account_type">
+          <option value="">全部</option>
+        </select>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="actionbar clearfix form-group pull-right">
+  <div class="pull-right">
+    <a class="btn btn-primary" ui-sref="finance.refunds.new" ng-show="self.rights_check['8_create_refund']">
+      <i class="fa fa-plus"></i> 客户提现申请
+    </a>
+  </div>
+</div>
+
+<tabset>
+  <tab select="vm.params.status = 'INIT';vm.fetchRefunds()" active="vm.tabactive[0]">
+    <tab-heading>
+      未处理
+    </tab-heading>
+  </tab>
+  <tab select="vm.params.status = 'DONE';vm.fetchRefunds()" active="vm.tabactive[1]">
+    <tab-heading>
+      已处理
+    </tab-heading>
+  </tab>
+  <tab select="vm.params.status = 'CANCEL';vm.fetchRefunds()" active="vm.tabactive[2]">
+    <tab-heading>
+      已取消
+    </tab-heading>
+  </tab>
+</tabset>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th><span class="footable-toggle"></span>申请编号</th>
+        <th>客户名称</th>
+        <th>云存储账号</th>
+        <th>提现金额（元）</th>
+        <th>申请时间</th>
+        <th>处理时间</th>
+        <th>状态</th>
+        <th>负责人</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat-start="refundData in vm.refundData.refunds" ng-click="vm.currentState.tableState[$index] = !vm.currentState.tableState[$index]"
+          ng-class="{'bg-grey': !($index % 2)}">
+        <td>
+          <i class="fa table-toggle" ng-class="{'fa-chevron-right': !vm.currentState.tableState[$index], 'fa-chevron-down': vm.currentState.tableState[$index]}">
+          </i>{{refundData.refund_id}}
+        </td>
+        <td>{{refundData.client_name}}</td>
+        <td>{{refundData.account_name}}</td>
+        <td>{{refundData.refund_amount | number: 2}}</td>
+        <td>{{refundData.create_time * 1000| date: 'yyyy-MM-dd HH:mm'}}</td>
+        <td>{{refundData.opt_time * 1000| date: 'yyyy-MM-dd HH:mm'}}</td>
+        <td>{{vm.refundStatus[refundData.status]}}</td>
+        <td>{{refundData.user_name}}</td>
+      </tr>
+      <tr ng-repeat-end ng-show="vm.currentState.tableState[$index]">
+        <td colspan="8" class="table-row-detail">
+          <span ng-show="refundData.remark"><strong>提现备注：</strong>{{refundData.remark}}<br/></span>
+          <span ng-show="refundData.opt_remark && refundData.status === 'DONE'"><strong>打款说明：</strong>{{refundData.opt_remark}}<br/></span>
+          <span ng-show="refundData.opt_remark && refundData.status === 'CANCEL'"><strong>取消原因：</strong>{{refundData.opt_remark}}<br/></span>
+          <strong ng-hide="refundData.status === 'DONE'">操作：</strong>
+          <button class="btn btn-xs btn-primary" ng-show="refundData.status === 'INIT' && self.rights_check['8_refund_opt']" ng-click="vm.editRefund(refundData.refund_id)">处理</button>
+          <button class="btn btn-xs btn-danger"
+                  ng-show="(refundData.status === 'INIT' || refundData.status === 'CANCEL') && self.rights_check['8_delete_refund']"
+                  ng-click="vm.deleteRefund(refundData.refund_id)">删除</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <nav class="pull-right">
+      <ul class="pagination">
+        <li ng-class="{ disabled: !vm.refundData.page.since}">
+          <a ng-click="vm.prev()"><span aria-hidden="true">&laquo;前一页</span>
+            <span class="sr-only">前一页</span>
+          </a>
+        </li>
+        <li ng-class="{ disabled: !vm.refundData.page.max}">
+          <a ng-click="vm.next()"><span aria-hidden="true">后一页&raquo;</span>
+            <span class="sr-only">后一页</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

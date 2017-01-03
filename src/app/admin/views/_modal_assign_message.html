@@ -1,0 +1,36 @@
+<form>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+    <h4>消息通知设置</h4>
+  </div>
+  <div class="modal-body clearfix">
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.verify_wait_auth" type="checkbox">身份待审核消息通知</label>
+    </div>
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.verify_refuse_auth" type="checkbox">身份审核拒绝消息通知</label>
+    </div>
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.charge_pending_auth" type="checkbox">付款待处理消息通知</label>
+    </div>
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.charge_pass_auth" type="checkbox">付款成功消息通知</label>
+    </div>
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.refunds_init_auth" type="checkbox">提现未处理消息通知</label>
+    </div>
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.refunds_done_auth" type="checkbox">提现成功消息通知</label>
+    </div>
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.config_init_auth" type="checkbox">计费待审核消息通知</label>
+    </div>
+    <div class="col-md-4" class="form-group">
+      <label><input ng-model="checkMessage.config_init_pass" type="checkbox">计费审核成功消息通知</label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+    <button class="btn btn-sm btn-primary" ng-click="submit()">添加</button>
+  </div>
+</form>

@@ -1,0 +1,15 @@
+<form ng-submit="vm.submit()" class="form-horizontal" name="transactions">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="vm.skip()">&times;</button>
+    <h4>账户加款处理</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <p class="form-control-static col-md-offset-1 col-md-10">确定删除充值编号为 <span class="text-danger">{{vm.id}}</span> 的加款申请？</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="btn btn-sm btn-link" ng-click="vm.skip()">取消</a>
+    <button type="submit" class="btn btn-sm btn-primary">确定</button>
+  </div>
+</form>

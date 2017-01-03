@@ -1,0 +1,123 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="vm.refresh()">
+    <i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <search-filter on-click="vm.fetchOrderIncome()" ng-model="vm.params.value" search-type="vm.params.key"></search-filter>
+  <hr>
+  <div class="filters">
+    <form class="form-inline">
+      <div class="form-group">
+        <label>所属公司</label>
+        <select class="form-control"
+                ng-model="vm.params.company"
+                ng-options="company.type as company.name for company in vm.companys">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>归属区域</label>
+        <select class="form-control"
+                ng-model="vm.params.region_id"
+                ng-options="region.key as region.value for region in vm.regions"
+                ng-change="vm.fetchOrderIncome()">
+          <option value="">所有区域</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>负责人</label>
+        <select class="form-control"
+                ng-model="vm.params.user_id"
+                ng-options="seller.user_id as seller.name for seller in vm.sellers">
+          <option value="">
+            {{vm.defaultUserLabel}}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>账号类型</label>
+        <select class="form-control"
+                ng-model="vm.params.account_type"
+                ng-change="vm.fetchOrderIncome()"
+                ng-options="k as v for (k,v) in MAP.account_type">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <hr class="max-1500">
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <div class="input-group-btn" dropdown>
+            <select class="form-control"
+                    ng-model="vm.params.time_type"
+                    ng-options="time_type.type as time_type.name for time_type in vm.time_types"
+                    style="border-top-left-radius: 4px;border-bottom-left-radius: 4px;">
+            </select>
+          </div>
+          <input date-range-picker
+                 class="form-control date-picker"
+                 type="text"
+                 ng-model="vm.dateRange"
+                 style="width: 210px"/>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="vm.fetchOrderIncome()">筛选</button>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-bordered table-striped table-hover table-text-center">
+  <thead>
+  <tr>
+    <th>订单号</th>
+    <th>下单时间</th>
+    <th>付款时间</th>
+    <th>客户名称</th>
+    <th>云存储账号</th>
+    <th>负责人</th>
+    <th>订单金额（元）</th>
+    <th>优惠金额（元）</th>
+    <th>实付金额（元）</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="orderIncome in vm.orderIncomeData.list">
+    <td>{{orderIncome.order_number || "-"}}</td>
+    <td>{{orderIncome.order_time * 1000| date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+    <td>{{orderIncome.pay_time * 1000| date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+    <td>{{orderIncome.client_name || "-"}}</td>
+    <td>{{orderIncome.account_name || "-"}}</td>
+    <td>{{orderIncome.user_name || "-"}}</td>
+    <td>{{orderIncome.order_money | number:2}}</td>
+    <td>{{orderIncome.preferential | number:2}}</td>
+    <td>{{orderIncome.reality_money | number:2}}</td>
+  </tr>
+  <tr>
+    <td colspan="6">本页合计</td>
+    <td>{{vm.orderIncomeData.page_statistics.order_money | number:2}}</td>
+    <td>{{vm.orderIncomeData.page_statistics.preferential | number:2}}</td>
+    <td>{{vm.orderIncomeData.page_statistics.reality_money | number:2}}</td>
+  </tr>
+  <tr>
+    <td colspan="6">查询合计</td>
+    <td>{{vm.orderIncomeData.total_statistics.order_money | number:2}}</td>
+    <td>{{vm.orderIncomeData.total_statistics.preferential | number:2}}</td>
+    <td>{{vm.orderIncomeData.total_statistics.reality_money | number:2}}</td>
+  </tr>
+  </tbody>
+</table>
+<nav class="pull-right">
+  <pagination total-items="vm.page.total"
+              items-per-page="vm.page.size"
+              ng-model="vm.page.no"
+              max-size="5"
+              class="pagination-sm"
+              boundary-links="true"
+              rotate="false"
+              ng-change="vm.fetchOrderIncome()"
+              first-text="首页"
+              last-text="尾页"
+              previous-text="前一页"
+              next-text="后一页">
+  </pagination>
+</nav>

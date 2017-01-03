@@ -1,0 +1,21 @@
+<form ng-submit="vm.submit()" class="form-horizontal form-validate" name="cancelForm">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="vm.skip()">&times;</button>
+    <h4>账户加款处理</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <p class="form-control-static col-md-offset-1 col-md-10">处理：取消该加款申请</p>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-3 control-label">取消原因：</label>
+      <div class="col-sm-8">
+        <textarea ng-model="vm.reason" name="reason" class="form-control" style="resize: none;" rows="3" cols="50" required></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="btn btn-sm btn-link" ng-click="vm.skip()">取消</a>
+    <button type="submit" class="btn btn-sm btn-primary" ng-disabled="cancelForm.reason.$invalid">确定</button>
+  </div>
+</form>

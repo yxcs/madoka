@@ -1,0 +1,76 @@
+<!--controller_file: businessChargeStandardCtrl-->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    计费客户信息
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-4">
+        所有未配置独立计费模式的UPYUN账号
+      </div>
+      <div class="col-md-2">
+        付费方式: {{MAP.charge_type[vm.standardConf.charge_type]}}
+      </div>
+      <div class="col-md-2">
+        结算方式: 按日结算
+      </div>
+      <div class="col-md-2">
+        服务方式: 收费使用
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    服务计费配置- UPYUN 统一报价
+  </div>
+  <div class="panel-body">
+    <div class="panel-group">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          CDN服务（数据使用）配置
+        </div>
+        <div class="panel-body">
+          <p>计费模式： 流量计费</p>
+          <hr>
+          <p>流量计费模式： 日使用流量计费</p>
+          <div class="text-info"><label>流量价格： </label>{{vm.standardConf.cdn.unit_price}} 元/GB</div>
+        </div>
+      </div>
+      <div class="panel panel-green">
+        <div class="panel-heading">
+          CDN服务（动态使用）计费
+        </div>
+        <div class="panel-body">
+          <p>计费模式：动态流出请求计费</p>
+          <hr/>
+          <p>请求计费模式：日请求次数计费</p>
+          <div class="text-info"><label>服务价格： </label>{{vm.standardConf.cdn_request.unit_price}} 元/万次</div>
+        </div>
+      </div>
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          存储服务计费
+        </div>
+        <div class="panel-body">
+          <p>计费模式：使用存储计费</p>
+          <hr/>
+          <p>存储计费模式：日使用存储计费</p>
+          <div class="text-info"><label>存储价格： </label>{{vm.standardConf.storage.unit_price}} 元/万次</div>
+        </div>
+      </div>
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          HTTPS服务计费
+        </div>
+        <div class="panel-body">
+          <p>计费模式: HTTPS Get请求次数计费</p>
+          <hr/>
+          <p>请求计费模式: 日请求次数计费</p>
+          <div class="text-warning"><label>服务价格：</label> {{vm.standardConf.https.unit_price}} 元/万次</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

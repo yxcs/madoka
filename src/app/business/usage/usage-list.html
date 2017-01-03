@@ -1,0 +1,111 @@
+<div class="well actions clearfix">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <div class="form-inline" role="form">
+    <div class="pull-left">
+      <search-filter on-click="fetchClients()" ng-model="params.key" search-type="params.key_type"></search-filter>
+    </div>
+    <div class="pull-left" style="margin-left: 50px;">
+      <div class="form-group">
+        <select class="form-control" ng-model="params.filter_field">
+          <option value="flow_day_average">日均流量（GB）</option>
+          <option value="storage_total">已用存储（GB）</option>
+        </select>
+        <input type="number" class="form-control" style="width: 100px" ng-model="params.min"> -
+        <input type="number" class="form-control" style="width: 100px" ng-model="params.max">
+        <button type="button" class="btn btn-default" ng-click="fetchClients()">筛选</button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="col-sm-12">
+
+  <form action="" class="form-inline col-sm-3">
+    <div class="form-group">
+      <label for="follow">负责销售</label>
+      <select class="form-control" ng-model="params.user_id" ng-options="seller.user_id as seller.name for seller in sellers" ng-change="fetchClients()">
+        <option value="">请选择销售</option>
+        <option value="all">全部</option>
+      </select>
+    </div>
+  </form>
+
+  <div class="btn-group col-sm-6">
+    <label class="btn btn-default" ng-model="account_status" ng-change="fetchClients('account_status', 'TRIAL')" btn-radio="'TRIAL'">试用中</label>
+    <label class="btn btn-default" ng-model="account_status" ng-change="fetchClients('account_status', 'NORMAL')" btn-radio="'NORMAL'">服务中</label>
+    <label class="btn btn-default" ng-model="account_status" ng-change="fetchClients('account_status', 'OVERDUE')" btn-radio="'OVERDUE'">欠费中</label>
+    <label class="btn btn-default" ng-model="account_status" ng-change="fetchClients('account_status', 'DISABLED')" btn-radio="'DISABLED'">欠费停用</label>
+    <label class="btn btn-default" ng-model="account_status" ng-change="fetchClients('account_status', 'LOCKED')" btn-radio="'LOCKED'">人工停用</label>
+    <label class="btn btn-default" ng-model="account_status" ng-change="fetchClients('account_status', 'BLOCKED')" btn-radio="'BLOCKED'">人工禁用</label>
+  </div>
+
+</div>
+
+<div class="content">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th nowrap>客户名称</th>
+        <th nowrap>帐号状态</th>
+        <th nowrap>重要程度</th>
+        <th nowrap>
+          <a ng-click="orderBy('flow_left')" style="cursor: pointer;">剩余流量
+            <span class="order-arrow">
+              <div class="arrow" ng-class="{actived: params.order_column === 'flow_left' , up: params.order_column !== 'flow_left' || params.order_type === 'asc' }"></div>
+              <div class="arrow" ng-class="{actived: params.order_column === 'flow_left',  down: params.order_column !== 'flow_left' || params.order_type === 'desc' }"></div>
+            </span>
+          </a>
+        </th>
+        <th nowrap>
+          <a ng-click="orderBy('storage_total')" style="cursor: pointer;">已用存储
+            <span class="order-arrow">
+              <div class="arrow" ng-class="{actived: params.order_column === 'storage_total' , up: params.order_column !== 'storage_total' || params.order_type === 'asc' }"></div>
+              <div class="arrow" ng-class="{actived: params.order_column === 'storage_total',  down: params.order_column !== 'storage_total' || params.order_type === 'desc' }"></div>
+            </span>
+          </a>
+        </th>
+        <th nowrap>
+          <a ng-click="orderBy('flow_day_average')" style="cursor: pointer;">日均流量
+            <span class="order-arrow">
+              <div class="arrow" ng-class="{actived: params.order_column === 'flow_day_average' , up: params.order_column !== 'flow_day_average' || params.order_type === 'asc' }"></div>
+              <div class="arrow" ng-class="{actived: params.order_column === 'flow_day_average',  down: params.order_column !== 'flow_day_average' || params.order_type === 'desc' }"></div>
+            </span>
+          </a>
+        </th>
+        <th nowrap>
+          <a ng-click="orderBy('bill_month_average')" style="cursor: pointer;">月均消费
+            <span class="order-arrow">
+              <div class="arrow" ng-class="{actived: params.order_column === 'bill_month_average' , up: params.order_column !== 'bill_month_average' || params.order_type === 'asc' }"></div>
+              <div class="arrow" ng-class="{actived: params.order_column === 'bill_month_average',  down: params.order_column !== 'bill_month_average' || params.order_type === 'desc' }"></div>
+            </span>
+          </a>
+        </th>
+        <th nowrap>负责人</th>
+        <th nowrap>使用详情</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="client in clientsData.clients">
+        <td>
+          <strong>{{client.name}}</strong>
+          <div><a style="color:#8f8f8f" ui-sref="clients.personal.detail.info({account_name: client.account_name})" target="_blank">{{client.account_name}}</a></div>
+        </td>
+        <td>{{MAP.account_status[client.account_status]}}</td>
+        <td>{{client.important}}</td>
+        <td>{{client.flow_left | digiUnit}}</td>
+        <td>{{client.storage_total | digiUnit}}</td>
+        <td>{{client.flow_day_average | digiUnit}}</td>
+        <td>{{client.bill_month_average}}</td>
+        <td>{{client.user_name}}</td>
+        <td>
+          <a class="btn btn-xs btn-primary" ui-sref=".detail({account_name: client.account_name})">详情</button>
+        <a href="" class="btn btn-xs btn-default" ng-click="sync(client.account_name)" tooltip-placement="bottom" tooltip="实时数据同步"><i class="glyphicon glyphicon-refresh"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav class="pull-right">
+    <pagination total-items="clientsData.page.count" items-per-page="clientsData.page.limit" ng-model="page_num_to_go" max-size="5"
+    class="pagination-sm" boundary-links="true" rotate="false" first-text="首页" last-text="尾页" previous-text="前一页" next-text="后一页"></pagination>
+  </nav>
+</div>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Madoka - Upyun</title>
+  <style>
+    @-webkit-keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        -webkit-transform: translateY(60px);
+        transform: translateY(60px);
+      }
+      100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+      }
+    }
+
+    @-webkit-keyframes fadeInLeft {
+      0% {
+        opacity: 0;
+        -webkit-transform: translateX(-20px);
+        transform: translateX(-20px);
+      }
+      100% {
+        opacity: 1;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+      }
+    }
+
+    .fadeInUp {
+      -webkit-animation-name: fadeInUp;
+      animation-name: fadeInUp;
+      -webkit-animation-duration: 1s;
+      animation-duration: 1s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+
+    .fadeInLeft {
+      -webkit-animation-name: fadeInLeft;
+      animation-name: fadeInLeft;
+      -webkit-animation-duration: 1s;
+      animation-duration: 1s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #E9E8DA;
+      color: #eaeaea;
+    }
+
+    .wrap {
+      padding-top: 250px;
+      overflow: hidden;
+    }
+
+    .container {
+      margin-right: auto;
+      margin-left: auto;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .form-wrap {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .content {
+      text-align: center;
+      margin-top: 40px;
+      width: 25%;
+      float: left;
+      opacity: 0;
+    }
+
+    .content h2 {
+      font-size: 30px;
+      font-weight: 700;
+      color: #C0BFB5;
+    }
+
+    .content p {
+      color: #C0BDB0;
+      font-size: 13px;
+    }
+
+    .split {
+      width: 10%;
+      float: left;
+    }
+
+    .login {
+      width: 65%;
+      float: left;
+      opacity: 0;
+    }
+
+    .login .sign-in {
+      margin-top: 90px;
+      background-image: url('images/Blue_signin_Long_normal_20dp_v3.png');
+      width: 280px;
+      height: 60px;
+    }
+
+    .login .sign-in:active {
+      background-image: url('images/Blue_signin_Long_pressed_20dp_v3.png');
+    }
+
+    .horizontal-divider {
+      margin: 0 auto;
+      position: relative;
+      width: 1px;
+      height: 250px;
+      background-color: #ccc;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      position: absolute;
+      margin: 300px auto;
+      z-index: 999;
+      left: 50%;
+    }
+
+    .double-bounce1,
+    .double-bounce2 {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #fff;
+      opacity: 0.6;
+      position: absolute;
+      top: 0;
+      left: 0;
+      -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+      animation: sk-bounce 2.0s infinite ease-in-out;
+    }
+
+    .double-bounce2 {
+      -webkit-animation-delay: -1.0s;
+      animation-delay: -1.0s;
+    }
+
+    @-webkit-keyframes sk-bounce {
+      0%,
+      100% {
+        -webkit-transform: scale(0.0)
+      }
+      50% {
+        -webkit-transform: scale(1.0)
+      }
+    }
+
+    #login {
+      display: none;
+    }
+  </style>
+  <script>
+    (function (factory) {
+      if (typeof define === 'function' && define.amd) {
+        define(factory);
+      } else if (typeof exports === 'object') {
+        module.exports = factory();
+      } else {
+        var _OldCookies = window.Cookies;
+        var api = window.Cookies = factory(window.jQuery);
+        api.noConflict = function () {
+          window.Cookies = _OldCookies;
+          return api;
+        };
+      }
+    }(function () {
+      function extend () {
+        var i = 0;
+        var result = {};
+        for (; i < arguments.length; i++) {
+          var attributes = arguments[ i ];
+          for (var key in attributes) {
+            result[key] = attributes[key];
+          }
+        }
+        return result;
+      }
+
+      function init (converter) {
+        function api (key, value, attributes) {
+          var result;
+
+          // Write
+
+          if (arguments.length > 1) {
+            attributes = extend({
+              path: '/'
+            }, api.defaults, attributes);
+
+            if (typeof attributes.expires === 'number') {
+              var expires = new Date();
+              expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
+              attributes.expires = expires;
+            }
+
+            try {
+              result = JSON.stringify(value);
+              if (/^[\{\[]/.test(result)) {
+                value = result;
+              }
+            } catch (e) {}
+
+            value = encodeURIComponent(String(value));
+            value = value.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+
+            key = encodeURIComponent(String(key));
+            key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+            key = key.replace(/[\(\)]/g, escape);
+
+            return (document.cookie = [
+              key, '=', value,
+              attributes.expires && '; expires=' + attributes.expires.toUTCString(), // use expires attribute, max-age is not supported by IE
+              attributes.path    && '; path=' + attributes.path,
+              attributes.domain  && '; domain=' + attributes.domain,
+              attributes.secure ? '; secure' : ''
+            ].join(''));
+          }
+
+          // Read
+
+          if (!key) {
+            result = {};
+          }
+
+          // To prevent the for loop in the first place assign an empty array
+          // in case there are no cookies at all. Also prevents odd result when
+          // calling "get()"
+          var cookies = document.cookie ? document.cookie.split('; ') : [];
+          var rdecode = /(%[0-9A-Z]{2})+/g;
+          var i = 0;
+
+          for (; i < cookies.length; i++) {
+            var parts = cookies[i].split('=');
+            var name = parts[0].replace(rdecode, decodeURIComponent);
+            var cookie = parts.slice(1).join('=');
+
+            if (cookie.charAt(0) === '"') {
+              cookie = cookie.slice(1, -1);
+            }
+
+            try {
+              cookie = converter && converter(cookie, name) || cookie.replace(rdecode, decodeURIComponent);
+
+              if (this.json) {
+                try {
+                  cookie = JSON.parse(cookie);
+                } catch (e) {}
+              }
+
+              if (key === name) {
+                result = cookie;
+                break;
+              }
+
+              if (!key) {
+                result[name] = cookie;
+              }
+            } catch (e) {}
+          }
+
+          return result;
+        }
+
+        api.get = api.set = api;
+        api.getJSON = function () {
+          return api.apply({
+            json: true
+          }, [].slice.call(arguments));
+        };
+        api.defaults = {};
+
+        api.remove = function (key, attributes) {
+          api(key, '', extend(attributes, {
+            expires: -1
+          }));
+        };
+
+        api.withConverter = init;
+
+        return api;
+      }
+
+      return init();
+    }));
+
+    function startApp() {
+      window.onload = function() {
+        if (window.name) {
+          Cookies.set('token', window.name)
+          document.title="Redirecting..."
+          document.querySelector('#load').style.display = "block"
+          window.name = ''
+          window.location.href = '/business/usage?timestamp=' + (new Date()).getTime()
+        } else if(!!Cookies.get('token')) {
+          document.title="Redirecting..."
+          document.querySelector('#load').style.display = "block"
+          window.location.href = '/business/usage?timestamp=' + (new Date()).getTime()
+          return
+        } else {
+          document.querySelector('#login').style.display = "block"
+        }
+        document.querySelector('#sign').addEventListener("click", function() {
+          signIn()
+        })
+      }
+      function signIn() {
+        document.title="Redirecting..."
+        window.location.href = 'https://accounts.google.com/o/oauth2/auth' +
+        '?access_type=offline' +
+        '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile' +
+        '&response_type=code' +
+        '&client_id=1028180753744-fgt4rj5hrcmhr8c9fk7fp1jihfod78sp.apps.googleusercontent.com' +
+        '&redirect_uri=http%3A%2F%2Fkoala.upyun.com%2Foauth2callback%2Fweb'
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="spinner" id="load" style="display: none">
+    <div class="double-bounce1"></div>
+    <div class="double-bounce2"></div>
+  </div>
+  <div id="login">
+    <div class="wrap">
+      <div class="container">
+        <div class="form-wrap">
+          <div class="content fadeInUp">
+            <h2>Madoka</h2>
+            <p>upyun customer relationship management system</p>
+          </div>
+          <div class="split">
+            <div class="horizontal-divider"></div>
+          </div>
+          <div class="login fadeInLeft">
+            <div id="sign" class="sign-in">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script>
+    startApp()
+  </script>
+</body>
+
+</html>

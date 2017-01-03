@@ -1,0 +1,77 @@
+<div class="well actions" style="margin-top: 20px;">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件
+  </button>
+  <form class="form-inline row" role="form">
+    <div class="form-group col-md-2">
+      <label for="">系统板块</label>
+      <select class="form-control" ng-model="params.category" ng-change="fetchCrmLogs('feature')">
+        <option value="">选择板块</option>
+        <option value="客户管理">客户管理</option>
+        <option value="客户联系">客户联系</option>
+        <option value="业务管理">业务管理</option>
+        <option value="系统管理">系统管理</option>
+        <option value="数据中心">数据中心</option>
+        <option value="财务管理">财务管理</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="">功能模块</label>
+      <select class="form-control" ng-model="params.feature" ng-change="fetchCrmLogs()" ng-options="f as f for f in features[params.category]">
+        <option value="">选择模块</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="follow">操作人</label>
+      <select class="form-control" ng-model="params.user_id" ng-options="user.user_id as user.name for user in users" ng-change="fetchCrmLogs()">
+        <option value="">请选择</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <lable>操作时间</lable>
+      <div class="input-group">
+        <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" is-open="openedS" ng-click="openedS = true; openedE = false"
+        ng-model="date.dateStart" ng-required="true" close-text="Close" />
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+      </div>
+      <div class="input-group">
+        <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" is-open="openedE" ng-click="openedE = true; openedS = false"
+        ng-model="date.dateEnd" ng-required="true" close-text="Close" />
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+      </div>
+      <button type="button" class="btn btn-default" ng-click="fetchCrmLogs(dateStart)">筛选</button>
+    </div>
+  </form>
+</div>
+
+<div class="content">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th class="tcol-100">操作人</th>
+        <th class="tcol-120">角色</th>
+        <th class="tcol-180">操作时间</th>
+        <th class="tcol-100">系统板块</th>
+        <th class="tcol-100">功能模块</th>
+        <th>操作内容</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="crmLog in crmLogs.operation_logs">
+        <td>{{crmLog.user_name}}</td>
+        <td>{{crmLog.user_role}}</td>
+        <td>{{crmLog.created_at * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        <td>{{crmLog.category}}</td>
+        <td>{{crmLog.feature}}</td>
+        <td>{{crmLog.log}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<nav class="pull-right">
+  <ul class="pagination">
+    <li ng-class="{ disabled: !crmLogs.page.since}"><a ng-click="prev()"><span
+            aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+    <li ng-class="{ disabled: !crmLogs.page.max}"><a ng-click="next()"><span
+            aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+  </ul>
+</nav>

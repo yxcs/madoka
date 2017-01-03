@@ -1,0 +1,605 @@
+<div style="color:#676767">
+  <div class="panel panel-default">
+    <div class="panel-heading"
+         style="background-color: #3f555b;color: #fff;height: 45px;font-weight:bold;padding-top:12px">计费客户信息
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">配置客户</label>
+        <div class="col-sm-6">
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="vm.params.account_name" ng-disabled="true"/>
+          <span class="input-group-btn">
+            <button class="btn btn-primary" ng-click="vm.searchClient()" type="button">查询</button>
+          </span>
+          </div>
+        </div>
+      </div>
+      <div class="line-dash" ng-show="vm.params.account_name"></div>
+      <div class="form-group" ng-show="vm.params.account_name">
+        <label class="control-label col-md-2">客户名称</label>
+        <div class="col-sm-2"><p class="form-control-static">{{vm.currentState.client.name}}</p></div>
+        <label class="control-label col-sm-2">负责人</label>
+        <div class="col-sm-2"><p class="form-control-static">{{vm.currentState.client.sell_name}}</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">付费方式</label>
+        <div class="col-sm-1">
+          <p class="form-control-static">后付费</p>
+        </div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">结算方式</label>
+        <div class="col-sm-6">
+          <input bs-switch
+                 ng-model="vm.params.period_type"
+                 type="checkbox"
+                 switch-on-color="type"
+                 switch-off-color="type"
+                 switch-on-text="按日结算"
+                 switch-off-text="按月结算"
+                 ng-true-value="'DAILY'"
+                 ng-false-value="'MONTHLY'"
+                 switch-handle-width="177"
+                 switch-label="{{vm.params.period_type === 'DAILY' ? '按月结算' : '按日结算'}}">
+        </div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">服务方式</label>
+        <div class="col-sm-6">
+          <input bs-switch
+                 ng-model="vm.params.can_arrear"
+                 type="checkbox"
+                 switch-on-color="type"
+                 switch-off-color="type"
+                 switch-on-text="收费使用"
+                 switch-off-text="欠费使用"
+                 ng-true-value="false"
+                 ng-false-value="true"
+                 switch-handle-width="177"
+                 switch-label="{{vm.params.can_arrear? '收费使用' : '欠费使用'}}">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"
+         style="background-color: #2b9cbd;color: #fff;height: 36px;font-weight:bold;padding-top:8px;padding-bottom:8px">
+      CDN 服务（数据使用）计费
+    </div>
+    <div class="panel-body">
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">计费模式</label>
+          <div class="col-sm-6">
+            <input bs-switch
+                   ng-model="vm.params.cdn.service_type"
+                   type="checkbox"
+                   switch-on-color="type"
+                   switch-off-color="type"
+                   switch-on-text="流量计费"
+                   switch-off-text="带宽计费"
+                   ng-true-value="'FLOW'"
+                   ng-false-value="'BANDWIDTH'"
+                   switch-handle-width="177"
+                   switch-label="{{vm.params.cdn.service_type === 'FLOW' ? '带宽计费' : '流量计费'}}">
+          </div>
+        </div>
+
+        <div class="line-dash"></div>
+        <!-- 按日结算 && 流量计费-->
+        <div class="form-group" ng-show="vm.params.period_type === 'DAILY' && vm.params.cdn.service_type === 'FLOW'">
+          <label class="col-sm-2 control-label">流量计费模式</label>
+          <div class="col-sm-2"><p class="form-control-static" ng-show="vm.params.cdn.period_bill_type === 'DAILY'">日使用流量计费</p></div>
+        </div>
+        <!-- 按月结算 && 流量计费-->
+        <div class="form-group" ng-show="vm.params.period_type === 'MONTHLY' && vm.params.cdn.service_type === 'FLOW'">
+          <label class="col-sm-2 control-label">流量计费模式</label>
+          <div class="col-sm-6 btn-group">
+            <label class="btn btn-outline btn-info "
+                   ng-model="vm.params.cdn.period_bill_type"
+                   btn-radio="'MONTHLY'"
+                   style="width:202px">月使用流量计费</label>
+            <label class="btn btn-outline btn-info"
+                   ng-model="vm.params.cdn.period_bill_type"
+                   btn-radio="'DAILY'"
+                   style="width:202px">日使用流量计费</label>
+          </div>
+        </div>
+        <!-- 按日结算 && 带宽计费-->
+        <div class="form-group" ng-show="vm.params.cdn.service_type === 'BANDWIDTH'">
+          <label class="col-sm-2 control-label">带宽取值周期</label>
+          <div class="col-sm-2">
+            <p class="form-control-static" ng-show="vm.params.cdn.period_bill_type === 'DAILY'">正常日</p>
+            <p class="form-control-static" ng-show="vm.params.cdn.period_bill_type === 'MONTHLY'">自然月</p>
+          </div>
+        </div>
+        <div class="line-dash" ng-show="vm.params.cdn.service_type === 'BANDWIDTH'"></div>
+        <!-- 按日结算 && 带宽计费-->
+        <div class="form-group" ng-show="vm.params.cdn.service_type === 'BANDWIDTH'">
+          <label class="col-sm-2 control-label">带宽计费模式</label>
+          <div class="col-sm-2" ng-show="vm.params.period_type === 'DAILY'"><p class="form-control-static" ng-show="vm.params.cdn.amount_cal_type === 'DAILY_HIGHEST'">日带宽峰值计费</p></div>
+          <div class="col-sm-6" ng-show="vm.params.period_type === 'MONTHLY'">
+            <div class="btn-group">
+              <label class="btn btn-outline btn-info " ng-model="vm.params.cdn.amount_cal_type" btn-radio="'MONTHLY_95'" tooltip="每天5分钟统计一个带宽峰值，取出整月所有带宽峰值，去掉值最高的5%，剩下的最大带宽就是计费带宽，计算整月使用费用"
+                     style="width:134px">月95峰值计费</label>
+              <label class="btn btn-outline btn-info " ng-model="vm.params.cdn.amount_cal_type" btn-radio="'DAILY_95'"
+                     tooltip="取出整月所有每日带宽95峰值中，最大带宽值就是计费结算标准，计算整月使用费用"
+                     style="width:134px">月日95峰值计费</label>
+              <label class="btn btn-outline btn-info " ng-model="vm.params.cdn.amount_cal_type" tooltip="整月每日的所有 95 峰值相加，除以使用月天数，求得平均值，作为计费带宽，计算月费用"
+                     btn-radio="'DAILY_95_AVERAGE'" style="width:136px">月日均95峰值计费</label>
+              <label class="btn btn-outline btn-info " ng-model="vm.params.cdn.amount_cal_type" tooltip="每天5分钟统计一个带宽峰值，整月每日最大带宽峰值相加，除以使用月天数，求得平均值，作为计费带宽，计算月费用"
+                     btn-radio="'DAILY_BANDWIDTH'" style="width:145px">月日均带宽峰值计费</label>
+              <label class="input-group-btn" style="float: left" tooltip="取出整月每日最大带宽值，其中第N大的带宽峰值作为结算标准，计算月费用。注：普遍使用的：第4、5峰值" dropdown>
+                <button type="button" class="btn btn-outline btn-info  dropdown-toggle" ng-class="{'active': vm.currentState.TOP_N !== 0}"
+                        style="width:145px" dropdown-toggle>第{{vm.currentState.TOP_N || 'N'}}峰值
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li ng-repeat="top in vm.currentState.tops">
+                    <a ng-click="vm.params.cdn.amount_cal_type = 'TOP_' + top">第{{top}}峰值</a>
+                  </li>
+                </ul>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">定价配置</label>
+          <div class="col-sm-2"><p class="form-control-static" ng-show="vm.params.cdn.price_type === 'COSTOM_PRICE'">独立报价</p></div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">计价模式</label>
+          <div class="btn-group col-sm-6">
+            <label class="btn btn-outline btn-info"
+                   ng-model="vm.params.cdn.ladder_type"
+                   tooltip="根据带宽值（或流量值）所在阶梯段的价格，计算对应费用"
+                   btn-radio="'STANDARD_LADDER'"
+                   style="width:202px">标准阶梯计费价</label>
+            <label class="btn btn-outline btn-info "
+                   ng-model="vm.params.cdn.ladder_type"
+                   btn-radio="'ADD_UP_LADDER'"
+                   tooltip="根据带宽值（或流量）大小，逐级匹配价格，计算不同梯级下带宽费用，并累加总费用。即超出第一档的部分，以第二档的单价计费；超出第二档的部分，再以第三档的单价计费，最后逐级累加总费用"
+                   style="width:202px">阶梯超额累计计费价</label>
+            <label class="btn btn-outline btn-info "
+                   ng-model="vm.params.cdn.ladder_type"
+                   btn-radio="'GUARANTEE_LADDER'"
+                   ng-show="vm.params.cdn.service_type === 'BANDWIDTH'"
+                   tooltip="当月带宽小于等于保底量的，按保底量计费；当月带宽大于保底量且在第一档的，除按保底量计费外，超出部分按第一档单价计费；当月带宽大于保底量且在第二档的，除按保底量计费外，超出部分按第二档单价计费；以此类推"
+                   style="width:202px">保底外阶梯计费</label>
+          </div>
+        </div>
+        <div class="line-dash"></div>
+      </div>
+      <div class="well">
+        <!-- cdn -->
+        <form editable-form name="tableCdnform" onaftersave="vm.saveTable('cdn', vm.params.cdn.unit_price_ladder)">
+          <table class="table table-bordered table-hover table-grey">
+            <caption>
+              <span ng-show="vm.params.cdn.service_type === 'FLOW'">流量阶梯价格配置</span>
+              <span ng-show="vm.params.cdn.service_type === 'BANDWIDTH'">带宽阶梯价格配置</span>
+            </caption>
+            <tr style="font-weight: bold">
+              <td style="width:50%">
+                <span ng-show="vm.params.cdn.service_type === 'FLOW'">流量大小范围（GB）</span>
+                <span ng-show="vm.params.cdn.service_type === 'BANDWIDTH'">带宽峰值大小范围（Mbps）</span>
+              </td>
+              <td style="width:50%">
+                <span ng-show="vm.params.cdn.service_type === 'FLOW'">设定售价（元/GB）</span>
+                <span ng-show="vm.params.cdn.service_type === 'BANDWIDTH'">
+                  <span ng-show="vm.params.cdn.period_bill_type === 'DAILY'">设定售价（元/Mbps/日）</span>
+                  <span ng-show="vm.params.cdn.period_bill_type === 'MONTHLY'">设定售价（元/Mbps/月）</span>
+                </span>
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+            <tr ng-repeat="unit_price_ladder in vm.params.cdn.unit_price_ladder">
+              <td>
+                <span editable-text="unit_price_ladder.min" e-form="tableCdnform" e-placeholder="大于等于？ ">
+                  {{ unit_price_ladder.min}}
+                </span>
+                <span ng-show="!tableCdnform.$visible"> - {{ unit_price_ladder.max >= vm.ift ? '∞' : unit_price_ladder.max}}</span>
+              </td>
+              <td>
+                <span editable-text="unit_price_ladder.unit_price" e-form="tableCdnform" e-placeholder="售价 ? " e-required>
+                  {{ unit_price_ladder.unit_price}}
+                </span>
+                <span ng-show="$index === 0">
+                  {{unit_price_ladder.is_min_guarantee ? "（保底）" : ""}}
+                </span>
+              </td>
+              <td>
+                <button type="button" ng-show="tableCdnform.$visible" ng-click="vm.deleteTableEle($index, vm.params.cdn.unit_price_ladder)" title="删除" class="btn btn-danger">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </table>
+          <div class="btn-edit">
+            <button type="button" class="btn btn-default" ng-show="!tableCdnform.$visible" ng-click="tableCdnform.$show()">
+              配置
+            </button>
+          </div>
+          <div class="btn-form" ng-show="tableCdnform.$visible">
+            <button type="submit" ng-disabled="tableCdnform.$waiting" class="btn btn-info">保存</button>
+            <button type="button" ng-disabled="tableCdnform.$waiting" ng-click="tableCdnform.$cancel()" class="btn btn-default">取消</button>
+            <span ng-show="vm.params.cdn.service_type === 'BANDWIDTH'">
+              <input bs-switch
+                   ng-model="vm.params.cdn.unit_price_ladder[0].is_min_guarantee"
+                   type="checkbox"
+                   switch-on-color="type"
+                   switch-off-color="type"
+                   switch-on-text="无保底"
+                   switch-off-text="有保底"
+                   ng-true-value="false"
+                   ng-false-value="true">
+            </span>
+            <button type="button" ng-disabled="tableCdnform.$waiting" ng-click="vm.addUnitPriceLadder('cdn')" class="btn btn-primary" style="margin-left: 50px">添加价格阶梯</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"
+         style="background-color: #2b9cbd;color: #fff;height: 36px;font-weight:bold;padding-top:8px;padding-bottom:8px">
+      CDN 服务（动态请求）计费
+    </div>
+    <div class="panel-body">
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">计费模式</label>
+          <div class="col-sm-6">
+            <p class="form-control-static" ng-show="vm.params.cdn_request.service_type === 'CDN_REQUEST_COUNT'">动态流出请求计费</p>
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">请求计费模式</label>
+          <div class="col-sm-2"><p class="form-control-static" ng-show="vm.params.cdn_request.period_bill_type === 'DAILY'">日请求次数计费</p></div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">定价配置</label>
+          <div class="col-sm-6">
+            <input bs-switch
+                   ng-model="vm.params.cdn_request.price_type"
+                   type="checkbox"
+                   switch-on-color="type"
+                   switch-off-color="type"
+                   switch-on-text="标准报价"
+                   switch-off-text="独立报价"
+                   ng-true-value="'STANDARD_PRICE'"
+                   ng-false-value="'COSTOM_PRICE'"
+                   switch-handle-width="177"
+                   switch-label="{{vm.params.cdn_request.price_type === 'STANDARD_PRICE' ? '独立报价' : '标准报价'}}">
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group" ng-show="vm.params.cdn_request.price_type === 'COSTOM_PRICE'">
+          <label class="col-sm-2 control-label">计价模式</label>
+          <div class="col-sm-2"><p class="form-control-static" ng-show="vm.params.cdn_request.ladder_type === 'STANDARD_LADDER'">标准梯级计费价</p></div>
+        </div>
+        <div class="form-group" ng-show="vm.params.cdn_request.price_type === 'STANDARD_PRICE'">
+          <label class="col-sm-2 control-label">服务价格</label>
+          <div class="col-sm-2"><p class="form-control-static">{{vm.params.cdn_request.unit_price_ladder[0].unit_price}} 元/万次</p></div>
+        </div>
+        <div class="line-dash" ng-show="vm.params.cdn_request.price_type === 'COSTOM_PRICE'"></div>
+      </div>
+      <div class="well" ng-show="vm.params.cdn_request.price_type === 'COSTOM_PRICE'">
+        <!-- cdn_request -->
+        <form editable-form name="tableCdnRequest" onaftersave="vm.saveTable('cdn_request', vm.params.cdn_request.unit_price_ladder)">
+          <table class="table table-bordered table-hover table-grey">
+            <caption>
+              动态请求阶梯价格配置
+            </caption>
+            <tr style="font-weight: bold">
+              <td style="width:50%">
+                请求大小范围（万次）
+              </td>
+              <td style="width:50%">
+                <span ng-show="vm.params.cdn_request.period_bill_type === 'DAILY'">设定售价（元/万次）</span>
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+            <tr ng-repeat="unit_price_ladder in vm.params.cdn_request.unit_price_ladder">
+              <td>
+                <span editable-text="unit_price_ladder.min" e-form="tableCdnRequest" e-placeholder="大于等于？ ">
+                  {{ unit_price_ladder.min}}
+                </span>
+                <span ng-show="!tableCdnRequest.$visible"> - {{ unit_price_ladder.max >= vm.ift ? '∞' : unit_price_ladder.max}}</span>
+              </td>
+              <td>
+                <span editable-text="unit_price_ladder.unit_price" e-form="tableCdnRequest" e-placeholder="售价 ? " e-required>
+                  {{ unit_price_ladder.unit_price}}
+                </span>
+                <span ng-show="$index === 0">
+                  {{unit_price_ladder.is_min_guarantee ? "（保底）" : ""}}
+                </span>
+              </td>
+              <td>
+                <button type="button" ng-show="tableCdnRequest.$visible" ng-click="vm.deleteTableEle($index, vm.params.cdn_request.unit_price_ladder)" title="删除" class="btn btn-danger">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </table>
+          <div class="btn-edit">
+            <button type="button" class="btn btn-default" ng-show="!tableCdnRequest.$visible" ng-click="tableCdnRequest.$show()">
+              配置
+            </button>
+          </div>
+          <div class="btn-form" ng-show="tableCdnRequest.$visible">
+            <button type="submit" ng-disabled="tableCdnRequest.$waiting" class="btn btn-info">保存</button>
+            <button type="button" ng-disabled="tableCdnRequest.$waiting" ng-click="tableCdnRequest.$cancel()" class="btn btn-default">取消</button>
+            <button type="button" ng-disabled="tableCdnRequest.$waiting" ng-click="vm.addUnitPriceLadder('cdn_request')" class="btn btn-primary" style="margin-left: 50px">添加价格阶梯</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"
+         style="background-color: #2b9cbd;color: #fff;height: 36px;font-weight:bold;padding-top:8px;padding-bottom:8px">
+      存储服务计费
+    </div>
+    <div class="panel-body">
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">计费模式</label>
+          <div class="col-sm-6">
+            <p class="form-control-static" ng-show="vm.params.storage.service_type === 'STORAGE'">使用存储计费</p>
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">请求计费模式</label>
+          <div class="col-sm-2"><p class="form-control-static" ng-show="vm.params.storage.period_bill_type === 'DAILY'">日使用存储计费</p></div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">定价配置</label>
+          <div class="col-sm-6">
+            <input bs-switch
+                   ng-model="vm.params.storage.price_type"
+                   type="checkbox"
+                   switch-on-color="type"
+                   switch-off-color="type"
+                   switch-on-text="标准报价"
+                   switch-off-text="独立报价"
+                   ng-true-value="'STANDARD_PRICE'"
+                   ng-false-value="'COSTOM_PRICE'"
+                   switch-handle-width="177"
+                   switch-label="{{vm.params.storage.price_type === 'STANDARD_PRICE' ? '独立报价' : '标准报价'}}">
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group" ng-show="vm.params.storage.price_type === 'COSTOM_PRICE'">
+          <label class="col-sm-2 control-label">计价模式</label>
+          <div class="col-sm-2"><p class="form-control-static" >标准梯级计费价</p></div>
+        </div>
+        <div class="form-group" ng-show="vm.params.storage.price_type === 'STANDARD_PRICE'">
+          <label class="col-sm-2 control-label">存储价格</label>
+          <div class="col-sm-2"><p class="form-control-static">{{vm.params.storage.unit_price_ladder[0].unit_price}} 元/GB</p></div>
+        </div>
+        <div class="line-dash" ng-show="vm.params.storage.price_type === 'COSTOM_PRICE'"></div>
+      </div>
+      <div class="well" ng-show="vm.params.storage.price_type === 'COSTOM_PRICE'">
+        <form editable-form name="tableStorage" onaftersave="vm.saveTable('storage', vm.params.storage.unit_price_ladder)">
+          <!-- storage -->
+          <table class="table table-bordered table-hover table-grey">
+            <caption>
+              存储阶梯价格配置
+            </caption>
+            <tr style="font-weight: bold">
+              <td style="width:50%">
+                存储价格范围（GB）
+              </td>
+              <td style="width:50%">
+                <span ng-show="vm.params.storage.period_bill_type === 'DAILY'">设定售价（元/GB）</span>
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+            <tr ng-repeat="unit_price_ladder in vm.params.storage.unit_price_ladder">
+              <td>
+                <span editable-text="unit_price_ladder.min" e-form="tableStorage" e-placeholder="大于等于？ ">
+                  {{ unit_price_ladder.min}}
+                </span>
+                <span ng-show="!tableStorage.$visible"> - {{ unit_price_ladder.max >= vm.ift ? '∞' : unit_price_ladder.max}}</span>
+              </td>
+              <td>
+                <span editable-text="unit_price_ladder.unit_price" e-form="tableStorage" e-placeholder="售价 ? " e-required>
+                  {{ unit_price_ladder.unit_price}}
+                </span>
+                <span ng-show="$index === 0">
+                  {{unit_price_ladder.is_min_guarantee ? "（保底）" : ""}}
+                </span>
+              </td>
+              <td>
+                <button type="button" ng-show="tableStorage.$visible" ng-click="vm.deleteTableEle($index, vm.params.storage.unit_price_ladder)" title="删除" class="btn btn-danger">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </table>
+          <div class="btn-edit">
+            <button type="button" class="btn btn-default" ng-show="!tableStorage.$visible" ng-click="tableStorage.$show()">
+              配置
+            </button>
+          </div>
+          <div class="btn-form" ng-show="tableStorage.$visible">
+            <button type="submit" ng-disabled="tableStorage.$waiting" class="btn btn-info">保存</button>
+            <button type="button" ng-disabled="tableStorage.$waiting" ng-click="tableStorage.$cancel()" class="btn btn-default">取消</button>
+            <button type="button" ng-disabled="tableStorage.$waiting" ng-click="vm.addUnitPriceLadder('storage')" class="btn btn-primary" style="margin-left: 50px">添加价格阶梯</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"
+         style="background-color: #2b9cbd;color: #fff;height: 36px;font-weight:bold;padding-top:8px;padding-bottom:8px">
+      HTTPS 服务计费
+    </div>
+    <div class="panel-body">
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">计费模式</label>
+          <div class="col-sm-6">
+            <p class="form-control-static" ng-show="vm.params.https.service_type === 'HTTPS'">HTTPS 流出请求次数计费</p>
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">请求计费模式</label>
+          <div class="col-sm-2"><p class="form-control-static" ng-show="vm.params.https.period_bill_type === 'DAILY'">日请求次数计费</p></div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">定价配置</label>
+          <div class="col-sm-6">
+            <input bs-switch
+                   ng-model="vm.params.https.price_type"
+                   type="checkbox"
+                   switch-on-color="type"
+                   switch-off-color="type"
+                   switch-on-text="标准报价"
+                   switch-off-text="独立报价"
+                   ng-true-value="'STANDARD_PRICE'"
+                   ng-false-value="'COSTOM_PRICE'"
+                   switch-handle-width="177"
+                   switch-label="{{vm.params.https.price_type === 'STANDARD_PRICE' ? '独立报价' : '标准报价'}}">
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group" ng-show="vm.params.https.price_type === 'COSTOM_PRICE'">
+          <label class="col-sm-2 control-label">计价模式</label>
+          <div class="col-sm-2"><p class="form-control-static" >标准梯级计费价</p></div>
+        </div>
+        <div class="form-group" ng-show="vm.params.https.price_type === 'STANDARD_PRICE'">
+          <label class="col-sm-2 control-label">服务价格</label>
+          <div class="col-sm-2"><p class="form-control-static">{{vm.params.https.unit_price_ladder[0].unit_price}} 元/万次</p></div>
+        </div>
+        <div class="line-dash" ng-show="vm.params.https.price_type === 'COSTOM_PRICE'"></div>
+      </div>
+      <div class="well" ng-show="vm.params.https.price_type === 'COSTOM_PRICE'">
+        <form editable-form name="tablehttps" onaftersave="vm.saveTable('https', vm.params.https.unit_price_ladder)">
+          <!-- https -->
+          <table class="table table-bordered table-hover table-grey">
+            <caption>
+              HTTPS 阶梯价格配置
+            </caption>
+            <tr style="font-weight: bold">
+              <td style="width:50%">
+                请求大小范围（万次）
+              </td>
+              <td style="width:50%">
+                <span ng-show="vm.params.https.period_bill_type === 'DAILY'">设定售价（元/万次）</span>
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+            <tr ng-repeat="unit_price_ladder in vm.params.https.unit_price_ladder">
+              <td>
+                <span editable-text="unit_price_ladder.min" e-form="tablehttps" e-placeholder="大于等于？ ">
+                  {{ unit_price_ladder.min}}
+                </span>
+                <span ng-show="!tablehttps.$visible"> - {{ unit_price_ladder.max >= vm.ift ? '∞' : unit_price_ladder.max}}</span>
+              </td>
+              <td>
+                <span editable-text="unit_price_ladder.unit_price" e-form="tablehttps" e-placeholder="售价 ? " e-required>
+                  {{ unit_price_ladder.unit_price}}
+                </span>
+                <span ng-show="$index === 0">
+                  {{unit_price_ladder.is_min_guarantee ? "（保底）" : ""}}
+                </span>
+              </td>
+              <td>
+                <button type="button" ng-show="tablehttps.$visible" ng-click="vm.deleteTableEle($index, vm.params.https.unit_price_ladder)" title="删除" class="btn btn-danger">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </table>
+          <div class="btn-edit">
+            <button type="button" class="btn btn-default" ng-show="!tablehttps.$visible" ng-click="tablehttps.$show()">
+              配置
+            </button>
+          </div>
+          <div class="btn-form" ng-show="tablehttps.$visible">
+            <button type="submit" ng-disabled="tablehttps.$waiting" class="btn btn-info">保存</button>
+            <button type="button" ng-disabled="tablehttps.$waiting" ng-click="tablehttps.$cancel()" class="btn btn-default">取消</button>
+            <button type="button" ng-disabled="tablehttps.$waiting" ng-click="vm.addUnitPriceLadder('https')" class="btn btn-primary" style="margin-left: 50px">添加价格阶梯</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"
+         style="background-color: #2b9cbd;color: #fff;height: 36px;font-weight:bold;padding-top:8px;padding-bottom:8px">
+      费用支付配置
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="form-group">
+        <label class="control-label col-sm-2">合同编号</label>
+
+        <div class="col-md-6">
+          <input type="text" class="form-control" ng-model="vm.params.pact_number"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2">付费周期</label>
+
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-addon">按</span>
+            <input type="number" class="form-control" ng-model="vm.currentState.pay_period_num">
+
+            <div class="input-group-btn" dropdown>
+              <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+                {{MAP.pay_period_unit[vm.currentState.pay_period_unit]}}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a ng-click="vm.currentState.pay_period_unit = 'DAY'">天</a>
+                </li>
+                <li>
+                  <a ng-click="vm.currentState.pay_period_unit = 'WEEK'">周</a>
+                </li>
+                <li>
+                  <a ng-click="vm.currentState.pay_period_unit = 'MONTH'">月</a>
+                </li>
+                <li>
+                  <a ng-click="vm.currentState.pay_period_unit = 'SEASON'">季度</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2">付费说明</label>
+
+        <div class="col-md-6">
+          <textarea class="form-control" rows="2" ng-model="vm.params.remark"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group" style="margin:0">
+    <div class="pull-right" style="  margin-bottom: 100px;">
+      <button ng-click="vm.submit()" type="button" class="btn btn-primary ">确认创建</button>
+      <a ui-sref="business.charges" type="button" class="btn btn-default">取消关闭</a>
+    </div>
+  </div>
+</div>

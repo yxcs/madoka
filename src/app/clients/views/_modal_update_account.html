@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>修改帐号</h4>
+</div>
+<div class="modal-body">
+  <form action="" class="form-horizontal" ng-show="update_type === 'call_type'">
+    <div class="form-group">
+      <label class="control-label col-sm-3">引入方式：</label>
+      <div class="col-sm-3">
+        <label><input type="radio" name="call_type" ng-model="account.call_type" value="call_in">Call In</label>
+      </div>
+      <div class="col-sm-3">
+        <label><input type="radio" name="call_type" ng-model="account.call_type" value="call_out">Call Out</label>
+      </div>
+    </div>
+  </form>
+
+  <form action="" class="form-horizontal" ng-show="update_type === 'email_notify'">
+    <div class="form-group">
+      <label class="control-label col-sm-3">状态</label>
+      <div class="col-sm-3">
+        <label><input type="radio" name="email_notify" ng-model="account.email_notify" ng-value="false">关闭</label>
+      </div>
+      <div class="col-sm-3">
+        <label><input type="radio" name="email_notify" ng-model="account.email_notify" ng-value="true">开启</label>
+      </div>
+    </div>
+  </form>
+
+  <form action="" class="form-horizontal" ng-show="update_type === 'msg_notify'">
+    <div class="form-group">
+      <label class="control-label col-sm-3">状态</label>
+      <div class="col-sm-3">
+        <label><input type="radio" name="msg_notify" ng-model="account.msg_notify" ng-value="false">关闭</label>
+      </div>
+      <div class="col-sm-3">
+        <label><input type="radio" name="msg_notify" ng-model="account.msg_notify" ng-value="true">开启</label>
+      </div>
+    </div>
+  </form>
+
+  <form action="" class="form-horizontal" ng-show="update_type === 'important'">
+    <div class="form-group">
+      <label class="control-label col-sm-3">客户重要度：</label>
+      <div class="col-sm-2">
+        <label><input type="radio" name="important" ng-model="account.important" value="A">A</label>
+      </div>
+      <div class="col-sm-2">
+        <label><input type="radio" name="important" ng-model="account.important" value="B">B</label>
+      </div>
+      <div class="col-sm-2">
+        <label><input type="radio" name="important" ng-model="account.important" value="C">C</label>
+      </div>
+      <div class="col-sm-2">
+        <label><input type="radio" name="important" ng-model="account.important" value="D">D</label>
+      </div>
+    </div>
+  </form>
+
+  <form action="" class="form-horizontal" ng-show="update_type === 'willing_to_buy'">
+    <div class="form-group">
+      <label class="control-label col-sm-3">购买意愿：</label>
+      <div class="col-sm-2">
+        <label><input type="radio" name="willing_to_buy" ng-model="account.willing_to_buy" value="A">A</label>
+      </div>
+      <div class="col-sm-2">
+        <label><input type="radio" name="willing_to_buy" ng-model="account.willing_to_buy" value="B">B</label>
+      </div>
+      <div class="col-sm-2">
+        <label><input type="radio" name="willing_to_buy" ng-model="account.willing_to_buy" value="C">C</label>
+      </div>
+      <div class="col-sm-2">
+        <label><input type="radio" name="willing_to_buy" ng-model="account.willing_to_buy" value="D">D</label>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">修改</button>
+</div>

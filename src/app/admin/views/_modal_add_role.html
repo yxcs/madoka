@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>授予角色</h4>
+</div>
+<div class="modal-body clearfix">
+  <form action="" class="form-horizontal" ng-init="value = {}" class="clearfix">
+    <label class="col-sm-3" ng-repeat="role in roles"><input type="checkbox" class="" ng-model="roles_checked[role.role_id]"> {{role.role_name}}</label>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">添加</button>
+</div>

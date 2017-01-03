@@ -1,0 +1,42 @@
+<form ng-submit="vm.submit()" class="form-horizontal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="vm.skip()">&times;</button>
+    <h4>账户扣款确认</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="col-sm-4 control-label">账单编号</label>
+      <div class="col-sm-8">
+        <p class="form-control-static">{{vm.params.bill_id}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">云存储账号</label>
+      <div class="col-sm-8">
+        <p class="form-control-static text-warning" style="font-size: 1.5em;font-weight:bold;">{{vm.params.account_name}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">出账时间</label>
+      <div class="col-sm-8">
+        <p class="form-control-static">{{vm.params.bill_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">账单金额</label>
+      <div class="col-sm-8">
+        <p class="form-control-static text-danger" style="font-size: 1.5em;font-weight:bold;">{{vm.params.total_cost}} 元</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">扣款金额</label>
+      <div class="col-sm-8">
+        <p class="form-control-static text-danger" style="font-size: 1.5em;font-weight:bold;">{{vm.params.reality_money}} 元</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="btn btn-sm btn-link" ng-click="vm.skip()">取消</a>
+    <button type="submit" class="btn btn-sm btn-primary" ng-disabled="vm.counter > 0 || vm.disableSubmit">确定 <span ng-show="vm.counter > 0">({{vm.counter}})</span></button>
+  </div>
+</form>

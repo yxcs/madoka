@@ -1,0 +1,44 @@
+<div class="content">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>员工ID</th>
+        <th>姓名</th>
+        <th>帐号邮箱</th>
+        <th>角色</th>
+        <th>负责区域</th>
+        <th>状态</th>
+        <th>管理</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="staff in staffsEnabled">
+        <td>{{staff.user_id}}</td>
+        <td>{{staff.name}}</td>
+        <td>{{staff.email}}</td>
+        <td><span ng-repeat="role in staff.roles track by $index">{{role}}  </span></td>
+        <td><span ng-repeat="region_id in staff.region_ids">{{MAP.region[region_id]}} </span></td>
+        <td>{{staff.status === 1 ? '已启用' : '已禁用'}}</td>
+        <td>
+          <a class="btn btn-xs btn-primary" ng-click="manageMess(staff.user_id)" ng-show="true">通知管理</a>
+          <a class="btn btn-xs btn-primary" ng-click="assignRegion(staff)" ng-show="self.rights_check['4_area_allot']">负责区域</a>
+          <a class="btn btn-xs btn-primary" ng-click="addRole(staff.user_id)" ng-show="self.rights_check['5_put_user_role']">授予角色</a>
+          <a class="btn btn-xs btn-info" ng-click="viewPerms(staff.user_id)" ng-show="self.rights_check['5_get_rights']">权限查看</a>
+          <a class="btn btn-xs btn-danger" ng-click="disable(staff.user_id)" ng-show="self.rights_check['5_delete_account']">禁用</a>
+        </td>
+      </tr>
+
+      <tr ng-repeat="staff in staffsDisabled" class="danger">
+        <td>{{staff.user_id}}</td>
+        <td>{{staff.name}}</td>
+        <td>{{staff.email}}</td>
+        <td><span ng-repeat="role in staff.roles">{{role}}  </span></td>
+        <td>{{MAP.region[staff.region_id]}}</td>
+        <td>{{staff.status === 1 ? '已启用' : '已禁用'}}</td>
+        <td>
+          <a class="btn btn-xs btn-danger" ng-click="enable(staff.user_id)" ng-show="self.rights_check['5_open_account']">恢复</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

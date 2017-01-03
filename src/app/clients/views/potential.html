@@ -1,0 +1,89 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <search-filter on-click="fetchClients()" ng-model="params.key" search-type="params.key_type" options="{range: 'potential'}"></search-filter>
+  <hr>
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="follow">跟进状态</label>
+        <select class="form-control" ng-model="params.status" ng-change="fetchClients()">
+          <option value="">全部状态</option>
+          <option value="0">未处理</option>
+          <option value="1">已联系</option>
+          <option value="2">需跟进</option>
+          <option value="3">失败</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="follow">负责销售</label>
+
+        <!-- TODO: salers api  -->
+        <select class="form-control" ng-model="params.user_id" ng-change="fetchClients()" ng-options="seller.user_id as seller.name for seller in sellers">
+          <option value="">请选择销售</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">创建时间</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="daterange" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="fetchClients()">筛选</button>
+          </span>
+        </div><!-- /input-group -->
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="actionbar clearfix">
+  <button class="btn btn-primary pull-right" ng-click="createPotentialClient()" ng-show="self.rights_check['2_put_latent_client']">创建潜在客户</button>
+</div>
+
+<div class="content">
+  <table class="table table-bordered table-striped table-hover">
+    <colgroup>
+      <col/>
+      <col style="width: 25%"/>
+      <col/>
+      <col/>
+      <col/>
+      <col/>
+      <col/>
+    </colgroup>
+    <thead>
+      <tr>
+        <td>创建日期</td>
+        <td>客户名称</td>
+        <td>所在地区</td>
+        <td>跟进状态</td>
+        <td>负责人</td>
+        <td>最近联系时间</td>
+        <td>自动丢弃时间</td>
+        <td>操作</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="client in clientsData.clients">
+        <td>{{client.created_at * 1000 | date: 'yyyy-MM-dd'}}</td>
+        <td>{{client.name}}</td>
+        <td>{{client.region}}</td>
+        <td>{{MAP.client_status[client.status]}}</td>
+        <td>{{client.sell_name}}</td>
+        <td>{{client.last_contacted_at ? client.last_contacted_at * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+        <td>{{client.auto_drop_at * 1000 | date: 'yyyy-MM-dd'}}</td>
+        <td>
+          <button class="btn btn-xs btn-default" ng-click="go('clients.potential_detail', {id: client.client_id})">查看</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav class="pull-right">
+    <ul class="pagination">
+      <li ng-class="{ disabled: !clientsData.page.since}"><a ng-click="prev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+      <li ng-class="{ disabled: !clientsData.page.max}"><a ng-click="next()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+    </ul>
+  </nav>
+</div>

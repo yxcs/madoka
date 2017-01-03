@@ -1,0 +1,6 @@
+<ul class="nav nav-pills nav-stacked" role="menu">
+  <li ng-class="{ 'active': $state.current.name.indexOf('usage') >= 0}" ng-if="self.rights_check['0_service_use']"><a ui-sref="business.usage">服务使用</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('orders') >= 0}" ng-if="self.rights_check['0_order_manage']"><a ui-sref="business.orders">订单管理</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('invoices') >= 0}" ng-if="self.rights_check['0_invoice_manage']"><a ui-sref="business.invoices">发票管理</a></li>
+  <li ng-class="{ 'active': $state.current.name.indexOf('charges') >= 0}" ng-if="self.rights_check['0_charge_confs']"><a ui-sref="business.charges">计费管理</a></li>
+</ul>

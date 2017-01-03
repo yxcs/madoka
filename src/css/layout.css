@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Layout @Leigh Zhu
+   ========================================================================== */
+
+
+.header {
+  position: fixed;
+  z-index: 1001;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  width: 100%;
+}
+
+.navbar {
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  right: 0;
+  min-width: 1330px;
+}
+
+.navbar .navbar-header {
+  width: 200px;
+}
+
+.sidebar {
+  position: fixed;
+  z-index: 1111;
+  width: 180px;
+  height: 100%;
+  margin-top: 50px;
+}
+
+.main {
+  position: relative;
+  width: 100%;
+  padding: 20px 20px 20px 200px;
+  top: 50px;
+  min-width: 1200px;
+}
+
+.sidebar {
+  padding-top: 50px;
+}
+
+.has_new.sidebar {
+  padding-top: 130px;
+}
+.has_new.main {
+  top: 130px;
+}
+
+.main.no-sb {
+  padding: 20px;
+}
+
+.global-alert {
+  margin-bottom: 0;
+  text-align: center;
+}

@@ -1,0 +1,139 @@
+<h3>{{client.name}}({{client.account_name}})</h3>
+<hr>
+<div class="panel panel-default">
+  <div class="panel-heading clearfix">
+    云存储服务使用概况
+    <button class="pull-right btn btn-info" ng-click="sync(account.account_name)"><i class="glyphicon glyphicon-refresh"></i> 实时数据同步</button>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-6">
+        <table class="table">
+          <caption>存储</caption>
+          <tbody>
+            <tr>
+              <td>已用空间：{{overview.storage_used | digiUnit}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-xs-6">
+        <table class="table">
+          <caption>流量</caption>
+          <tbody>
+            <tr>
+              <td>剩余流量：{{overview.flow_left | digiUnit}}</td>
+              <td>日均流量：{{overview.flow_day_average | digiUnit}}</td>
+              <td ng-if="overview.flow_left < 0">
+                流量超额：{{-overview.flow_left | digiUnit}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default" ng-controller="UsageStats">
+  <div class="panel-body">
+    <div class="row clearfix">
+      <div class="btn-group col-sm-4 col-md-4">
+        <label class="btn btn-default" ng-model="radiorange" ng-change="filterByDateRange(1)" btn-radio="1" ng-disabled="disabled">今天</label>
+        <label class="btn btn-default" ng-model="radiorange" ng-change="filterByDateRange(7)" btn-radio="7" ng-disabled="disabled">最近7天</label>
+        <label class="btn btn-default" ng-model="radiorange" ng-change="filterByDateRange(15)" btn-radio="15" ng-disabled="disabled">最近15天</label>
+        <label class="btn btn-default" ng-model="radiorange" ng-change="filterByDateRange(30)" btn-radio="30" ng-disabled="disabled">最近30天</label>
+      </div>
+      <div class="col-sm-7 col-md-7">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">自定义日期</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="dateRange" ng-disabled="disabled" options="dateOption"
+          />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="filterByCustomDateRange()" ng-disabled="disabled">查看</button>
+          </span>
+        </div>
+      </div>
+      <div class="col-sm-1 col-md-1">
+        <a ng-click="_getStats()"><i class="glyphicon glyphicon-refresh"></i> 刷新</a>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-sm-3 col-md-3">
+        <accordion close-others="true" id="charts-drop-menu">
+          <accordion-group heading="全空间">
+            <accordion-heading>
+              <span ng-click="fetchStats()">全空间</span>
+            </accordion-heading>
+          </accordion-group>
+          <accordion-group ng-repeat="bucket in buckets" is-open="status.open">
+            <accordion-heading>
+              <span ng-click="fetchStats(bucket.buckets_name)">{{bucket.buckets_name}}</span><i class="pull-right glyphicon"
+              ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+            </accordion-heading>
+            <table class="table">
+              <tr>
+                <td>
+                  <a href="" ng-click="fetchStats(bucket.buckets_name, bucket.buckets_name + '.b0.upaiyun.com')">{{bucket.buckets_name + '.b0.upaiyun.com'}}</a>
+                </td>
+              </tr>
+              <tr ng-repeat="domains in bucket.approval_domains">
+                <td>
+                  <a href="" ng-click="fetchStats(bucket.buckets_name, domains)">{{domains}}</a>
+                </td>
+              </tr>
+            </table>
+
+          </accordion-group>
+        </accordion>
+      </div>
+      <div class="col-sm-9 col-md-9">
+        <div class="chart">
+          <div class="chart-menu">
+            空间：{{view.bucket_name || '全空间'}}，域名：{{view.domain || '全域名'}}
+          </div>
+          <div class="chart-graph">
+            <h4>{{chartTitleTime}} 空间带宽</h4>
+            <area-chart config="options" data="dataset.br_dataset"></area-chart>
+          </div>
+          <div class="chart-graph">
+            <h4>{{chartTitleTime}} 空间流量</h4>
+            <bar-chart config="options" data="dataset.transfer_dataset"></bar-chart>
+          </div>
+          <table class="table stats-total">
+            <thead>
+              <tr>
+                <th><a style="cursor: pointer" ng-click="sortBy('date')">日期<i class="fa" ng-class="{ 'fa-long-arrow-up': sort_by_key !== '-date', 'fa-long-arrow-down': sort_by_key === '-date' }"></i></a>
+                </th>
+                <th><a style="cursor: pointer" ng-click="sortBy('bytes')">流量<i class="fa" ng-class="{ 'fa-long-arrow-up': sort_by_key !== '-bytes', 'fa-long-arrow-down': sort_by_key === '-bytes' }"></i></a>
+                </th>
+                <th><a style="cursor: pointer" ng-click="sortBy('reqs')">请求量<i class="fa" ng-class="{ 'fa-long-arrow-up': sort_by_key !== '-reqs', 'fa-long-arrow-down': sort_by_key === '-reqs' }"></i></a>
+                </th>
+                <th><a style="cursor: pointer" ng-click="sortBy('bandwidth')">峰值带宽<i class="fa" ng-class="{ 'fa-long-arrow-up': sort_by_key !== '-bandwidth', 'fa-long-arrow-down': sort_by_key === '-bandwidth' }"></i></a>
+                </th>
+                <th>峰值时间</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="peak in peaks_dataset.peaks | orderBy:sort_by">
+                <td>{{peak.date}}</td>
+                <td>{{peak.bytes | digiUnit}}</td>
+                <td>{{peak.reqs}}</td>
+                <td>{{peak.bandwidth | digiUnit: 'none' : '_M' : 'b'}}</td>
+                <td>{{peak.peak_time* 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+              </tr>
+              <tr>
+                <td>合计</td>
+                <td>{{peaks_dataset.total.flow | digiUnit}}</td>
+                <td>{{peaks_dataset.total.req}}</td>
+                <td colspan="2"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

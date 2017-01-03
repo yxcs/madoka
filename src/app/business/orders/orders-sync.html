@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>手动同步刷新订单数据</h4>
+</div>
+<div class="modal-body">
+  <p>
+    输入订单号，手动刷新指定订单的数据，适用于用户已有订单，但未在 CRM 显示的情况。
+  </p>
+
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label">订单号：</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" ng-model="order.order_number">
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">确认</button>
+</div>

@@ -1,0 +1,62 @@
+<h4>冲突查看</h4>
+<table class="table">
+    <tr>
+      <td>冲突时间：{{conflict.created_at * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+      <td>冲突类型：{{conflict.client_type === 'registed' ? '注册客户信息' : '潜在客户信息'}}</td>
+    </tr>
+    <tr>
+      <td>冲突描述：<span ng-repeat="field in conflict.conflict_field">{{conflictDescs[field]}}</span></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>指派时间：{{conflict.allotted_at * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+      <td>处理人：{{conflict.user_name}}
+        <a class="btn btn-xs btn-danger" ng-show="self.rights_check['4_conflict_allot']" ng-click="dispatch(conflict.conflict_id)">分配</a>
+      </td>
+    </tr>
+  </table>
+
+  <table class="table table-bordered">
+    <caption>客户信息对比列表</caption>
+    <thead>
+      <tr>
+        <td>绑定销售ID</td>
+        <td>负责人</td>
+        <td>注册时间</td>
+        <td>云存储帐号</td>
+        <td>帐号类型</td>
+        <td>帐号状态</td>
+        <td>引入类型</td>
+        <td>联系人</td>
+        <td>所在地区</td>
+        <td class="warning" ng-class="{danger: conflict.conflict_field.indexOf('name') >= 0}">客户名称</td>
+        <td class="warning" ng-class="{danger: conflict.conflict_field.indexOf('phone') >= 0}">手机号</td>
+        <td class="warning" ng-class="{danger: conflict.conflict_field.indexOf('email') >= 0}">邮箱</td>
+        <td class="warning" ng-class="{danger: conflict.conflict_field.indexOf('web_site') >= 0}">网站地址</td>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr ng-repeat="account in conflict.data">
+        <td>{{account.sell_name}}</td>
+        <td>{{account.owner_name}}</td>
+        <td>{{account.registered_at ? account.registered_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        <td>{{account.account_name}}</td>
+        <td>{{account.is_company ? '企业' : '个人'}}</td>
+        <td>{{MAP.account_status[account.account_status]}}</td>
+        <td>{{account.call_type}}</td>
+        <td>{{account.contact_name}}</td>
+        <td>{{MAP.region[account.region_id]}}</td>
+        <td class="warning">{{account.name}}</td>
+        <td class="warning">{{account.phone}}</td>
+        <td class="warning">{{account.email}}</td>
+        <td class="warning">{{account.web_site}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pull-right">
+    <button class="btn btn-default" ng-click="ignore(conflict.conflict_id)" ng-show="self.rights_check['4_conflict_handle']">忽略冲突</button>
+    <button class="btn btn-primary" ng-show="conflict.client_type === 'potential' && self.rights_check['4_conflict_handle']" ng-click="merge(conflict.conflict_id)">合并客户</button>
+    <button class="btn btn-primary" ng-show="conflict.client_type === 'registed' && self.rights_check['4_conflict_handle']" ng-click="merge(conflict.conflict_id)">关联帐号</button>
+  </div>
+</div>

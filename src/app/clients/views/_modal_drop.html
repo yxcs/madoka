@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>丢弃客户</h4>
+</div>
+<div class="modal-body" id="forbidCopyEvent">
+  <p>您将要丢弃的客户：{{client.name}}</p>
+  <p>请选择丢弃原因</p>
+  <form action="" class="form-horizontal">
+    <div class="form-group">
+      <label for="creator" class="col-sm-2 control-label">丢弃原因</label>
+      <div class="col-sm-4">
+        <select name="" id="" class="form-control" ng-change="update()" ng-model="drop.reason" ng-options="k as v for (k, v) in drop_reasons">
+          <option value="">选择原因</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label">详情</label>
+      <div class="col-sm-4">
+        <textarea name="" id="" cols="30" rows="5" placeholder="{{reason_info}}" ng-model="drop.remarks"></textarea>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-danger" ng-click="submit()">丢弃</button>
+</div>

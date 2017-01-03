@@ -1,0 +1,18 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>冲突处理</h4>
+</div>
+<div class="modal-body" ng-show="isRegisted">
+  关联操作执行后，关联账号下的“客户资料”将统一共用。
+</div>
+<div class="modal-body" ng-show="!isRegisted">
+  <ol>
+    <li>{{conflict_id}}潜在客户的客户资料将整合到新注册客户云存储账号的客户资料中；</li>
+    <li>{{$scope.conflict_id}}潜在客户的联系人信息将转移保存在新注册客户的云存储账号的联系人中；</li>
+    <li>合并处理后，潜在客户将不存在CRM系统中。</li>
+  </ol>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-danger" ng-click="submit()">确认处理</button>
+</div>

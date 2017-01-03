@@ -1,0 +1,12 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>计费配置模式管理</h4>
+</div>
+<div class="modal-body">
+  审核<b class="text-danger">拒绝</b>编号 {{chargeId}} 计费模式后，将不启用该配置的计费方式进行客户云服务费用计算！
+  <p>注：操作拒绝后，依然按照修改前的原配置计费模式执行。</p>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">确定拒绝</button>
+</div>

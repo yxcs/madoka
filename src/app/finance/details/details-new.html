@@ -1,0 +1,138 @@
+<div class="panel panel-default">
+  <div class="panel-heading">账户加款</div>
+  <div class="panel-body">
+    <form  ng-submit="vm.confirmDetails()" class="form-horizontal form-validate" name="newForm">
+      <div class="form-group">
+        <strong class="col-md-12 text-danger">
+          存在独立的计费配置的帐号，无法享受加款赠送金额的优惠。
+        </strong>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">云存储账号</label>
+
+        <div class="col-md-6">
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   name="account_name"
+                   ng-model="vm.params.account_name"
+                   ng-disabled="true"/>
+              <span class="input-group-btn">
+                <button class="btn btn-primary" ng-click="vm.searchClient()" type="button">查询</button>
+              </span>
+          </div>
+        </div>
+      </div>
+      <div class="line-dash" ng-show="vm.params.account_name"></div>
+      <div class="form-group" ng-show="vm.params.account_name">
+        <label class="control-label col-md-2">客户名称</label>
+        <div class="col-md-2"><p class="form-control-static">{{vm.client.name}}</p></div>
+        <label class="control-label col-md-2">负责人</label>
+        <div class="col-md-2"><p class="form-control-static">{{vm.client.sell_name}}</p></div>
+      </div>
+      <div class="line-dash" ng-show="vm.params.account_name"></div>
+      <div class="form-group" ng-show="vm.params.account_name">
+        <label class="control-label col-md-2">当前账户余额</label>
+        <div class="col-md-2"><p class="form-control-static">{{vm.client.balance | number: 2}} 元</p></div>
+        <label class="control-label col-md-2">加款后余额</label>
+        <div class="col-md-2"><p class="form-control-static">{{(vm.client.balance + vm.params.pay + vm.params.bonus) | number: 2}} 元</p></div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">加款金额</label>
+        <div class="col-md-6">
+          <input type="number"
+                 class="form-control"
+                 ng-model="vm.params.pay"
+                 min="0"
+                 max="9999999"
+                 step="0.01"
+                 required/>
+        </div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">充值优惠</label>
+        <div class="col-md-6">
+          <div class="radio-inline c-radio">
+            <label>
+              <input type="radio" ng-model="vm.isBonus" ng-value="false" >
+              <span class="fa fa-circle"></span> 无，充多少得多少
+            </label>
+          </div>
+          <div class="radio-inline c-radio">
+            <label>
+              <input type="radio" ng-model="vm.isBonus" ng-value="true" ng-disabled="vm.chargeConfClient">
+              <span class="fa fa-circle"></span> 加款折扣，充值返赠
+            </label>
+          </div>
+        </div>
+      </div>
+      <div ng-show="vm.isBonus">
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="control-label col-md-2">返赠金额</label>
+          <div class="col-md-6">
+            <input type="number"
+                   class="form-control"
+                   ng-model="vm.params.bonus"
+                   min="0"
+                   max="9999999"
+                   step="0.01" />
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="control-label col-md-2">到账金额</label>
+          <div class="col-md-6">
+            <p class="form-control-static col-md-2">
+              {{(vm.params.bonus + vm.params.pay) | number: 2}}
+            </p>
+          </div>
+        </div>
+        <div class="line-dash"></div>
+        <div class="form-group">
+          <label class="control-label col-md-2">加款折扣</label>
+          <div class="col-md-6">
+            <p class="form-control-static col-md-2">
+              {{vm.params.pay / (vm.params.bonus + vm.params.pay) | number: 4}}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">打款方式</label>
+        <div class="col-md-6">
+          <select class="form-control" ng-model="vm.params.pay_type">
+            <option value="alipay">支付宝支付</option>
+            <option value="offline_bank">线下银行打款</option>
+            <option value="offline_cash">线下现金处理</option>
+            <option value="system">系统处理</option>
+            <option value="other">其它</option>
+          </select>
+        </div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <label class="control-label col-md-2">备注</label>
+        <div class="col-md-6">
+          <textarea class="form-control"
+                    rows="3"
+                    placeholder="线下银行打款请填写转账单号或其他备注信息"
+                    ng-model="vm.params.remark"
+                    required></textarea>
+        </div>
+      </div>
+      <div class="line-dash"></div>
+      <div class="form-group">
+        <div class="col-md-4 col-md-offset-2">
+          <a class="btn btn-default" ng-click="vm.back()">取消</a>
+          <button type='submit' class="btn btn-primary" ng-disabled="newForm.$invalid">确定</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

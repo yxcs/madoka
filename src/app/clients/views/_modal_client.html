@@ -1,0 +1,129 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>客户信息</h4>
+</div>
+<div class="modal-body">
+  <form class="form-horizontal" role="form" name="createPotential">
+    <div class="form-group">
+      <label for="creator" class="col-sm-2 control-label">创建者</label>
+      <div class="col-sm-4">
+        <p class="form-control-static">{{sellersMap[client.create_user_id]}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="creator" class="col-sm-2 control-label"><span class="required">*</span>客户名称</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" ng-model="client.name" name="client_name" ng-blur="isExists('name', client.name)" required up-focus>
+        <div ng-show="check.is_name_exists">
+            <span class="text-danger">此客户名称已经存在</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="city" class="col-sm-2 control-label"><span class="required">*</span>所在省市 </label>
+      <div class="col-sm-2">
+        <select class="form-control" ng-model="client.province" ng-options="province.id as province.name for province in provinces" ng-change="getCities()">
+        </select>
+      </div>
+      <div class="col-sm-2">
+        <select class="form-control" ng-model="client.city" ng-options="city.id as city.name for city in cities">
+        </select>
+      </div>
+      <label for="addr" class="col-sm-2 control-label">客户地址</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" ng-model="client.address">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label">固定电话</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" ng-model="client.tel">
+      </div>
+      <label for="" class="col-sm-2 control-label">传真</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" ng-model="client.fax">
+      </div>
+    </div>
+    <hr>
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label">所属行业</label>
+      <div class="col-sm-2">
+        <select class="form-control" ng-model="client.category" ng-options="category.name as category.name for category in main_business" ng-change="getBusiness()">
+        </select>
+      </div>
+      <div class="col-sm-2">
+        <select class="form-control" ng-model="client.business" ng-options="business.name as business.name for business in business_types">
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label"><span class="required">*</span>网站名称</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" ng-model="client.site">
+      </div>
+      <label for="" class="col-sm-2 control-label"><span class="required">*</span>网站地址</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" ng-model="client.reg_domain" ng-blur="isExists('domain', client.reg_domain)">
+        <div ng-show="check.is_domain_exists">
+            <span class="text-danger">此网站域名已经存在</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="" class="col-sm-2 control-label">备注</label>
+      <div class="col-sm-10">
+        <textarea name="" id="" cols="30" rows="5" class="form-control" ng-model="client.description"></textarea>
+      </div>
+    </div>
+    <hr>
+    <div class="form-group" ng-hide="edit === true">
+      <label for="" class="col-sm-2 control-label"><span class="required">*</span>跟进状态</label>
+      <div class="col-sm-10">
+        <select name="" id="" class="form-control" ng-model="client.status" ng-options="k as v for (k, v) in MAP.client_status">
+          <option value=""></option>
+        </select>
+      </div>
+    </div>
+
+    <hr>
+
+  <div class="form-group" ng-show="!edit">
+    <p class="col-sm-offset-2 col-sm-10 alert alert-warning">联系人的手机、QQ、邮箱必填一个！</p>
+    <label for="" class="col-sm-2 control-label">联系人</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.contact_name">
+    </div>
+    <label for="" class="col-sm-2 control-label">QQ</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.qq">
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="!edit">
+    <label for="" class="col-sm-2 control-label">部门</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.department">
+    </div>
+    <label for="" class="col-sm-2 control-label">职位</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.position">
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="!edit">
+    <label for="" class="col-sm-2 control-label">手机</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.cellphone">
+    </div>
+    <label for="" class="col-sm-2 control-label">邮箱</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" ng-model="contact.email">
+    </div>
+  </div>
+
+  </form>
+</div>
+<div class="modal-footer clearfix">
+  <button class="btn btn-sm btn-link" ng-click="skip()">取消</button>
+  <button class="btn btn-sm btn-primary" ng-click="submit()">保存创建</button>
+</div>

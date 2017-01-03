@@ -1,0 +1,95 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <search-filter on-click="getRecords()" ng-model="params.key" search-type="params.key_type"></search-filter>
+  <hr>
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="follow">负责销售</label>
+        <select class="form-control" ng-model="params.sale_id" ng-options="seller.user_id as seller.name for seller in sellers" ng-change="getRecords()">
+          <option value="">请选择销售</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="follow">客户状况</label>
+        <select class="form-control" ng-model="params.is_potential" ng-change="getRecords()">
+          <option value="">全部</option>
+          <option value="0">注册客户</option>
+          <option value="1">潜在客户</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">联系时间</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="daterange" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="getRecords()">筛选</button>
+          </span>
+        </div>
+      </div>
+    </form>
+    <hr>
+    <div class="btn-group">
+      <label class="btn btn-default" ng-model="contact_type" ng-click="contact_mode = ''; getRecords('contact_type', 1)" btn-radio="1">发展客户</label>
+      <label class="btn btn-default" ng-model="contact_type" ng-click="contact_mode = ''; getRecords('contact_type', 2)" btn-radio="2">业务合作</label>
+      <label class="btn btn-default" ng-model="contact_type" ng-click="contact_mode = ''; getRecords('contact_type', 3)" btn-radio="3">客户回访</label>
+      <label class="btn btn-default" ng-model="contact_type" ng-click="contact_mode = ''; getRecords('contact_type', 4)" btn-radio="4">客户关怀</label>
+      <label class="btn btn-default" ng-model="contact_type" ng-click="contact_mode = ''; getRecords('contact_type', 5)" btn-radio="5">服务费用</label>
+    </div>
+
+    <div class="btn-group">
+      <label class="btn btn-default" ng-model="contact_mode" ng-click="contact_type = ''; getRecords('contact_mode', 1)" btn-radio="1">在线</label>
+      <label class="btn btn-default" ng-model="contact_mode" ng-click="contact_type = ''; getRecords('contact_mode', 2)" btn-radio="2">电话</label>
+      <label class="btn btn-default" ng-model="contact_mode" ng-click="contact_type = ''; getRecords('contact_mode', 3)" btn-radio="3">上门</label>
+    </div>
+  </div>
+</div>
+
+
+<div class="actionbar clearfix">
+  <a class="btn btn-primary pull-right" ui-sref=".new" ng-show="self.rights_check['2_put_concat_log']">新建联系记录</a>
+</div>
+
+<div class="content">
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>联系时间</th>
+        <th>所属客户</th>
+        <th>云存储帐号</th>
+        <th>客户状况</th>
+        <th>联系人</th>
+        <th>联系方式</th>
+        <th>联系类型</th>
+        <th>联系状态</th>
+        <th>创建人</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="record in records.data">
+        <td>{{record.contact_date ? record.contact_date * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+        <td>{{record.client_name}}</td>
+        <td><a ui-sref="clients.personal.detail.info({account_name: record.upyun_account})" target="_blank">{{record.upyun_account === 'potential' ? '-' : record.upyun_account}}</a></td>
+        <td>{{record.potential_user === 0 ? '注册客户' : '潜在客户'}}</td>
+        <td>{{record.contact_name}}</td>
+        <td>{{MAP.contact_modes[record.contact_mode]}}</td>
+        <td>{{MAP.contact_types[record.contact_type]}}</td>
+        <td>{{MAP.contact_status[record.contact_status]}}</td>
+        <td>{{record.sale_name}}</td>
+        <td>
+          <a class="btn btn-xs btn-info" ng-click="viewDetail(record)">详情</a>
+          <a ui-sref="contact.records.new({client_name: record.client_name,upyun_account: record.upyun_account})" class="btn btn-xs btn-success" tooltip="创建">创建</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <nav class="pull-right">
+    <ul class="pagination">
+      <li ng-class="{ disabled: !records.page.since}"><a ng-click="prev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+      <li ng-class="{ disabled: !records.page.max}"><a ng-click="next()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+    </ul>
+  </nav>
+</div>

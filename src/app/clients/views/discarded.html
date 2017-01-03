@@ -1,0 +1,99 @@
+<div class="well actions">
+  <button class="btn btn-default pull-right" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>重置过滤条件</button>
+  <div class="form-inline row">
+    <div class="col-md-5">
+      <search-filter on-click="fetchDiscardeds()" ng-model="params.key" search-type="params.key_type" options="{range: 'all'}"></search-filter>
+    </div>
+    <div class="col-md-5">
+      <div class="form-group">
+        <div class="input-group input-daterange">
+          <span class="input-group-addon">丢弃时间</span>
+          <input date-range-picker class="form-control date-picker" type="text" ng-model="daterange" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="fetchDiscardeds()">筛选</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="filters">
+    <form action="" class="form-inline">
+      <div class="form-group">
+        <label for="follow">客户状况</label>
+        <select class="form-control" ng-model="params.client_type" ng-change="fetchDiscardeds()">
+          <option value="">全部</option>
+          <option value="1">注册客户</option>
+          <option value="0">潜在客户</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="follow">丢弃来源</label>
+        <select class="form-control" ng-model="params.user_id" ng-options="seller.user_id as seller.name for seller in sellers" ng-change="fetchDiscardeds()">
+          <option value="">请选择销售</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="follow">丢弃类别</label>
+        <select class="form-control" ng-model="params.drop_type" ng-change="fetchDiscardeds()">
+          <option value="">全部</option>
+          <option value="1">手动丢弃</option>
+          <option value="0">自动丢弃</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="follow">丢弃原因</label>
+        <select class="form-control" ng-model="params.reason" ng-options="k as v for (k, v) in MAP.drop_reasons" ng-change="fetchDiscardeds()">
+          <option value="">全部</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<div class="content">
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>丢弃时间</th>
+        <th>客户名称</th>
+        <th>云存储帐号</th>
+        <th>帐号类型</th>
+        <th>帐号状态</th>
+        <th>重要度</th>
+        <th>丢弃来源</th>
+        <th>丢弃类别</th>
+        <th>丢弃原因</th>
+        <th>备注</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="dis in discardeds.drops">
+        <td>{{dis.created_at * 1000 | date: 'yyyy-MM-dd'}}</td>
+        <td>{{dis.client_name}}</td>
+        <td>
+          <span ng-show="dis.account_name !== '-'"><a ui-sref="clients.personal.detail.info({account_name: dis.account_name})" target="_blank">{{dis.account_name}}</a></span>
+          <span ng-show="dis.account_name == '-'">潜在客户</span>
+        </td>
+        <td>{{dis.account_type === 'personal' ? '个人' : '企业'}}</td>
+        <td>{{MAP.account_status[dis.account_status]}}</td>
+        <td>{{dis.important}}</td>
+        <td>{{dis.user_name}}</td>
+        <td>{{dis.drop_type === 1 ? '手动丢弃' : '系统丢弃'}}</td>
+        <td>{{MAP.drop_reasons[dis.reason]}}</td>
+        <td>{{dis.remarks}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav class="pull-right">
+    <ul class="pagination">
+      <li ng-class="{ disabled: !discardeds.page.since}"><a ng-click="prev()"><span aria-hidden="true">&laquo;前一页</span><span class="sr-only">前一页</span></a></li>
+      <li ng-class="{ disabled: !discardeds.page.max}"><a ng-click="next()"><span aria-hidden="true">后一页&raquo;</span><span class="sr-only">后一页</span></a></li>
+    </ul>
+  </nav>
+</div>

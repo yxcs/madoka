@@ -1,0 +1,358 @@
+<tabset style="margin-bottom: -1px;">
+  <tab>
+    <tab-heading>客户信息</tab-heading>
+    <div class="content">
+      <div class="panel panel-default">
+        <div class="panel-heading">客户资料
+          <a class="btn btn-link pull-right" ng-click="editClient()" ng-hide="inPublic || !self.rights_check['2_update_client']">编辑</a>
+        </div>
+        <div class="panel-body clearfix">
+          <div class="pull-left">
+            <dl class="dl-horizontal">
+              <dt>客户名称：</dt>
+              <dd>{{client.name}}</dd>
+              <dt>所属行业：</dt>
+              <dd>{{client.main_business}}</dd>
+              <dt>网站名称：</dt>
+              <dd>{{client.site}}</dd>
+              <dt>所在省市：</dt>
+              <dd>{{client.province | location}}/{{client.city | location}}</dd>
+              <dt>固定电话：</dt>
+              <dd>{{client.tel}}</dd>
+            </dl>
+          </div>
+          <div class="pull-left">
+            <dl class="dl-horizontal">
+              <dt>网站地址：</dt>
+              <dd>{{client.reg_domain}}</dd>
+              <dt>客户地址：</dt>
+              <dd>{{client.address}}</dd>
+              <dt>传真：</dt>
+              <dd>{{client.fax}}</dd>
+              <dt>备注：</dt>
+              <dd>{{client.description}}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <!-- Potential: saler related -->
+      <div class="panel panel-default" ng-show="page_type === 'potential'">
+        <div class="panel-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{inPublic ? '原负责人' : '负责人'}}：{{inPublic ? sellersMap[client.ex_user_id]: sellersMap[client.user_id]}}
+                  <a class="btn btn-xs btn-primary" ng-click="dispatch(client.client_id)" ng-show="self.rights_check['3_allot_client']">分配</a>
+                </th>
+                <th ng-show="inPublic">丢弃时间: {{client.dropped_at * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</th>
+                <th>创建人：{{sellersMap[client.create_user_id]}}</th>
+                <th>创建时间：{{client.created_at * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="" class="btn btn-xs btn-default" ng-click="pickUp(client)" ng-hide="client.user_id > 0" ng-hide="inPublic || !self.rights_check['3_pick_up_client']">拣回</a>
+                  <a class="btn btn-xs btn-danger" ng-click="drop(client)" ng-hide="inPublic || !self.rights_check['3_drop_client']">丢弃</a>
+                </td>
+                <td ng-show="inPublic"></td>
+                <td></td>
+                <td>跟进状态：
+                  <select name="" id="" ng-model="client.status" ng-options="status.value as status.name for status in client_status" ng-disabled="inPublic || !self.rights_check['2_update_status']">
+                    <option value="">请选择</option>
+                  </select>
+                  <button class="btn btn-xs btn-primary" ng-click="updateClient()" ng-hide="inPublic || !self.rights_check['2_update_status']">修改</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Registered: upyun account -->
+      <div class="panel panel-default" ng-show="page_type !== 'potential'">
+        <div class="panel-heading clearfix">
+          <div class="pull-left">UPYUN 云服务信息</div>
+          <div class="col-sm-2 col-sm-offset-1" ng-show="isConflict">
+            <b>冲突客户：</b>
+            <a ui-sref="clients.conflict({account_name: account.account_name})" class="btn btn-xs btn-danger">处理</a>
+          </div>
+          <ul class="list-inline pull-right" ng-show="client.related.length > 0">
+            <li>关联：</li>
+            <li ng-repeat="account in client.related">
+              <a href="/clients/registed/{{account.account_id}}/">{{account.account_name}}</a>
+            </li>
+            <li>
+              <a href="" ng-click="dissociate()" ng-show="self.rights_check['4_relation_unwrap']">解除</a>
+            </li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td>引入方式：{{account.call_type}}
+                  <button class="btn btn-xs btn-danger" ng-click="updateAccount(account, 'call_type')" ng-hide="inPublic || !self.rights_check['4_update_import']">调整</button>
+                </td>
+                <td>
+                  <span ng-if="!inPublic">负责人：{{sellersMap[client.user_id]}}</span>
+                  <span ng-if="inPublic">原负责人：{{sellersMap[client.ex_user_id] || '-'}}</span>
+                  <a class="btn btn-xs btn-primary" ng-click="dispatch(client)" ng-show="self.rights_check['3_allot_client'] && !isConflict">分配</a>
+                </td>
+                <td>
+                  <span ng-if="!inPublic">分配时间：{{account.allotted_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                  <span ng-if="inPublic">丢弃时间：{{client.dropped_at ? client.dropped_at * 1000 : '-'| date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>帐号状态：<strong>{{MAP.account_status[account.account_status]}}</strong>
+                  <a class="btn btn-warning btn-xs" ng-click="updateAccountStatus(account.account_id, account.account_name, 'recover')" ng-show="(account.account_status === 'DISABLED' || account.account_status === 'LOCKED' || account.account_status === 'BLOCKED') &&
+                       self.rights_check['4_regain_account'] && !inPublic">恢复</a>
+                  <a class="btn btn-warning btn-xs" ng-click="updateAccountStatus(account.account_id, account.account_name, 'trial')" ng-show="(account.account_status === 'TRIAL')  &&
+                       self.rights_check['4_delay_account'] && !inPublic">延长试用期</a>
+                  <a class="btn btn-danger btn-xs" ng-click="updateAccountStatus(account.account_id, account.account_name, 'lock')" ng-show="(account.account_status === 'TRIAL' || account.account_status === 'NORMAL' || account.account_status === 'OVERDUE') &&
+                       self.rights_check['4_stop_account'] && !inPublic">停用</a>
+                  <a class="btn btn-danger btn-xs" ng-click="updateAccountStatus(account.account_id, account.account_name, 'block')" ng-show="(account.account_status === 'UNAUTH' || account.account_status === 'DISABLED' || account.account_status === 'LOCKED') &&
+                       self.rights_check['4_forbid_account'] && !inPublic">禁号</a>
+                  <a class="btn btn-danger btn-xs" ng-click="drop(client)" ng-show="(account.account_status === 'UNAUTH' || account.account_status === 'BLOCKED' || account.account_status === 'DISABLED' || account.account_status === 'LOCKED') &&
+                       self.rights_check['3_drop_client'] && !inPublic">丢弃</a>
+                  <a class="btn btn-warning btn-xs" ng-click="pickUp(client)" ng-show="(account.account_status === 'UNAUTH' || account.account_status === 'BLOCKED') &&
+                       self.rights_check['3_pick_up_client'] && inPublic">拣回</a>
+
+                  <p ng-show="account.account_status === 'TRIAL'"><span class="text-warning">（剩余 {{client.account.trial_days_left}} 天）</span></p>
+                  <p ng-show="account.account_status === 'LOCKED' || account.account_status === 'DISABLED'">停用理由：<span class="text-warning">{{account.lock_reason}}</span></p>
+                  <p ng-show="account.account_status === 'BLOCKED'">禁用理由：<span class="text-warning">{{account.block_reason}}</span></p>
+                </td>
+                <td>客户重要度：{{account.important}}
+                  <a class="btn btn-danger btn-xs" ng-click="updateAccount(account, 'important')" ng-hide="inPublic || !self.rights_check['4_cooperation_sign']">修改</a>
+                </td>
+                <td>购买意愿：{{account.willing_to_buy}}
+                  <a class="btn btn-danger btn-xs" ng-click="updateAccount(account, 'willing_to_buy')" ng-hide="inPublic || !self.rights_check['4_cooperation_sign']">修改</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel panel-default" ng-show="page_type !== 'potential'">
+        <div class="panel-heading clearfix">
+          <div class="col-sm-2">UPYUN 帐号信息</div>
+          <div class="col-sm-3">
+            <span>身份认证：{{client.verify_status === 'yes' ? '已认证' : client.verify_status === 'no' ? '未认证' : client.verify_status === 'ignore' ? '未认证-忽略' : client.verify_status === 'wait' ? '等待认证' : client.verify_status === 'refuse' ? '审核拒绝' : ''}}</span>
+            <span ng-if="self.rights_check['6_account_verify']">
+              <a href="" class="btn btn-xs btn-danger" ng-click="changeVerify_Status('IGNORE')" ng-if="client.verify_status === 'no'">忽略认证</a>
+              <a href="" class="btn btn-xs btn-danger" ng-click="changeVerify_Status('CANCEL')" ng-if="client.verify_status === 'yes'">取消认证</a>
+              <a href="" class="btn btn-xs btn-info" ng-click="viewVerifyDetail()" ng-if="client.verify_status === 'yes' && (client.verify_type === 'uid' || client.verify_type === 'ubl')">认证资料</a>
+            </span>
+          </div>
+          <div class="col-sm-3">
+            <span>预留客户：{{client.distribute_able === 'can_distribute' ? '关闭' : '开启'}}</span>
+            <a href="" class="btn btn-xs btn-danger" ng-click="changeDistributeDtate(client)" ng-if="!inPublic">管理</a>
+          </div>
+          <div class="col-sm-4">
+            <span class="label label-info">{{MAP.buy_types[account.buy_type]}}</span>
+            <span>首次购买时间：{{account.first_buy_time ? account.first_buy_time * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+            <a href="" class="btn btn-xs btn-danger" ng-click="resetFirstBuyTime(account)" ng-show="!inPublic && self.rights_check['4_update_buy_time']">重置</a>
+          </div>
+        </div>
+        <div class="panel-body">
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td>云存储帐号：{{account.account_name}}
+                  <a href="" class="btn btn-xs btn-danger" ng-click="updateAccountStatus(account.account_id, account.account_name, 'passwd')"
+                  ng-show="!inPublic && self.rights_check['4_password_reset']">重置密码</a>
+                </td>
+                <td>个人名称：{{account.username}}
+                  <span ng-show="account.company_name">/ 企业名称：{{account.company_name}}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>注册时间：{{account.reg_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+                <td>注册地址：{{account.reg_url}}</td>
+              </tr>
+              <tr>
+                <td>所属行业：{{account.sector}}</td>
+                <td>所属省市：{{account.location}}</td>
+              </tr>
+              <tr>
+                <td>帐号类型：{{account.account_type === 'personal' ? '个人' : '企业'}}</td>
+                <td>网站地址：{{account.web_site}}</td>
+              </tr>
+              <tr>
+                <td>绑定邮箱：{{account.email}} / 验证状态：{{account.email_auth === true ? '已验证' : '未验证'}}
+                  <a ng-click="changeEmailV()" class="btn btn-xs btn-danger" ng-hide="inPublic || !self.rights_check['4_proving_manager']">修改验证</a>
+                </td>
+                <td>绑定手机号：{{account.phone}} / 验证状态：{{account.phone_auth === true ? '已验证' : '未验证'}}
+                  <a ng-click="changePhoneV()" class="btn btn-xs btn-danger" ng-hide="inPublic || !self.rights_check['4_proving_manager']">修改验证</a>
+                </td>
+              </tr>
+              <tr>
+                <td>邮件通知：{{client.account.detail.email_notify === true ? '开启' : '关闭' }}
+                  <a href="" class="btn btn-xs btn-danger" ng-click="updateAccount(account, 'email_notify')" ng-hide="inPublic || !self.rights_check['4_notice_switch']">修改</a>
+                </td>
+                <td>短信通知：{{client.account.detail.msg_notify === true ? '开启' : '关闭'}}
+                  <a href="" class="btn btn-xs btn-danger" ng-click="updateAccount(account, 'msg_notify')" ng-hide="inPublic || !self.rights_check['4_notice_switch']">修改</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">联系人信息
+          <a ui-sref="contact.manage.new" class="btn btn-link pull-right" ng-hide="inPublic || !self.rights_check['2_put_concat']">添加联系人</a>
+        </div>
+        <div class="panel-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>联系人</th>
+                <th>职位</th>
+                <th>手机号</th>
+                <th>电话</th>
+                <th>QQ</th>
+                <th>创建日期</th>
+                <th>负责销售</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="contact in contacts">
+                <td>{{contact.contact_name}}
+                  <i class="glyphicon glyphicon-flag text-muted" tooltip-placement="right" tooltip="主联系人" ng-show="contact.is_main === 1"></i>
+                </td>
+                <td>{{contact.position}}</td>
+                <td>{{contact.cellphone}}</td>
+                <td>{{contact.telphone}}</td>
+                <td>{{contact.qq}}</td>
+                <td>{{contact.created_at ? contact.created_at * 1000 : '-' | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+                <td>{{sellersMap[contact.sale_id]}}</td>
+                <td>
+                  <a class="btn btn-xs btn-default" ng-click="editContact(contact)">详情</a>
+                  <a href="" class="btn btn-xs btn-danger" ng-click="delContact(contact)" ng-hide="inPublic || contact.is_main === 1 || !self.rights_check['2_delete_concat']">删除</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </tab>
+  <tab heading="服务使用" ng-click="broadcastActive()" ng-if="page_type !== 'potential'">
+    <div ng-controller="UsageDetail">
+      <ng-include src="'app/business/usage/usage-detail.html'"></ng-include>
+    </div>
+  </tab>
+  <tab ng-if="page_type !== 'potential'">
+    <tab-heading>订单信息</tab-heading>
+    <div ng-controller="tabsBusinessOrdersCtrl">
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th class="order-type order-type-title">订单号</th>
+            <th>订单内容</th>
+            <th>订单金额</th>
+            <th>实付金额</th>
+            <th>下单时间</th>
+            <th>状态</th>
+            <th>负责人</th>
+            <th width="210">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="order in ordersData.orders">
+            <td class="order-type {{'order-type-' + order.order_type}}">{{order.order_number}}</td>
+            <td>
+              <ul class="list-unstyled">
+                <li ng-show="order.order_content.storage">存储：{{order.order_content.storage}} GB</li>
+                <li ng-show="order.order_content.storage_period">存储有限期：{{order.order_content.storage_period}} 天</li>
+                <li ng-show="order.order_content.transfer">流量：{{order.order_content.transfer}} GB</li>
+                <li ng-show="order.order_content.https_period">HTTPS：{{order.order_content.https_period}} 年</li>
+              </ul>
+            </td>
+            <td>{{order.order_paid}} 元</td>
+            <td>{{order.actual_paid}} 元</td>
+            <td>{{order.order_time * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+            <td>
+              <span class="text-danger text-lg" ng-show="order.order_status === 'INIT'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}">
+              <i class="fa fa-question-circle"></i>
+            </span>
+              <span class="text-success text-lg" ng-show="order.order_status === 'DONE'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}">
+              <i class="fa fa-check-circle"></i>
+            </span>
+              <span class="text-muted text-lg" ng-show="order.order_status === 'CANCEL'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}">
+              <i class="fa fa-times-circle"></i>
+            </span>
+              <span class="text-info text-lg" ng-show="order.order_status === 'GIFT'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}">
+              <i class="fa fa-gift"></i>
+            </span>
+              <span class="text-info text-lg" ng-show="order.order_status === 'REFUND'" tooltip-placement="right" tooltip="{{MAP.order_status[order.order_status]}}">
+              <i class="fa fa-minus-circle"></i>
+            </span>
+            </td>
+            <td>{{order.user_name}}</td>
+            <td class="tcol-180">
+              <a href="" class="btn btn-xs btn-primary" ng-click="confirm(order)" ng-show="order.order_status === 'INIT' && self.rights_check['4_order_manager']"
+              tooltip-placement="bottom" tooltip="确认">确认</a>
+              <a href="" class="btn btn-xs btn-warning" ng-click="cancel(order)" ng-show="order.order_status === 'INIT' && self.rights_check['4_order_manager']"
+              tooltip-placement="bottom" tooltip="取消">取消</a>
+              <a href="" class="btn btn-xs btn-danger" ng-click="refund(order)" ng-show="order.order_status === 'DONE' && self.rights_check['4_order_refund']"
+              tooltip-placement="bottom" tooltip="退款">退款</a>
+              <a href="" class="btn btn-xs btn-info" ng-click="view(order)" tooltip-placement="bottom" tooltip="查看订单详情">详情</a>
+              <a href="" class="btn btn-xs btn-default" ng-click="sync(order)" tooltip-placement="bottom" tooltip="重新同步该订单数据"><i class="glyphicon glyphicon-refresh"></i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="actionbar clearfix">
+        <ul class="list-unstyled list-inline pull-right">
+          <li>
+            <button class="btn btn-default" ui-sref="business.orders({account_name: client.account.account_name})" ng-show="ordersData.page.max">查看更多</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </tab>
+  <tab>
+    <tab-heading>联系记录</tab-heading>
+    <div ng-controller="tabsContactRecordCtrl">
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>联系时间</th>
+            <th>联系人</th>
+            <th>联系方式</th>
+            <th>联系类型</th>
+            <th>联系状态</th>
+            <th>创建人</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="record in records.data">
+            <td>{{record.contact_date ? record.contact_date * 1000 : '-' | date: 'yyyy-MM-dd'}}</td>
+            <td>{{record.contact_name}}</td>
+            <td>{{MAP.contact_modes[record.contact_mode]}}</td>
+            <td>{{MAP.contact_types[record.contact_type]}}</td>
+            <td>{{MAP.contact_status[record.contact_status]}}</td>
+            <td>{{record.sale_name}}</td>
+            <td>
+              <a class="btn btn-xs btn-info" ng-click="viewDetail(record)">详情</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="actionbar clearfix">
+        <ul class="list-unstyled list-inline pull-right">
+          <li>
+            <a ui-sref="contact.records.new({client_name: client.name,upyun_account:  client.account.account_name})" class="btn btn-primary">创建联系记录</a>
+          </li>
+          <li>
+            <button class="btn btn-default" ui-sref="contact.records({account_name: client.account.account_name,name: client.name})"
+            ng-show="records.page.max">查看更多</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </tab>
+</tabset>

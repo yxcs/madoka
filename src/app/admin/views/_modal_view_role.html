@@ -1,0 +1,56 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="skip()">&times;</button>
+  <h4>权限查看</h4>
+</div>
+<div class="modal-body">
+  <h4>模块显示</h4>
+  <div class="clearfix">
+    <div class="col-sm-3" ng-repeat="show in shows">{{moduleNames[show]}}</div>
+  </div>
+
+  <h4>信息查看 权限组</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="viewPerm in viewPerms">{{rightNames[viewPerm]}}</div>
+  </div>
+
+  <h4>客户资料权限组</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="clientProfile in clientProfiles">{{rightNames[clientProfile]}}</div>
+  </div>
+
+  <h4>客户管理</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="clientManages in clientManagess">{{rightNames[clientManages]}}</div>
+  </div>
+
+  <h4>帐号管理</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="accountManage in accountManages">{{rightNames[accountManage]}}</div>
+  </div>
+
+  <h4>计费管理</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="chargeconf in chargeconfs">{{rightNames[chargeconf]}}</div>
+  </div>
+
+  <h4>数据查看</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="dataview in dataviews">{{rightNames[dataview]}}</div>
+  </div>
+
+  <h4>超管权限</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="sa in sas">{{rightNames[sa]}}</div>
+  </div>
+
+  <h4>财务管理</h4>
+  <div class="clearfix">
+    <div class="col-sm-4" ng-repeat="finance in finances">{{rightNames[finance]}}</div>
+  </div>
+
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-sm btn-link" ng-click="skip()">关闭</button>
+  <!-- <button class="btn btn-sm btn-primary" ng-click="submit()">保存创建</button> -->
+</div>
