@@ -13,8 +13,6 @@ var ngconfig = require('gulp-ng-config')
 
 var $ = require('gulp-load-plugins')()
 
-var paths = pkg.paths
-
 var config = {
   validate: false,
   sourceMap: false,
